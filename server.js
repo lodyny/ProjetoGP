@@ -7,29 +7,30 @@ var express = require('express')
     , user = require('./routes/user')
     , http = require('http')
     , path = require('path')
+    , favicon = require('serve-favicon')
+    , morgan = require('morgan')
+    , bodyParser = require('body-parser')
+    , methodOverride = require('method-override')
     , EmployeeProvider = require('./employeeprovider').EmployeeProvider;
 
 var cb = null;
 var app = express();
 var ready = false;
 
-app.configure(function () {
-    app.set('port', process.env.PORT || 8080);
-    app.set('views', __dirname + '/views');
-    app.set('view engine', 'jade');
-    app.set('view options', {layout: false});
-    app.use(express.favicon());
-    app.use(express.logger('dev'));
-    app.use(express.bodyParser());
-    app.use(express.methodOverride());
-    app.use(app.router);
-    app.use(require('stylus').middleware(__dirname + '/public'));
-    app.use(express.static(path.join(__dirname, 'public')));
-});
+app.set('port', process.env.PORT || 8080);
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jade');
+app.set('view options', {layout: false});
+app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(morgan('dev'));
+app.use(bodyParser.json())
+app.use(methodOverride('X-HTTP-Method-Override'))
+app.use(require('stylus').middleware(__dirname + '/public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.configure('development', function () {
+if(process.env.NODE_ENV === 'development') {
     app.use(express.errorHandler());
-});
+}
 
 var employeeProvider = new EmployeeProvider(() => {
     ready = true;
@@ -37,16 +38,17 @@ var employeeProvider = new EmployeeProvider(() => {
 });
 
 //Routes
+var router = express.Router();
 
 //kubernetes
 //index
-app.get('/healthz', function (req, res) {
+router.get('/healthz', function (req, res) {
     res.send('ok');
 });
 
 
 //index
-app.get('/', function (req, res) {
+router.get('/', function (req, res) {
     employeeProvider.findAll(function (error, emps) {
         res.render('index', {
             title: 'Employees',
@@ -57,14 +59,14 @@ app.get('/', function (req, res) {
 
 
 //new employee
-app.get('/employee/new', function (req, res) {
+router.get('/employee/new', function (req, res) {
     res.render('employee_new', {
         title: 'New Employee'
     });
 });
 
 //save new employee
-app.post('/employee/new', function (req, res) {
+router.post('/employee/new', function (req, res) {
     employeeProvider.save({
         title: req.param('title'),
         name: req.param('name')
@@ -78,7 +80,7 @@ app.post('/employee/new', function (req, res) {
 });
 
 //update an employee
-app.get('/employee/:id/edit', function (req, res) {
+router.get('/employee/:id/edit', function (req, res) {
     employeeProvider.findById(req.param('_id'), function (error, employee) {
         if(!employee){
             res.status(404);
@@ -93,7 +95,7 @@ app.get('/employee/:id/edit', function (req, res) {
 });
 
 //save updated employee
-app.post('/employee/:id/edit', function (req, res) {
+router.post('/employee/:id/edit', function (req, res) {
     employeeProvider.update(req.param('_id'), {
         title: req.param('title'),
         name: req.param('name')
@@ -107,7 +109,7 @@ app.post('/employee/:id/edit', function (req, res) {
 });
 
 //delete an employee
-app.post('/employee/:id/delete', function (req, res) {
+router.post('/employee/:id/delete', function (req, res) {
     employeeProvider.delete(req.param('_id'), function (error, docs) {
         if(!docs){
             res.status(404);
@@ -123,7 +125,6 @@ var server = app.listen(process.env.PORT || 8080);
 module.exports = function (callback) {
     if (ready) callback(server);
     cb = callback;
-
 };
 
 

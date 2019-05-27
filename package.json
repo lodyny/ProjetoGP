@@ -7,12 +7,16 @@
     "test": "nodejs --harmony ./node_modules/mocha/bin/mocha --exit"
   },
   "dependencies": {
-    "express": "3.1.0",
-    "jade": "0.28.2",
-    "stylus": "0.32.1",
-    "mongodb": "1.2.14",
-    "mocha": "4.1.0",
+    "body-parser": "^1.19.0",
     "chai": "^3.5.0",
-    "chai-http": "^2.0.1"
+    "chai-http": "^4.3.0",
+    "express": "^4.17.1",
+    "jade": "0.28.2",
+    "method-override": "^3.0.0",
+    "mocha": "4.1.0",
+    "mongodb": "1.2.14",
+    "morgan": "^1.9.1",
+    "serve-favicon": "^2.5.0",
+    "stylus": "0.32.1"
   }
 }
