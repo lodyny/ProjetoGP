@@ -1,0 +1,18 @@
+{
+  "name": "application-name",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app",
+    "test": "nodejs --harmony ./node_modules/mocha/bin/mocha --exit"
+  },
+  "dependencies": {
+    "express": "3.1.0",
+    "jade": "0.28.2",
+    "stylus": "0.32.1",
+    "mongodb": "1.2.14",
+    "mocha": "4.1.0",
+    "chai": "^3.5.0",
+    "chai-http": "^2.0.1"
+  }
+}
