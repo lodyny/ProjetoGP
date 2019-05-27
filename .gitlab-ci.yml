@@ -45,8 +45,9 @@ deploy_k8s:
   #only: [master]  #build and push images only for master branch commits  #Hugo#
   image: google/cloud-sdk:latest
   script:
-   - echo ${KUBE_CA_PEM_FILE}
-   - kubectl config set-cluster default-cluster --server=${KUBE_URL} --certificate-authority="${KUBE_CA_PEM_FILE}"
+   - echo $KUBE_TOKEN
+   - echo "${KUBE_CERTIFICATE}" > kube_ca.pem
+   - kubectl config set-cluster default-cluster --server=${KUBE_URL} --certificate-authority="$(pwd)/kube_ca.pem"
    - kubectl config set-credentials default-admin --token=${KUBE_TOKEN}
    - kubectl config set-context default-system --cluster=default-cluster --user=default-admin --namespace=${KUBE_NAMESPACE}
    - kubectl config use-context default-system
