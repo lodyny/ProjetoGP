@@ -28,12 +28,11 @@
             prepend-icon="map"
             single-line
           ></v-select>
-          </v-flex>
-          <v-spacer></v-spacer>
-          <v-flex xs3>
-            <v-text-field placeholder="Animal name"></v-text-field>
-          </v-flex>
-        
+        </v-flex>
+        <v-spacer></v-spacer>
+        <v-flex xs3>
+          <v-text-field placeholder="Animal name"></v-text-field>
+        </v-flex>
       </v-layout>
     </v-container>
   </div>
