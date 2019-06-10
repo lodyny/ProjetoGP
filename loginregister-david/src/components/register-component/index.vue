@@ -11,7 +11,7 @@
                     :rules="[rules.emailExists, rules.emailValidate]"
                     required
                     validate-on-blur>
-                    <v-tooltip slot="append-outer" right color="white" :activator="!validemail ? '' : 'a'">
+                    <v-tooltip slot="append-outer" right color="white" :activator="!validemail ? '' : 'xpto16'">
                       <v-icon slot="activator" :color="existsmail ? (validemail ? 'green' : 'red') : 'primary'">
                           {{existsmail ? (validemail ? 'check' : 'help') : 'help'}}
                       </v-icon>
@@ -27,7 +27,7 @@
                           v-model='pw'
                           validate-on-blur
                           required>
-                    <v-tooltip slot="append-outer" right color="white" :activator="!validepw ? '' : 'a'">
+                    <v-tooltip slot="append-outer" right color="white" :activator="!validepw ? '' : 'xpto16'">
                       <v-icon slot="activator" :color="existspw ? (validepw ? 'green' : 'red') : 'primary'">
                           {{existspw ? (validepw ? 'check' : 'help') : 'help'}}
                       </v-icon>
@@ -41,7 +41,7 @@
                           :type="e1 ? 'password' : 'text'"
                           :rules="[rules.pwConfirmationExists, rules.pwConfirmationValidate]"
                           required>
-                    <v-tooltip slot="append-outer" right color="white" :activator="!validepwC ? '' : 'a'">
+                    <v-tooltip slot="append-outer" right color="white" :activator="!validepwC ? '' : 'xpto16'">
                       <v-icon slot="activator" :color="existspwC ? (validepwC ? 'green' : 'red') : 'primary'">
                           {{existspwC ? (validepwC ? 'check' : 'help') : 'help'}}
                       </v-icon>
@@ -52,7 +52,7 @@
                     <v-text-field class="ma-0" label="Nome"
                     :rules="[rules.userExists, rules.userValidate]"
                     required>
-                    <v-tooltip slot="append-outer" right color="white" :activator="existsuser ? (valideuser ? 'a' : '') : ''">
+                    <v-tooltip slot="append-outer" right color="white" :activator="existsuser ? (valideuser ? 'xpto16' : '') : ''">
                       <v-icon slot="activator" :color="existsuser ? (valideuser ? 'green' : 'red') : 'primary'">
                           {{existsuser ? (valideuser ? 'check' : 'help') : 'help'}}
                       </v-icon>
@@ -71,7 +71,7 @@
                     <v-text-field class="ma-0" label="Número de telemóvel"
                     :rules="[rules.phoneExists, rules.phoneValidate]"
                     required>
-                    <v-tooltip slot="append-outer" right color="white" :activator="!validephone ? '' : 'a'">
+                    <v-tooltip slot="append-outer" right color="white" :activator="!validephone ? '' : 'xpto16'">
                       <v-icon slot="activator" :color="existsphone ? (validephone ? 'green' : 'red') : 'primary'">
                           {{existsphone ? (validephone ? 'check' : 'help') : 'help'}}
                       </v-icon>
