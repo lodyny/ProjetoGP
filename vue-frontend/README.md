@@ -1,5 +1,3 @@
-# vue-role-based-authorization-example
+# Vue 2 application with webpack 4 boilerplate
 
-Vue.js - Role Based Authorization Tutorial & Example
-
-To see a demo and further details go to http://jasonwatmore.com/post/2019/03/08/vuejs-role-based-authorization-tutorial-with-example
+This repo is a support for [this article](https://medium.com/js-dojo/how-to-configure-webpack-4-with-vuejs-a-complete-guide-209e943c4772) published on Medium

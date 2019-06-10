@@ -1,82 +1,83 @@
 <template>
-    <div>
-        <div class="alert alert-info">
-            <strong>Normal User</strong> - U: user P: user<br />
-            <strong>Administrator</strong> - U: admin P: admin
-        </div>
-        <h2>Login</h2>
-        <form @submit.prevent="onSubmit">
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="text" v-model.trim="$v.email.$model" name="email" class="form-control" :class="{ 'is-invalid': submitted && $v.email.$error }" />
-                <div v-if="submitted && !$v.email.required" class="invalid-feedback">Email is required</div>
-            </div>
-            <div class="form-group">
-                <label htmlFor="password">Password</label>
-                <input type="password" v-model.trim="$v.password.$model" name="password" class="form-control" :class="{ 'is-invalid': submitted && $v.password.$error }" />
-                <div v-if="submitted && !$v.password.required" class="invalid-feedback">Password is required</div>
-            </div>
-            <div class="form-group">
-                <button class="btn btn-primary" :disabled="loading">
-                    <span class="spinner-border spinner-border-sm" v-show="loading"></span>
-                    <span>Login</span>
-                </button>
-            </div>
-            <div v-if="error" class="alert alert-danger">{{error}}</div>
-        </form>
+  <div class="login-component">
+    <div class="text-center" style="margin-top:20px;margin-bottom:20px;">
+      <v-layout align-center justify-center row>
+        <v-flex xs3>
+          <b-img class="logo" center :src="images.mainIcon"></b-img>
+          <p class="text-xs-center logo-text">AdotAqui</p>
+          <v-card-text>
+            <v-form @submit="checkForm" method="post">
+              <v-text-field
+                v-model="email"
+                :rules="emailRules"
+                required
+                prepend-icon="person"
+                name="login"
+                label="E-mail"
+                type="text"
+              ></v-text-field>
+
+              <p v-if="errors_name">{{ errors_name }}</p>
+
+              <v-text-field
+                v-model="password"
+                prepend-icon="lock"
+                name="password"
+                label="Password"
+                id="password"
+                :append-icon="e1 ? 'visibility' : 'visibility_off'"
+                :append-icon-cb="() => (e1 = !e1)"
+                :type="e1 ? 'password' : 'text'"
+                :rules="passwordRules"
+                required
+              ></v-text-field>
+
+              <div class="form-group">
+                <p v-if="errors_pw">{{ errors_pw }}</p>
+                <v-layout justify-center>
+                  <v-checkbox
+                    label="Guardar dados?"
+                    class="ma-0 pa-0"
+                    required
+                    style=" margin-bottom:0rem; max-width: 150px"
+                  ></v-checkbox>
+                </v-layout>
+              </div>
+              <v-btn block type="submit" color="#FC6600" class="white--text">Login</v-btn>
+            </v-form>
+          </v-card-text>
+        </v-flex>
+      </v-layout>
     </div>
+  </div>
 </template>
 
+<style lang="sass" scoped>
+    @import './LoginPage.scss';
+</style>
+
 <script>
-import { required } from 'vuelidate/lib/validators';
-
-import { router } from '@/_helpers';
-import { authenticationService } from '@/_services';
-
 export default {
-    data () {
-        return {
-            email: '',
-            password: '',
-            submitted: false,
-            loading: false,
-            returnUrl: '',
-            error: ''
-        };
-    },
-    validations: {
-      email: { required },
-      password: { required }
-    },
-    created () {
-        // redirect to home if already logged in
-        if (authenticationService.currentUserValue) { 
-            return router.push('/');
-        }
-
-        // get return url from route parameters or default to '/'
-        this.returnUrl = this.$route.query.returnUrl || '/';
-    },
-    methods: {
-        onSubmit () {
-            this.submitted = true;
-
-            // stop here if form is invalid
-            this.$v.$touch();
-            if (this.$v.$invalid) {
-                return;
-            }
-
-            this.loading = true;
-            authenticationService.login(this.email, this.password)
-                .then(
-                    user => router.push(this.returnUrl),
-                    error => {
-                        this.error = error;
-                        this.loading = false;
-                    }
-                );
-        }
-    }
+  name: "Login-component",
+  data() {
+    return {
+      errors_name: null,
+      errors_pw: null,
+      images: {
+        mainIcon: require("../assets/images/iconblack.png")
+      },
+      valid: false,
+      e1: false,
+      password: "",
+      passwordRules: [v => !!v || "Password obrigatória"],
+      email: "",
+      emailRules: [
+        v => !!v || "E-mail obrigatório",
+        v =>
+          /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+          "E-mail inválido"
+      ]
+    };
+  }
 };
 </script>
