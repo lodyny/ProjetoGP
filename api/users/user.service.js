@@ -3,7 +3,11 @@ const jwt = require("jsonwebtoken");
 const Roles = require("_helpers/roles");
 const User = require("models/user");
 const sgMail = require("@sendgrid/mail");
+const Role = require("models/role");
+var mongoose = require("mongoose");
 sgMail.setApiKey(config.sendGridApi);
+
+var ObjectId = mongoose.Types.ObjectId;
 
 // users hardcoded for simplicity, store in a db for production applications
 //  const users = [
@@ -24,6 +28,8 @@ module.exports = {
 async function registration(user) {
   let _user = new User(user);
   _user.password = _user.generateHash(user.password);
+  let _role = await Role.findOne({title:Roles.User}).exec();
+  _user.role = new ObjectId(_role._id);
   let newUser = await _user.save();
   if (!newUser) return;
   newUser = JSON.parse(JSON.stringify(newUser));
@@ -57,10 +63,13 @@ async function emailconfirmed(token) {
 }
 
 async function authenticate({ email, password }) {
+  console.log(email + ":" + password);
   const user = await User.findOne({ email: email })
     .populate("role")
     .exec();
+    console.log(user);
   if (!user) return { success: false, message: "Email or password is incorrect" };
+  console.log("EmailConfirmed: " + user.emailconfirmed);
   if (!user.emailconfirmed) return { success: false, message: "Email is not active yet." };
   if (!user.validPassword(password)) return { success: false, message: "Email or password is incorrect" };
   const token = jwt.sign({ sub: user.id, role: user.role.title }, config.secret);
