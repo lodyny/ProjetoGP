@@ -18,7 +18,7 @@ module.exports = router;
 
 function registration(req, res, next) {
   userService
-    .registration(req.body.user)
+    .registration(req.body)
     .then(result => (result ? res.json(result) : res.status(400).json({ success: false })))
     .catch(err => next(err));
 }
