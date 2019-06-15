@@ -9,7 +9,7 @@
             <v-form @submit="checkForm" method="post">
               <v-text-field
                 v-model="email"
-                :rules="emailRules"
+                :rules="[rules.emailExists, rules.emailValidate]"
                 required
                 prepend-icon="person"
                 name="login"
@@ -28,7 +28,7 @@
                 :append-icon="e1 ? 'visibility' : 'visibility_off'"
                 :append-icon-cb="() => (e1 = !e1)"
                 :type="e1 ? 'password' : 'text'"
-                :rules="passwordRules"
+                :rules="[rules.passwordExists]"
                 required
               ></v-text-field>
 
@@ -43,7 +43,8 @@
                   ></v-checkbox>
                 </v-layout>
               </div>
-              <v-btn block type="submit" color="#FC6600" class="white--text">Login</v-btn>
+              <v-btn block type="submit"
+              :disabled="getAllConfirmations" color="#FC6600" class="white--text">Login</v-btn>
             </v-form>
           </v-card-text>
         </v-flex>
@@ -67,17 +68,40 @@ export default {
         mainIcon: require("../assets/images/iconblack.png")
       },
       valid: false,
-      e1: false,
+      e1: true,
       password: "",
+      existsmail: false,
+      existspassword: false,
+      validemail: false,
       passwordRules: [v => !!v || "Password obrigatória"],
       email: "",
-      emailRules: [
-        v => !!v || "E-mail obrigatório",
-        v =>
-          /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-          "E-mail inválido"
-      ]
+      rules: {
+        emailExists: value => {
+          this.existsmail = !!value;
+          return !!value || "E-mail obrigatório";
+        },
+        passwordExists: value => {
+          this.existspassword = !!value;
+          return !!value || "Password obrigatória";
+        },
+        emailValidate: value => {
+          const pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+          this.validemail = pattern.test(value);
+          return pattern.test(value) || "E-mail inválido";
+        }
+      }
     };
+  },
+  computed: {
+  getAllConfirmations() {
+    let allConfirmations = [
+      this.validemail,
+      this.existsmail,
+      this.existspassword
+    ];
+    let checker = arr => arr.every(v => v === true);
+    return !checker(allConfirmations);
+  }
   }
 };
 </script>
