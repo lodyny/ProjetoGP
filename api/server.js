@@ -9,6 +9,8 @@ const mongoose = require('mongoose');
 const populateDB = require('_helpers/populatedb');
 
 mongoose.connect('mongodb+srv://dbUser:dbPW@oauth-test-paolr.mongodb.net/test?retryWrites=true', { useNewUrlParser: true });
+mongoose.set('useCreateIndex', true);
+
 populateDB.populate();
 
 app.use(bodyParser.urlencoded({ extended: false }));

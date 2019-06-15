@@ -8,6 +8,7 @@ const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('
 export const authenticationService = {
     login,
     logout,
+    register,
     currentUser: currentUserSubject.asObservable(),
     get currentUserValue () { return currentUserSubject.value }
 };
@@ -21,6 +22,13 @@ function login(email, password) {
             currentUserSubject.next(user);
             return user;
         });
+}
+
+function register(email, password, name, birthdate, phonenumber) {
+    console.log(password);
+    return fetch(`${config.apiUrl}/users/`, requestOptions.post({ email, password, name, birthdate, phonenumber }))
+        .then(handleResponse)
+        .then(user => { return user;});
 }
 
 function logout() {

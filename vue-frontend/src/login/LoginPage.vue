@@ -6,7 +6,7 @@
           <b-img class="logo" center :src="images.mainIcon"></b-img>
           <p class="text-xs-center logo-text">AdotAqui</p>
           <v-card-text>
-            <v-form @submit="checkForm" method="post">
+            <v-form @submit.prevent="submit">
               <v-text-field
                 v-model="email"
                 :rules="[rules.emailExists, rules.emailValidate]"
@@ -43,8 +43,14 @@
                   ></v-checkbox>
                 </v-layout>
               </div>
-              <v-btn block type="submit"
-              :disabled="getAllConfirmations" color="#FC6600" class="white--text">Login</v-btn>
+              <div v-if="error" class="alert alert-danger">{{error}}</div>
+              <v-btn
+                block
+                type="submit"
+                :disabled="getAllConfirmations"
+                color="#FC6600"
+                class="white--text"
+              >Login</v-btn>
             </v-form>
           </v-card-text>
         </v-flex>
@@ -58,12 +64,16 @@
 </style>
 
 <script>
+import { authenticationService } from "@/_services";
+import { router } from '@/_helpers';
+
 export default {
   name: "Login-component",
   data() {
     return {
       errors_name: null,
       errors_pw: null,
+      error: "",
       images: {
         mainIcon: require("../assets/images/iconblack.png")
       },
@@ -75,6 +85,7 @@ export default {
       validemail: false,
       passwordRules: [v => !!v || "Password obrigatória"],
       email: "",
+      returnUrl: "",
       rules: {
         emailExists: value => {
           this.existsmail = !!value;
@@ -92,16 +103,30 @@ export default {
       }
     };
   },
+  created() {
+    if (authenticationService.currentUserValue) {
+      return router.push("/");
+    }
+    this.returnUrl = this.$route.query.returnUrl || "/";
+  },
   computed: {
-  getAllConfirmations() {
-    let allConfirmations = [
-      this.validemail,
-      this.existsmail,
-      this.existspassword
-    ];
-    let checker = arr => arr.every(v => v === true);
-    return !checker(allConfirmations);
-  }
+    getAllConfirmations() {
+      let allConfirmations = [
+        this.validemail,
+        this.existsmail,
+        this.existspassword
+      ];
+      let checker = arr => arr.every(v => v === true);
+      return !checker(allConfirmations);
+    }
+  },
+  methods: {
+    submit() {
+      authenticationService.login(this.email, this.password).then(
+        user => router.push(this.returnUrl),
+        error => { this.error = error; }
+      );
+    }
   }
 };
 </script>

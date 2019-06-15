@@ -5,11 +5,11 @@
       <v-layout align-center justify-center row>
         <v-flex xs3>
           <p class="text-xs-center logo-text">AdotAqui</p>
-          <v-form method="post">
+          <v-form @submit.prevent="submit">
             <v-text-field
               class="ma-0"
               label="Email"
-              v-model="emailC"
+              v-model="email"
               :rules="[rules.emailExists, rules.emailValidate]"
               required
               validate-on-blur
@@ -35,7 +35,7 @@
               @click:append="() => (e1 = !e1)"
               :type="e1 ? 'password' : 'text'"
               :rules="[rules.pwExists, rules.pwValidate]"
-              v-model="pw"
+              v-model="password"
               validate-on-blur
               required
             >
@@ -71,6 +71,7 @@
             <v-text-field
               class="ma-0"
               label="Nome"
+              v-model="name"
               :rules="[rules.userExists, rules.userValidate]"
               required
             >
@@ -125,6 +126,7 @@
             <v-text-field
               class="ma-0"
               label="Número de telemóvel"
+              v-model="phonenumber"
               :rules="[rules.phoneExists, rules.phoneValidate]"
               required
             >
@@ -162,6 +164,10 @@
 </style>
 
 <script>
+
+import { authenticationService } from "@/_services";
+import { router } from '@/_helpers';
+
 export default {
   name: "Register-component",
   data() {
@@ -181,11 +187,12 @@ export default {
       validephone: false,
       existsphone: false,
       existspwC: false,
+      phonenumber : "",
+      name : "",
       messagei: "",
       pwmessage: "",
       mailmessage: "",
-      pw: "",
-      emailC: null,
+      returnUrl: "",
       password: "",
       rules: {
         emailValidate: value => {
@@ -214,8 +221,8 @@ export default {
           return !!value || "Password obrigatória";
         },
         pwConfirmationValidate: value => {
-          this.validepwC = this.pw == value;
-          const booleanResult = value == this.pw;
+          this.validepwC = this.password == value;
+          const booleanResult = value == this.password;
           return booleanResult || "Confirmação inválida";
         },
         pwConfirmationExists: value => {
@@ -263,9 +270,6 @@ export default {
         date.setDate(date.getDate());
         date.setMonth(date.getMonth());
         date.setFullYear(date.getFullYear() - 16);
-        console.log(
-          date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate()
-        );
         return date;
       }
     }
@@ -276,8 +280,20 @@ export default {
       val && setTimeout(() => (this.$refs.picker.activePicker = "YEAR"));
     }
   },
+created() {
+    if (authenticationService.currentUserValue) {
+      return router.push("/");
+    }
+        this.returnUrl = this.$route.query.returnUrl || "/";
 
+  },
   methods: {
+    submit() {
+      authenticationService.register(this.email, this.password, this.name, this.date, this.phonenumber).then(
+        user => router.push(this.returnUrl),
+        error => { console.log(error); this.error = error; }
+      );
+    },
     save(date) {
       this.$refs.menu.save(date);
     },
@@ -288,11 +304,9 @@ export default {
       date.setFullYear(date.getFullYear() + years);
       return date;
     },
-    pwmessagebuilder(pw) {
+    pwmessagebuilder(password) {
       this.pwmessage = "";
-      console.log(pw);
-
-      if (/^[a-zA-Z0-9]+$/.test(pw) || !pw) {
+      if (/^[a-zA-Z0-9]+$/.test(password) || !password) {
         this.pwmessage += '<font color="red">✘</font>';
       } else {
         this.pwmessage += '<font color="green">✔</font>';
@@ -300,7 +314,7 @@ export default {
       this.pwmessage +=
         '<font color="black"> Pelo menos um caracter alfanumérico.</font> <br/>';
 
-      if (!/\d/.test(pw)) {
+      if (!/\d/.test(password)) {
         this.pwmessage += '<font color="red">✘</font>';
       } else {
         this.pwmessage += '<font color="green">✔</font>';
@@ -308,7 +322,7 @@ export default {
       this.pwmessage +=
         '<font color="black"> Pelo menos um número (0-9).</font> <br/>';
 
-      if (!/[a-z]/.test(pw)) {
+      if (!/[a-z]/.test(password)) {
         this.pwmessage += '<font color="red">✘</font>';
       } else {
         this.pwmessage += '<font color="green">✔</font>';
@@ -316,7 +330,7 @@ export default {
       this.pwmessage +=
         '<font color="black"> Pelo menos uma letra minuscula (a-z).</font> <br/>';
 
-      if (!/[A-Z]/.test(pw)) {
+      if (!/[A-Z]/.test(password)) {
         this.pwmessage += '<font color="red">✘</font>';
       } else {
         this.pwmessage += '<font color="green">✔</font>';
@@ -324,7 +338,7 @@ export default {
       this.pwmessage +=
         '<font color="black"> Pelo menos uma letra maiuscula (A-Z).</font> <br/>';
 
-      if (pw.length < 6) {
+      if (password.length < 6) {
         this.pwmessage += '<font color="red">✘</font>';
       } else {
         this.pwmessage += '<font color="green">✔</font>';
