@@ -63,13 +63,10 @@ async function emailconfirmed(token) {
 }
 
 async function authenticate({ email, password }) {
-  console.log(email + ":" + password);
   const user = await User.findOne({ email: email })
     .populate("role")
     .exec();
-    console.log(user);
   if (!user) return { success: false, message: "Email or password is incorrect" };
-  console.log("EmailConfirmed: " + user.emailconfirmed);
   if (!user.emailconfirmed) return { success: false, message: "Email is not active yet." };
   if (!user.validPassword(password)) return { success: false, message: "Email or password is incorrect" };
   const token = jwt.sign({ sub: user.id, role: user.role.title }, config.secret);
