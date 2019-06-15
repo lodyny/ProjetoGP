@@ -9,15 +9,7 @@
     />
     <v-container grid-list-xl v-if="!showAnimalProfile">
       <v-layout row wrap center justify-center>
-        <v-flex
-          xs6
-          sm4
-          md3
-          xl2
-          class="lg5-custom"
-          v-for="(animal, idx) in filteredlist"
-          v-bind:key="idx"
-        >
+        <v-flex xs6 sm4 md3 xl2 class="lg5-custom" v-for="(animal, idx) in filteredlist" v-bind:key="idx">
           <AnimalCard v-bind:animal="animal" @selectAnimal="cardSelected(animal, idx)"></AnimalCard>
         </v-flex>
       </v-layout>

@@ -12,7 +12,8 @@
                   >Olá! Eu sou {{animalObj.gender == 1 ? 'o' : 'a'}} {{animalObj.name}}</h1>
                 </v-card-title>
                 <v-container id="scroll-target" style="max-height: 400px;" class="scroll-y">
-                  <v-card-text>O Beau e os seus companheiros tiveram uma vida espetacular numa quinta, mas tudo acabou quando o seu dono morreu. Os cães permaneceram na quinta e foram sendo alimentados pelos vizinhos até que foram enviados para o abrigo. São cães meigos e obedientes e merecem melhor que isto. São membros de família maravilhosos e estão habituados a ter uma casa. O Beau é o mais extrovertido. Enquanto as miúdas podem ser um pouco nervosas em novas circunstâncias, o Beau sentiu-se em casa ao chegar ao abrigo. Qualquer coisa nova interessante, ele tem que ver, tem que sentir o cheiro. Adaptar-se-ia muito bem a uma nova casa.
+                  <v-card-text>
+                    O Beau e os seus companheiros tiveram uma vida espetacular numa quinta, mas tudo acabou quando o seu dono morreu. Os cães permaneceram na quinta e foram sendo alimentados pelos vizinhos até que foram enviados para o abrigo. São cães meigos e obedientes e merecem melhor que isto. São membros de família maravilhosos e estão habituados a ter uma casa. O Beau é o mais extrovertido. Enquanto as miúdas podem ser um pouco nervosas em novas circunstâncias, o Beau sentiu-se em casa ao chegar ao abrigo. Qualquer coisa nova interessante, ele tem que ver, tem que sentir o cheiro. Adaptar-se-ia muito bem a uma nova casa.
                     Está vacinado, desparasitado e esterilizado.
                     O Beau e os seus companheiros tiveram uma vida espetacular numa quinta, mas tudo acabou quando o seu dono morreu. Os cães permaneceram na quinta e foram sendo alimentados pelos vizinhos até que foram enviados para o abrigo. São cães meigos e obedientes e merecem melhor que isto. São membros de família maravilhosos e estão habituados a ter uma casa. O Beau é o mais extrovertido. Enquanto as miúdas podem ser um pouco nervosas em novas circunstâncias, o Beau sentiu-se em casa ao chegar ao abrigo. Qualquer coisa nova interessante, ele tem que ver, tem que sentir o cheiro. Adaptar-se-ia muito bem a uma nova casa.
                     Está vacinado, desparasitado e esterilizado.
@@ -40,61 +41,67 @@
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-flex d-flex xs12 sm6 >
-          <v-layout column >
-              <v-card>
-                <v-card-title primary-title>
-                  <h3 class="headline mb-0">{{animalObj.breed.name_PT}}</h3>
+        <v-flex d-flex xs12 sm6>
+          <v-layout column>
+            <v-expansion-panel>
+              <v-expansion-panel-content>
+                <template v-slot:actions>
+                  <v-icon standard color="orange darken-2">fas fa-asterisk</v-icon>
+                </template>
+                <template v-slot:header>
+                  <h3 class="headline mb-0 pa-0;">
                   <span
-                  style="font-size:52px; margin-left:10px;"
-                  :style="animalObj.gender == 1 ? 'color:dodgerblue' : 'color:#E75480'"
-                >
-                  <font-awesome-icon :icon="animalObj.gender == 1 ? 'mars' : 'venus'"/>
-                </span>
+                    :style="animalObj.gender == 1 ? 'color:dodgerblue' : 'color:#E75480'"
+                  >
+                    <font-awesome-icon :icon="animalObj.gender == 1 ? 'mars' : 'venus'"/>
+                  </span>
+                  {{animalObj.breed.name_PT}}
+                  </h3>
                   <v-spacer></v-spacer>
-                  <v-btn
-                  color="success"
-                  round
-                ><v-icon left>fas fa-paw</v-icon>
-                    <span>Adota-me</span></v-btn>
-                
-                </v-card-title>
-                <v-layout row wrap>
-                  <v-flex d-flex xs12 sm4>
-                    <v-layout column>
-                      <v-flex d-flex>
-                        <v-btn disabled round large color="blue-grey" class="white--text">
-                          <v-icon left>fas fa-weight-hanging</v-icon>
-                          <span>{{animalObj.weight}} cm</span>
-                        </v-btn>
-                      </v-flex>
-                    </v-layout>
-                  </v-flex>
-                  <v-flex d-flex xs12 sm4>
-                    <v-layout column>
-                      <v-flex d-flex>
-                        <v-btn disabled round large color="blue-grey" class="white--text">
-                          <v-icon left>fas fa-text-height</v-icon>
-                          <span>{{animalObj.height}} kg</span>
-                        </v-btn>
-                      </v-flex>
-                    </v-layout>
-                  </v-flex>
-                  <v-flex d-flex xs12 sm4>
-                    <v-layout column>
-                      <v-flex d-flex>
-                        <v-btn disabled round large color="blue-grey" class="white--text">
-                          <v-icon left>fas fa-birthday-cake</v-icon>
-                          <span>{{animalObj.birthday}}</span>
-                        </v-btn>
-                      </v-flex>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
-                
-              </v-card>
+                  <v-btn color="success" round style="min-width:145px;max-width:145px;">
+                    <v-icon left>fas fa-paw</v-icon>
+                    <span>Adota-me</span>
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-layout row wrap>
+                    <v-flex d-flex xs12 sm4>
+                      <v-layout column>
+                        <v-flex d-flex>
+                          <v-btn disabled round large color="blue-grey" class="white--text">
+                            <v-icon left>fas fa-weight-hanging</v-icon>
+                            <span>{{animalObj.weight}} cm</span>
+                          </v-btn>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                    <v-flex d-flex xs12 sm4>
+                      <v-layout column>
+                        <v-flex d-flex>
+                          <v-btn disabled round large color="blue-grey" class="white--text">
+                            <v-icon left>fas fa-text-height</v-icon>
+                            <span>{{animalObj.height}} kg</span>
+                          </v-btn>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                    <v-flex d-flex xs12 sm4>
+                      <v-layout column>
+                        <v-flex d-flex>
+                          <v-btn disabled round large color="blue-grey" class="white--text">
+                            <v-icon left>fas fa-birthday-cake</v-icon>
+                            <span>{{animalObj.birthday}}</span>
+                          </v-btn>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                  </v-layout>
+                </v-card>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+
             <v-flex d-flex>
-                <v-parallax :src="animalObj.image" height="375px"></v-parallax>
+              <v-parallax :src="animalObj.image" height="375px"></v-parallax>
             </v-flex>
           </v-layout>
         </v-flex>

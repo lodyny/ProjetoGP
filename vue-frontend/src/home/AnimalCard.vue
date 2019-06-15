@@ -4,7 +4,7 @@
       <v-img :src="animal.image" height="250px"></v-img>
       <v-card-title primary-title class="ma-0 pa-0 justify-center">
         <div>
-          <h4 class="card-tile" style="margin-top:10px">{{animal.name}}</h4>
+          <h3 class="card-tile" style="margin-top:10px;font-size: 14px;line-height: 1.0;font-weight: bold;">{{animal.name}}</h3>
         </div>
       </v-card-title>
       <v-card-actions>
