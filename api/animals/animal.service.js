@@ -10,11 +10,22 @@ module.exports = {
     getAnimals,
     createAnimal,
     updateAnimal,
-    deleteAnimal
+    deleteAnimal,
+    getBreed
+}
+
+async function getBreed(breedId){
+    let breed = await Breed.findOne({_id: breedId});
+
+    return {
+        success: true,
+        breed
+    }
 }
 
 async function getAnimals(){
     let animals = await Animal.find({});
+
     return {
         success: true,
         animals

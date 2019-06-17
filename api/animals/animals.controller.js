@@ -8,6 +8,7 @@ router.get("/", getAnimals); // obter todos
 router.post("/:id", updateAnimal); //criar ou upd animal
 router.post("/", updateAnimal);
 router.delete("/:id", deleteAnimal); // apagar animal
+router.get("/breed/:id", getBreed); 
 
 module.exports = router;
 
@@ -17,6 +18,11 @@ function getAnimals(req, res, next) {
             success: false
         })))
         .catch(err => next(err));
+}
+
+function getBreed(req, res, next){
+    animalService.getBreed(req.params.id).then(result => (result ? res.json(result) : res.status(400).json({success : false})))
+    .catch(err => next(err));
 }
 
 function updateAnimal(req, res, next) {
