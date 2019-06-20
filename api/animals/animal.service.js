@@ -14,8 +14,10 @@ module.exports = {
     getBreed
 }
 
-async function getBreed(breedId){
-    let breed = await Breed.findOne({_id: breedId});
+async function getBreed(breedId) {
+    let breed = await Breed.findOne({
+        _id: breedId
+    });
 
     return {
         success: true,
@@ -23,18 +25,34 @@ async function getBreed(breedId){
     }
 }
 
-async function getAnimals(){
-    let animals = await Animal.find({});
+async function getBreeds() {
+    let breeds = await Breed.find({});
+    return {
+        success: true,
+        breeds
+    }
+}
 
+async function getAnimals() {
+    let breeds = await getBreeds();
+    let animals = await Animal.find({}).then(result => {
+        result.forEach(element => {
+            result.breed = getBreed(result.breed);
+            console.log(result.breed);
+        });
+    });
+    console.log(breeds);
     return {
         success: true,
         animals
-    };
+    }
 }
 
-async function createAnimal(animal){
+async function createAnimal(animal) {
     let _animal = new Animal(animal);
-    let _breed = await Breed.findOne({name: animal.breed});
+    let _breed = await Breed.findOne({
+        name: animal.breed
+    });
     _animal.breed = new ObjectId(_breed._id);
     let newAnimal = await _animal.save();
     if (!newAnimal) return;
@@ -42,15 +60,22 @@ async function createAnimal(animal){
     return {
         success: true,
         animal: newAnimal
-      };
+    };
 }
 
-async function updateAnimal(id, animal){
-    let _animal = await Animal.findOne({ _id: id}).exec();
-    if (!_animal) return { success: false, message: "Cant find animal"};
+async function updateAnimal(id, animal) {
+    let _animal = await Animal.findOne({
+        _id: id
+    }).exec();
+    if (!_animal) return {
+        success: false,
+        message: "Cant find animal"
+    };
     _animal.name = animal.name;
     _animal.gender = animal.gender;
-    let _breed = await Breed.findOne({name: animal.breed});
+    let _breed = await Breed.findOne({
+        name: animal.breed
+    });
     _animal.breed = new ObjectId(_breed._id);
     _animal.height = animal.height;
     _animal.weight = animal.weight;
@@ -65,9 +90,14 @@ async function updateAnimal(id, animal){
     }
 }
 
-async function deleteAnimal(id){
-    let _animal = await Animal.findOne({ _id: id}).exec();
-    if (!_animal) return { success: false, message: "Cant find animal"};
+async function deleteAnimal(id) {
+    let _animal = await Animal.findOne({
+        _id: id
+    }).exec();
+    if (!_animal) return {
+        success: false,
+        message: "Cant find animal"
+    };
     _animal.remove();
     //Animal.deleteOne({ _id: _animal.id});
     return {
