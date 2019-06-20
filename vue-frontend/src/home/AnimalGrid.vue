@@ -9,7 +9,34 @@
     />
     <v-container grid-list-xl v-if="!showAnimalProfile">
       <v-layout row wrap center justify-center>
-        <v-flex xs6 sm4 md3 xl2 class="lg5-custom" v-for="(animal, idx) in filteredlist" v-bind:key="idx">
+        <v-flex
+          xs6
+          sm4
+          md3
+          xl2
+          class="lg5-custom"
+        >
+        <v-card tile >
+            <v-img src="https://res.cloudinary.com/adotaqui/image/upload/v1560768741/addimage.bmp" height="250px"></v-img>
+            <v-card-title primary-title class="ma-0 pa-0 justify-center">
+              <div>
+                <h3
+                  class="card-tile"
+                  style="margin-top:10px;font-size: 14px;line-height: 1.0;font-weight: bold;"
+                >Add animal</h3>
+              </div>
+            </v-card-title>
+          </v-card>
+          </v-flex>
+        <v-flex
+          xs6
+          sm4
+          md3
+          xl2
+          class="lg5-custom"
+          v-for="(animal, idx) in filteredlist"
+          v-bind:key="idx"
+        >
           <AnimalCard v-bind:animal="animal" @selectAnimal="cardSelected(animal, idx)"></AnimalCard>
         </v-flex>
       </v-layout>
@@ -22,6 +49,9 @@
 </style>
 
 <script>
+import { authenticationService, animalService, userService } from "@/_services";
+import { router, Role } from "@/_helpers";
+
 import AnimalCard from "./AnimalCard";
 import Profile from "./AnimalProfile";
 
@@ -32,117 +62,23 @@ export default {
     AnimalCard,
     Profile
   },
+  
   data() {
-    var list = [
-      {
-        name: "Chubby",
-        gender: 1,
-        breed: {
-          name: "German Shephard",
-          name_PT: "Pastor Alemão",
-          specie: { name: "Dog", name_PT: "Cão" }
-        },
-        height: 100,
-        weight: 100,
-        birthday: "10/02/2005",
-        details: "this is Chubby",
-        image: "https://avatars3.githubusercontent.com/u/16657688?s=460&v=4"
-      },
-      {
-        name: "Irmão do Chubby",
-        gender: 1,
-        breed: {
-          name: "German Shephard",
-          name_PT: "Pastor Alemão",
-          specie: { name: "Dog", name_PT: "Cão" }
-        },
-        height: 100,
-        weight: 100,
-        birthday: "10/02/2005",
-        details: "this is Chubby",
-        image:
-          "https://www.adopta-me.org/media/image/thumb/85119638-Beau__3_.jpg"
-      },
-      {
-        name: "Irmã do Chubby",
-        gender: "0",
-        breed: {
-          name: "German Shephard",
-          name_PT: "Pastor Alemão",
-          specie: { name: "Dog", name_PT: "Cão" }
-        },
-        height: 100,
-        weight: 100,
-        birthday: "10/02/2005",
-        details: "this is Chubby",
-        image: "https://avatars3.githubusercontent.com/u/16657688?s=460&v=4"
-      },
-      {
-        name: "Prima do Chubby",
-        gender: "0",
-        breed: {
-          name: "German Shephard",
-          name_PT: "Pastor Alemão",
-          specie: { name: "Dog", name_PT: "Cão" }
-        },
-        height: 100,
-        weight: 100,
-        birthday: "10/02/2005",
-        details: "this is Chubby",
-        image: "https://avatars3.githubusercontent.com/u/16657688?s=460&v=4"
-      },
-      {
-        name: "Primo do Chubby",
-        gender: "1",
-        breed: {
-          name: "German Shephard",
-          name_PT: "Pastor Alemão",
-          specie: { name: "Dog", name_PT: "Cão" }
-        },
-        height: 100,
-        weight: 100,
-        birthday: "10/02/2005",
-        details: "this is Chubby",
-        image: "https://avatars3.githubusercontent.com/u/16657688?s=460&v=4"
-      },
-      {
-        name: "Avó do Chubby",
-        gender: "0",
-        breed: {
-          name: "German Shephard",
-          name_PT: "Labrador",
-          specie: { name: "Dog", name_PT: "Cão" }
-        },
-        height: 100,
-        weight: 100,
-        birthday: "10/02/2005",
-        details: "this is Chubby",
-        image: "https://avatars3.githubusercontent.com/u/16657688?s=460&v=4"
-      },
-      {
-        name: "Avô do Chubby",
-        gender: "1",
-        breed: {
-          name: "German Shephard",
-          name_PT: "Pastor Alemão",
-          specie: { name: "Dog", name_PT: "Cão" }
-        },
-        height: 100,
-        weight: 100,
-        birthday: "10/02/2005",
-        details: "this is Chubby",
-        image: "https://avatars3.githubusercontent.com/u/16657688?s=460&v=4"
-      }
-    ];
+
     return {
+      currentUser: null,
       specieFilter: null,
       breedFilter: null,
       nameFilter: null,
       showAnimalProfile: false,
+      showAnimalCrud: false,
       selectedAnimal: null,
       selectedAnimalIndex: null,
-      animallist: list,
-      filteredlist: list
+      firstTime : true,
+      animals: [],
+      animals:[],
+      filteredlist: [],
+      users: []
     };
   },
 
@@ -156,8 +92,11 @@ export default {
       this.showAnimalProfile = true;
     },
     onCloseProfile() {
-      console.log("emit open");
       this.showAnimalProfile = false;
+      this.$emit("openBar");
+    },
+    onCloseCrud() {
+      this.showAnimalCrud = false;
       this.$emit("openBar");
     },
     onNextProfile() {
@@ -177,7 +116,7 @@ export default {
       this.selectedAnimal = this.filteredlist[this.selectedAnimalIndex];
     },
     filtrar() {
-      var filtro = [ ...this.animallist ];
+      var filtro = [...this.animals];
       if (this.breedFilter) {
         filtro = filtro.filter(
           animal => animal.breed.name_PT == this.breedFilter.name
@@ -188,9 +127,7 @@ export default {
         );
       }
       if (this.nameFilter) {
-        filtro = filtro.filter(animal =>
-          animal.name.includes(this.nameFilter)
-        );
+        filtro = filtro.filter(animal => animal.name.includes(this.nameFilter));
       }
       this.filteredlist = filtro;
     },
@@ -208,6 +145,22 @@ export default {
       this.filtrar();
     }
   },
-  mounted() {}
+  mounted() {
+    
+  
+  },
+  computed: {
+    isAdmin() {
+      return this.currentUser && this.currentUser.role === Role.Admin;      
+    },
+  },
+  created() {
+    authenticationService.currentUser.subscribe(x => (this.currentUser = x));
+    animalService.getAll().then(animals => animals.animals.forEach(element => {
+      element.breed = animalService.getBreedByAnimalId(element.breed).then(breed => element.breed = breed.breed);
+      this.animals.push(element);
+    }));
+    this.filteredlist = this.animals;
+  }
 };
 </script>

@@ -6,7 +6,7 @@
             All users from secure (admin only) api end point:
             <ul v-if="users.length">
                 <li v-for="user in users" :key="user.id">
-                    {{user.name}}
+                   AAAA {{user.name}}
                 </li>
             </ul>
         </div>

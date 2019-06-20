@@ -12,7 +12,7 @@ import Vuelidate from 'vuelidate';
 import App from './app/App';
 import { router } from './_helpers';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faDog, faCat, faCrow, faPaw, faMars, faVenus, faArrowRight, faArrowLeft, faUndo, faWeightHanging, faBirthdayCake, faTextHeight, faAsterisk } from '@fortawesome/free-solid-svg-icons';
+import { faDog, faCat, faCrow, faPaw, faMars, faVenus, faArrowRight, faArrowLeft, faUndo, faWeightHanging, faBirthdayCake, faTextHeight, faAsterisk, faSave, faCamera, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { dom } from '@fortawesome/fontawesome-svg-core';
 
@@ -24,7 +24,7 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css';
 
 dom.watch();
 
-library.add(faDog, faCat, faCrow, faPaw, faVenus, faMars, faArrowRight, faArrowLeft, faUndo, faWeightHanging, faBirthdayCake, faTextHeight, faAsterisk);
+library.add(faDog, faCat, faCrow, faPaw, faVenus, faMars, faArrowRight, faArrowLeft, faUndo, faWeightHanging, faBirthdayCake, faTextHeight, faAsterisk, faSave, faCamera, faTrash);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.config.productionTip = false;

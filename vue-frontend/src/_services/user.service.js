@@ -8,7 +8,7 @@ export const userService = {
 
 function getAll() {
     return fetch(`${config.apiUrl}/users`, requestOptions.get())
-        .then(handleResponse);
+    .then(handleResponse);
 }
 
 function getById(id) {

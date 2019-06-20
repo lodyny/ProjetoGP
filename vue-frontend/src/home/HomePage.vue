@@ -1,7 +1,9 @@
 <template>
   <div>
     <Toolbar @specieChange="onSpecieChange" @breedChange="onBreedChange" @nameChange="onNameChange" v-if="toolBarOpen"/>
-    <AnimalGrid ref="animalGrid" @closeBar="toolBarOpen = false" @openBar="toolBarOpen = true"/>
+    <AnimalGrid ref="animalGrid" @closeBar="toolBarOpen = false" @openBar="toolBarOpen = true"/> -->
+    <!-- <AnimalCrud/> -->
+    <!-- <UserProfile/> -->
   </div>
 </template>
 
@@ -9,11 +11,15 @@
 <script>
 import Toolbar from "./FilterToolbar";
 import AnimalGrid from "./AnimalGrid";
+import AnimalCrud from "./AnimalCrud";
+import UserProfile from "./UserProfile";
 
 export default {
   components: {
     AnimalGrid,
-    Toolbar
+    Toolbar,
+    AnimalCrud,
+    UserProfile
   },
   data() {
     return {
@@ -30,6 +36,9 @@ export default {
     onNameChange(value) {
       this.$refs.animalGrid.onNameChange(value);
     }
-  }
+  },
+  mounted() {
+    console.log('here');
+  },
 };
 </script>
