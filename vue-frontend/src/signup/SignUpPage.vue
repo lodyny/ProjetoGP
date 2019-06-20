@@ -18,7 +18,7 @@
                 slot="append-outer"
                 right
                 color="white"
-                :activator="!validemail ? '' : 'a'"
+                :activator="!validemail ? '' : 'awb'"
               >
                 <v-icon
                   slot="activator"
@@ -39,7 +39,7 @@
               validate-on-blur
               required
             >
-              <v-tooltip slot="append-outer" right color="white" :activator="!validepw ? '' : 'a'">
+              <v-tooltip slot="append-outer" right color="white" :activator="!validepw ? '' : 'awb'">
                 <v-icon
                   slot="activator"
                   :color="existspw ? (validepw ? 'green' : 'red') : 'primary'"
@@ -57,7 +57,7 @@
               :rules="[rules.pwConfirmationExists, rules.pwConfirmationValidate]"
               required
             >
-              <v-tooltip slot="append-outer" right color="white" :activator="!validepwC ? '' : 'a'">
+              <v-tooltip slot="append-outer" right color="white" :activator="!validepwC ? '' : 'awb'">
                 <v-icon
                   slot="activator"
                   :color="existspwC ? (validepwC ? 'green' : 'red') : 'primary'"
@@ -79,7 +79,7 @@
                 slot="append-outer"
                 right
                 color="white"
-                :activator="existsuser ? (valideuser ? 'a' : '') : ''"
+                :activator="existsuser ? (valideuser ? 'awb' : '') : ''"
               >
                 <v-icon
                   slot="activator"
@@ -134,7 +134,7 @@
                 slot="append-outer"
                 right
                 color="white"
-                :activator="!validephone ? '' : 'a'"
+                :activator="!validephone ? '' : 'awb'"
               >
                 <v-icon
                   slot="activator"

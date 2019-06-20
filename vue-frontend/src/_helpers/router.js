@@ -8,6 +8,7 @@ import AdminPage from '@/admin/AdminPage';
 import LoginPage from '@/login/LoginPage';
 import SignUpPage from '@/signup/SignUpPage';
 import AnimalProfile from '@/home/AnimalProfile';
+import UserProfile from '@/home/UserProfile';
 
 Vue.use(Router);
 
@@ -34,6 +35,10 @@ export const router = new Router({
         { 
             path: '/animal', 
             component: AnimalProfile
+        },
+        { 
+            path: '/profile', 
+            component: UserProfile
         },
         // otherwise redirect to home
         { path: '*', redirect: '/' }

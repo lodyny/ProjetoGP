@@ -6,6 +6,7 @@
           <router-link to="/" class="nav-item nav-link">Home</router-link>
           <router-link v-if="!currentUser" to="/login" class="nav-item nav-link">Login</router-link>
           <router-link v-if="!currentUser" to="/signup" class="nav-item nav-link">Sign In</router-link>
+          <router-link v-if="currentUser" to="/profile" class="nav-item nav-link">Profile</router-link>
           <router-link v-if="isAdmin" to="/admin" class="nav-item nav-link">Admin</router-link>
           <a @click="logout" v-if="currentUser" class="nav-item nav-link">Logout</a>
         </div>
