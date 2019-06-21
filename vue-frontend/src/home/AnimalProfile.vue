@@ -41,9 +41,6 @@
           <v-layout column>
             <v-expansion-panel>
               <v-expansion-panel-content>
-                <template v-slot:actions>
-                  <v-icon standard color="orange darken-2">fas fa-asterisk</v-icon>
-                </template>
                 <template v-slot:header>
                   <h3 class="headline mb-0 pa-0;">
                   <span
