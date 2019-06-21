@@ -17,7 +17,9 @@ export const router = new Router({
     routes: [
         { 
             path: '/', 
-            component: HomePage
+            name: 'Home',
+            component: HomePage,
+            props: true
         },
         { 
             path: '/admin', 
@@ -33,12 +35,14 @@ export const router = new Router({
             component: SignUpPage 
         },
         { 
-            path: '/animal', 
-            component: AnimalProfile
+            path: '/animal/:url_id', 
+            name: 'AnimalProfile',
+            component: AnimalProfile,
+            props: true
         },
         { 
             path: '/profile', 
-            component: UserProfile
+            component: UserProfile,
         },
         // otherwise redirect to home
         { path: '*', redirect: '/' }

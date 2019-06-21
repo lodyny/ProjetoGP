@@ -24,7 +24,7 @@ async function getBreed(breedId){
 }
 
 async function getAnimals(){
-    let animals = await Animal.find({});
+    let animals = await Animal.find({}).populate("breed");
 
     return {
         success: true,
