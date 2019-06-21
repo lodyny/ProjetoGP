@@ -1,6 +1,6 @@
 <template>
   <div class="animal-card-component">
-    <v-card tile  >
+    <v-card tile :class="isAdmin ? 'applyZoom' : ''" >
       <router-link :to="{ name: 'AnimalProfile', params: { animalList, id, url_id } }">
         <v-img :src="animalList[id].image" height="250px"></v-img>
       </router-link>
