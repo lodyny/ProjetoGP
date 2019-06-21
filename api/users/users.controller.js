@@ -13,8 +13,13 @@ router.get("/token/:token", emailconfirmed);
 router.post("/password/reset", authorize(), passwordReset);
 router.post("/password/reset/:token", passwordResetWithToken);
 router.post("/password/forgotten", passwordForgotten);
+router.post("/createRequest", createRequest);
+router.delete("/:id/removeRequest/:requestId", deleteRequest);
 
 module.exports = router;
+
+
+
 
 function registration(req, res, next) {
   userService
@@ -85,5 +90,23 @@ function passwordForgotten(req, res, next) {
   userService
     .passwordForgotten(req.body.email)
     .then(result => (result ? res.json(result) : res.status(400).json({ success: false })))
+    .catch(err => next(err));
+}
+
+// User Requests
+function createRequest(req, res, next){
+  if (req.body.email == null || req.body.request == null)
+    res.status(400).json({ success: false});
+
+  userService
+    .createRequest(req.body)
+    .then(result => (result ? res.json(result) : res.status(400).json({ success: false})))
+    .catch(err => next(err));
+}
+
+function deleteRequest(req, res, next){
+  userService
+    .deleteRequest(req.params.id, req.params.requestId)
+    .then(result => (result ? res.json(result) : res.status(400).json({ success: false})))
     .catch(err => next(err));
 }

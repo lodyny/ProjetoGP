@@ -15,7 +15,13 @@ var userSchema = mongoose.Schema({
   role: { type: ObjectId, ref: "Role" },
   animals: [{ type: ObjectId, ref: "Animal" }],
   banned: { type: Boolean, default: false },
-  emailconfirmed: { type: Boolean, default: false }
+  emailconfirmed: { type: Boolean, default: false },
+  requests: [{
+    date: String,
+    details: String,
+    state: String,
+    animal: {type: ObjectId, ref: "Animal"}
+  }]
 });
 
 userSchema.methods.toDictionary = function() {

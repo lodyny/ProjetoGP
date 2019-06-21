@@ -22,18 +22,25 @@ module.exports = {
   getAll,
   getById,
   passwordReset,
-  passwordForgotten
+  passwordForgotten,
+  createRequest,
+  deleteRequest
 };
 
 async function registration(user) {
   let _user = new User(user);
   _user.password = _user.generateHash(user.password);
-  let _role = await Role.findOne({title:Roles.User}).exec();
+  let _role = await Role.findOne({
+    title: Roles.User
+  }).exec();
   _user.role = new ObjectId(_role._id);
   let newUser = await _user.save();
   if (!newUser) return;
   newUser = JSON.parse(JSON.stringify(newUser));
-  const token = jwt.sign({ domain: config.domain, email: newUser.email }, config.secret);
+  const token = jwt.sign({
+    domain: config.domain,
+    email: newUser.email
+  }, config.secret);
   const msg = {
     to: newUser.email,
     from: config.emailFrom,
@@ -48,28 +55,49 @@ async function registration(user) {
 }
 
 async function emailconfirmed(token) {
-  const _email = jwt.verify(token, config.secret, function(err, decoded) {
+  const _email = jwt.verify(token, config.secret, function (err, decoded) {
     if (err) return;
     return decoded.email;
   });
 
   if (!_email) return;
 
-  const _user = await User.findOneAndUpdate({ email: _email }, { emailconfirmed: true });
+  const _user = await User.findOneAndUpdate({
+    email: _email
+  }, {
+    emailconfirmed: true
+  });
   return {
     success: true,
     ..._user.toDictionary()
   };
 }
 
-async function authenticate({ email, password }) {
-  const user = await User.findOne({ email: email })
+async function authenticate({
+  email,
+  password
+}) {
+  const user = await User.findOne({
+      email: email
+    })
     .populate("role")
     .exec();
-  if (!user) return { success: false, message: "Email or password is incorrect" };
-  if (!user.emailconfirmed) return { success: false, message: "Email is not active yet." };
-  if (!user.validPassword(password)) return { success: false, message: "Email or password is incorrect" };
-  const token = jwt.sign({ sub: user.id, role: user.role.title }, config.secret);
+  if (!user) return {
+    success: false,
+    message: "Email or password is incorrect"
+  };
+  if (!user.emailconfirmed) return {
+    success: false,
+    message: "Email is not active yet."
+  };
+  if (!user.validPassword(password)) return {
+    success: false,
+    message: "Email or password is incorrect"
+  };
+  const token = jwt.sign({
+    sub: user.id,
+    role: user.role.title
+  }, config.secret);
   return {
     success: true,
     ...user.toDictionary(),
@@ -84,10 +112,16 @@ async function getAll() {
     .exec();
 
   users.map(u => {
-    return { ...u.toDictionary(), role: u.role.title };
+    return {
+      ...u.toDictionary(),
+      role: u.role.title
+    };
   });
   return users.map(u => {
-    return { ...u.toDictionary(), role: u.role.title };
+    return {
+      ...u.toDictionary(),
+      role: u.role.title
+    };
   });
 }
 
@@ -96,12 +130,15 @@ async function getById(id) {
     .populate("role")
     .exec();
   if (!user) return;
-  return { ...user.toDictionary(), role: user.role.title };
+  return {
+    ...user.toDictionary(),
+    role: user.role.title
+  };
 }
 
 async function passwordReset(sub = null, password, token = null) {
   if (token !== null) {
-    jwt.verify(token, config.secret, function(err, decoded) {
+    jwt.verify(token, config.secret, function (err, decoded) {
       if (err) return;
       sub = decoded.number;
     });
@@ -111,16 +148,24 @@ async function passwordReset(sub = null, password, token = null) {
 
   if (!_user) return;
   _user.generateHash(password);
-  const user = await User.findByIdAndUpdate(sub, { password: _user.password });
+  const user = await User.findByIdAndUpdate(sub, {
+    password: _user.password
+  });
   return {
     ...user.toDictionary()
   };
 }
 
 async function passwordForgotten(email) {
-  const _user = await User.findOne({ email: email }).exec();
+  const _user = await User.findOne({
+    email: email
+  }).exec();
   if (!_user) return;
-  const token = jwt.sign({ domain: config.domain, email: _user.email, number: _user.id }, config.secret);
+  const token = jwt.sign({
+    domain: config.domain,
+    email: _user.email,
+    number: _user.id
+  }, config.secret);
   const link = config.domain + "/users/password/reset/" + token;
   const msg = {
     to: email,
@@ -133,4 +178,53 @@ async function passwordForgotten(email) {
   return {
     success: true
   };
+}
+
+async function createRequest(req) {
+  let _user = await User.findOne({
+    email: req.email
+  });
+  let _request = req.request;
+  _request.state = 'Pending';
+  _request.date = new Date().toISOString().substr(0, 10);
+
+  if (_user.requests == null)
+    _user.requests = _request;
+  else
+    _user.requests.push(_request);
+
+  await User.findOneAndUpdate({email: req.email}, {requests: _user.requests});
+
+  return {
+    success: true
+  }
+}
+
+async function deleteRequest(userId, requestId){
+  let _user = await User.findOne({ _id: userId});
+  if (_user == null)
+    return {
+      success: false,
+      message: "Invalid User"
+    }
+
+  let _request = await _user.requests.find(function (element){
+    return element._id == requestId;
+  });
+  if (_request == null)
+    return {
+      success: false,
+      message: "Invalid Request"
+    }
+    console.log(_request);
+    let _newRequests = _user.requests;
+    console.log(_newRequests);
+    console.log(_user.requests.indexOf(_request));
+    _newRequests.splice(_user.requests.indexOf(_request), 1);
+    console.log(_newRequests);
+    await User.findOneAndUpdate({_id: userId}, {requests: _newRequests});
+
+  return {
+    success: true
+  }
 }
