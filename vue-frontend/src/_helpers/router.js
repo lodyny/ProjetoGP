@@ -9,6 +9,7 @@ import LoginPage from '@/login/LoginPage';
 import SignUpPage from '@/signup/SignUpPage';
 import AnimalProfile from '@/home/AnimalProfile';
 import UserProfile from '@/home/UserProfile';
+import AnimalCrud from '@/home/AnimalCrud';
 
 Vue.use(Router);
 
@@ -38,6 +39,12 @@ export const router = new Router({
             path: '/animal/:url_id', 
             name: 'AnimalProfile',
             component: AnimalProfile,
+            props: true
+        },
+        { 
+            path: '/animal/', 
+            name: 'AddAnimal',
+            component: AnimalCrud,
             props: true
         },
         { 

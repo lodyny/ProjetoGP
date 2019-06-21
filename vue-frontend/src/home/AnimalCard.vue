@@ -14,9 +14,11 @@
         <span
           style="position:absolute;right:0;top:0;">
 
-          <v-btn icon @click="editselected(animalList[id])" color="blue" flat>
+          <router-link v-if="adminMode" :to="{ name: 'AddAnimal', params:{animalObj:animalList[id]}}">
+          <v-btn icon color="blue" flat>
               <v-icon>fas fa-edit</v-icon>
           </v-btn>
+          </router-link>
         </span>
         <span
           style="position:absolute;right:0;bottom:0;margin-right:5px;font-size:18px;"
@@ -51,9 +53,6 @@ export default {
   },
 
   methods: {
-    viewselected(value) {
-        this.$emit('selectAnimal', value);
-    },
     editselected(value) {
         this.$emit('editAnimal', value);
     }

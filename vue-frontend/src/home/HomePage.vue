@@ -1,8 +1,8 @@
 <template>
   <div>
-    <Toolbar @specieChange="onSpecieChange" @breedChange="onBreedChange" @nameChange="onNameChange" v-if="toolBarOpen"/>
-    <AnimalGrid ref="animalGrid" v-bind:animalList="animalList" @closeBar="toolBarOpen = false" @openBar="toolBarOpen = true"/> -->
-    <!-- <AnimalCrud/>   -->
+    <!-- <Toolbar @specieChange="onSpecieChange" @breedChange="onBreedChange" @nameChange="onNameChange" v-if="toolBarOpen"/> -->
+    <!-- <AnimalGrid ref="animalGrid" v-bind:animalList="animalList" @closeBar="toolBarOpen = false" @openBar="toolBarOpen = true"/>  -->
+    <AnimalAdoption/>  
     <!-- <UserProfile/> -->
   </div>
 </template>
@@ -13,6 +13,7 @@ import Toolbar from "./FilterToolbar";
 import AnimalGrid from "./AnimalGrid";
 import AnimalCrud from "./AnimalCrud";
 import UserProfile from "./UserProfile";
+import AnimalAdoption from "./AnimalAdoption";
 
 export default {
   props: ["animalList"],
@@ -20,7 +21,8 @@ export default {
     AnimalGrid,
     Toolbar,
     AnimalCrud,
-    UserProfile
+    UserProfile,
+    AnimalAdoption
   },
   data() {
     return {

@@ -40,10 +40,12 @@
                   class="v-item-group v-bottom-nav theme--light v-bottom-nav--absolute v-bottom-nav--active transparent"
                   style="margin-bottom:0px;"
                 >
-                  <v-btn color="teal" flat @click="$emit('closeAdd')">
+                <router-link :to="{ name: 'Home'}">
+                  <v-btn color="teal" flat>
                     <span style="margin-top:4px">Cancel without saving</span>
                     <v-icon>fas fa-undo</v-icon>
                   </v-btn>
+                </router-link>
 
                   <v-btn color="teal" flat>
                     <span style="margin-top:4px">Save</span>
@@ -296,12 +298,12 @@ export default {
     this.animalName = this.animalObj.name;
     this.animalSex = this.animalObj.gender == 0 ? 'Female' : 'Male';
     this.animalDetails = this.animalObj.details;
-    this.animalSpecie = this.animalObj.breed.specie.name;
-    this.species.forEach(element => {
-        if (element.name == this.animalSpecie) {
-          this.localBreed = element.breeds;
-        }
-    });
+    // this.animalSpecie = this.animalObj.breed.specie.name;
+    // this.species.forEach(element => {
+    //     if (element.name == this.animalSpecie) {
+    //       this.localBreed = element.breeds;
+    //     }
+    // });
     this.animalBreed = this.animalObj.breed.name;
     this.animalWeight = this.animalObj.weight;
     this.animalHeight = this.animalObj.height;

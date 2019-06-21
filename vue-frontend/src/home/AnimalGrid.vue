@@ -1,6 +1,6 @@
 <template>
   <div class="animal-grid-component">
-    <v-container grid-list-xl v-if="!checkBarVisibility">
+    <v-container grid-list-xl>
       <v-layout row wrap center justify-center>
         <v-flex
           xs6
@@ -9,7 +9,8 @@
           xl2
           class="lg5-custom"
         >
-        <v-card tile @click="addAnimal()">
+        <router-link :to="{ name: 'AddAnimal' }">
+        <v-card tile>
             <v-img src="https://res.cloudinary.com/adotaqui/image/upload/v1560768741/addimage.bmp" height="250px"></v-img>
             <v-card-title primary-title class="ma-0 pa-0 justify-center">
               <div>
@@ -20,6 +21,7 @@
               </div>
             </v-card-title>
           </v-card>
+        </router-link>
           </v-flex>
         <v-flex
           xs6
@@ -32,7 +34,7 @@
         >
           <AnimalCard v-bind:animalList="filteredlist"
                       v-bind:id="idx"
-                     @selectAnimal="cardSelected(animal, idx)" ></AnimalCard>
+                     ></AnimalCard>
         </v-flex>
       </v-layout>
     </v-container>
@@ -80,15 +82,6 @@ export default {
   },
 
   methods: {
-    cardSelected(animal, idx) {
-      console.log("message from child", animal);
-      this.selectedAnimal = animal;
-      this.selectedAnimalIndex = idx;
-      console.log(idx);
-      this.$emit("closeBar");
-      
-      // this.showAnimalProfile = true;
-    },
     cardEdit(animal, idx) {
       this.selectedAnimal = animal;
       this.selectedAnimalIndex = idx;
@@ -149,7 +142,7 @@ export default {
   },
   created() {
     authenticationService.currentUser.subscribe(x => (this.currentUser = x));
-    console.log('>>',this.animalList);
+
     if(this.animalList){
       this.animals = this.animalList;
     }else{
