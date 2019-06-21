@@ -1,13 +1,6 @@
 <template>
   <div class="animal-grid-component">
-    <Profile
-      v-bind:animalObj="selectedAnimal"
-      v-if="showAnimalProfile"
-      @close="onCloseProfile"
-      @next="onNextProfile"
-      @previous="onPreviousProfile"
-    />
-    <v-container grid-list-xl v-if="!showAnimalProfile">
+    <v-container grid-list-xl>
       <v-layout row wrap center justify-center>
         <v-flex
           xs6
@@ -16,7 +9,8 @@
           xl2
           class="lg5-custom"
         >
-        <v-card tile >
+        <router-link :to="{ name: 'AddAnimal' }">
+        <v-card tile>
             <v-img src="https://res.cloudinary.com/adotaqui/image/upload/v1560768741/addimage.bmp" height="250px"></v-img>
             <v-card-title primary-title class="ma-0 pa-0 justify-center">
               <div>
@@ -27,6 +21,7 @@
               </div>
             </v-card-title>
           </v-card>
+        </router-link>
           </v-flex>
         <v-flex
           xs6
@@ -37,7 +32,9 @@
           v-for="(animal, idx) in filteredlist"
           v-bind:key="idx"
         >
-          <AnimalCard v-bind:animal="animal" @selectAnimal="cardSelected(animal, idx)"></AnimalCard>
+          <AnimalCard v-bind:animalList="filteredlist"
+                      v-bind:id="idx"
+                     ></AnimalCard>
         </v-flex>
       </v-layout>
     </v-container>
@@ -53,14 +50,16 @@ import { authenticationService, animalService, userService } from "@/_services";
 import { router, Role } from "@/_helpers";
 
 import AnimalCard from "./AnimalCard";
-import Profile from "./AnimalProfile";
+import AnimalProfile from "./AnimalProfile";
+import AnimalCrud from "./AnimalCrud";
 
 export default {
   name: "Animal-grid-component",
-
+  props: ["animalList"],
   components: {
     AnimalCard,
-    Profile
+    AnimalProfile,
+    AnimalCrud
   },
   
   data() {
@@ -71,7 +70,7 @@ export default {
       breedFilter: null,
       nameFilter: null,
       showAnimalProfile: false,
-      showAnimalCrud: false,
+      showAddAnimal: false,
       selectedAnimal: null,
       selectedAnimalIndex: null,
       firstTime : true,
@@ -83,37 +82,20 @@ export default {
   },
 
   methods: {
-    cardSelected(animal, idx) {
-      console.log("message from child", animal);
+    cardEdit(animal, idx) {
       this.selectedAnimal = animal;
       this.selectedAnimalIndex = idx;
       console.log(idx);
       this.$emit("closeBar");
-      this.showAnimalProfile = true;
+      this.showAddAnimal = true;
     },
-    onCloseProfile() {
-      this.showAnimalProfile = false;
-      this.$emit("openBar");
+    addAnimal() {
+      this.$emit("closeBar");
+      this.showAddAnimal = true;
     },
     onCloseCrud() {
-      this.showAnimalCrud = false;
+      this.showAddAnimal = false;
       this.$emit("openBar");
-    },
-    onNextProfile() {
-      if (this.selectedAnimalIndex < this.filteredlist.length - 1) {
-        this.selectedAnimalIndex++;
-      } else {
-        this.selectedAnimalIndex = 0;
-      }
-      this.selectedAnimal = this.filteredlist[this.selectedAnimalIndex];
-    },
-    onPreviousProfile() {
-      if (this.selectedAnimalIndex > 0) {
-        this.selectedAnimalIndex--;
-      } else {
-        this.selectedAnimalIndex = this.filteredlist.length - 1;
-      }
-      this.selectedAnimal = this.filteredlist[this.selectedAnimalIndex];
     },
     filtrar() {
       var filtro = [...this.animals];
@@ -153,13 +135,21 @@ export default {
     isAdmin() {
       return this.currentUser && this.currentUser.role === Role.Admin;      
     },
+    checkBarVisibility(){
+      console.log('here>>',this.showAnimalProfile || this.showAddAnimal);
+      return this.showAnimalProfile || this.showAddAnimal;
+    }
   },
   created() {
     authenticationService.currentUser.subscribe(x => (this.currentUser = x));
+
+    if(this.animalList){
+      this.animals = this.animalList;
+    }else{
     animalService.getAll().then(animals => animals.animals.forEach(element => {
-      element.breed = animalService.getBreedByAnimalId(element.breed).then(breed => element.breed = breed.breed);
       this.animals.push(element);
     }));
+    }
     this.filteredlist = this.animals;
   }
 };

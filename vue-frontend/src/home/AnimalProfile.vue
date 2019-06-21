@@ -1,38 +1,34 @@
 <template>
   <div class="animal-profile-component">
-    <v-container grid-list-sm>
-      <v-layout row wrap>
-        <v-flex d-flex xs12 sm6>
-          <v-layout row wrap>
+    <v-container grid-list-sm  v-if="!isFetching" > 
+      <v-layout row wrap >
+        <v-flex d-flex xs12 sm6 >
+          <v-layout row wrap >
             <v-flex d-flex>
-              <v-card style="padding-bottom:60px;">
+              <v-card style="margin-top:-2px;padding-bottom:60px;height:570px;">
                 <v-card-title class="justify-center">
                   <h1
                     style="margin-top:30px;"
-                  >Olá! Eu sou {{animalObj.gender == 1 ? 'o' : 'a'}} {{animalObj.name}}</h1>
+                  >Olá! Eu sou {{inneranimalList[animal_id].gender == 1 ? 'o' : 'a'}} {{inneranimalList[animal_id].name}}</h1>
                 </v-card-title>
                 <v-container id="scroll-target" style="max-height: 400px;" class="scroll-y">
-                  <v-card-text>
-                    O Beau e os seus companheiros tiveram uma vida espetacular numa quinta, mas tudo acabou quando o seu dono morreu. Os cães permaneceram na quinta e foram sendo alimentados pelos vizinhos até que foram enviados para o abrigo. São cães meigos e obedientes e merecem melhor que isto. São membros de família maravilhosos e estão habituados a ter uma casa. O Beau é o mais extrovertido. Enquanto as miúdas podem ser um pouco nervosas em novas circunstâncias, o Beau sentiu-se em casa ao chegar ao abrigo. Qualquer coisa nova interessante, ele tem que ver, tem que sentir o cheiro. Adaptar-se-ia muito bem a uma nova casa.
-                    Está vacinado, desparasitado e esterilizado.
-                    O Beau e os seus companheiros tiveram uma vida espetacular numa quinta, mas tudo acabou quando o seu dono morreu. Os cães permaneceram na quinta e foram sendo alimentados pelos vizinhos até que foram enviados para o abrigo. São cães meigos e obedientes e merecem melhor que isto. São membros de família maravilhosos e estão habituados a ter uma casa. O Beau é o mais extrovertido. Enquanto as miúdas podem ser um pouco nervosas em novas circunstâncias, o Beau sentiu-se em casa ao chegar ao abrigo. Qualquer coisa nova interessante, ele tem que ver, tem que sentir o cheiro. Adaptar-se-ia muito bem a uma nova casa.
-                    Está vacinado, desparasitado e esterilizado.
-                    O Beau e os seus companheiros tiveram uma vida espetacular numa quinta, mas tudo acabou quando o seu dono morreu. Os cães permaneceram na quinta e foram sendo alimentados pelos vizinhos até que foram enviados para o abrigo. São cães meigos e obedientes e merecem melhor que isto. São membros de família maravilhosos e estão habituados a ter uma casa. O Beau é o mais extrovertido. Enquanto as miúdas podem ser um pouco nervosas em novas circunstâncias, o Beau sentiu-se em casa ao chegar ao abrigo. Qualquer coisa nova interessante, ele tem que ver, tem que sentir o cheiro. Adaptar-se-ia muito bem a uma nova casa.
-                    Está vacinado, desparasitado e esterilizado.
+                  <v-card-text v-html="inneranimalList[animal_id].details">
                   </v-card-text>
                 </v-container>
                 <v-bottom-nav :active.sync="bottomNav" :value="true" absolute color="transparent">
-                  <v-btn color="teal" flat @click="$emit('previous')">
+                  <v-btn v-if="!singleMode" color="teal" flat @click="onPreviousProfile()">
                     <span>Previous</span>
                     <v-icon>fas fa-arrow-left</v-icon>
                   </v-btn>
 
-                  <v-btn color="teal" flat @click="$emit('close')">
+                  <router-link :to="{ name: 'Home', params: { inneranimalList } }">
+                  <v-btn color="teal" flat>
                     <span>Back</span>
                     <v-icon>fas fa-undo</v-icon>
                   </v-btn>
+                  </router-link>
 
-                  <v-btn color="teal" flat @click="$emit('next')">
+                  <v-btn v-if="!singleMode" color="teal" flat @click="onNextProfile()">
                     <span>Next</span>
                     <v-icon>fas fa-arrow-right</v-icon>
                   </v-btn>
@@ -51,11 +47,11 @@
                 <template v-slot:header>
                   <h3 class="headline mb-0 pa-0;">
                   <span
-                    :style="animalObj.gender == 1 ? 'color:dodgerblue' : 'color:#E75480'"
+                    :style="inneranimalList[animal_id].gender == 1 ? 'color:dodgerblue' : 'color:#E75480'"
                   >
-                    <font-awesome-icon :icon="animalObj.gender == 1 ? 'mars' : 'venus'"/>
+                    <font-awesome-icon :icon="inneranimalList[animal_id].gender == 1 ? 'mars' : 'venus'"/>
                   </span>
-                  {{animalObj.breed.name_PT}}
+                  {{inneranimalList[animal_id].breed.name_PT}}
                   </h3>
                   <v-spacer></v-spacer>
                   <v-btn color="success" round style="min-width:145px;max-width:145px;">
@@ -70,7 +66,7 @@
                         <v-flex d-flex>
                           <v-btn disabled round large color="blue-grey" class="white--text">
                             <v-icon left>fas fa-weight-hanging</v-icon>
-                            <span>{{animalObj.weight}} cm</span>
+                            <span>{{inneranimalList[animal_id].weight}} cm</span>
                           </v-btn>
                         </v-flex>
                       </v-layout>
@@ -80,7 +76,7 @@
                         <v-flex d-flex>
                           <v-btn disabled round large color="blue-grey" class="white--text">
                             <v-icon left>fas fa-text-height</v-icon>
-                            <span>{{animalObj.height}} kg</span>
+                            <span>{{inneranimalList[animal_id].height}} kg</span>
                           </v-btn>
                         </v-flex>
                       </v-layout>
@@ -90,7 +86,7 @@
                         <v-flex d-flex>
                           <v-btn disabled round large color="blue-grey" class="white--text">
                             <v-icon left>fas fa-birthday-cake</v-icon>
-                            <span>{{animalObj.birthday}}</span>
+                            <span>{{inneranimalList[animal_id].birthday}}</span>
                           </v-btn>
                         </v-flex>
                       </v-layout>
@@ -100,8 +96,8 @@
               </v-expansion-panel-content>
             </v-expansion-panel>
 
-            <v-flex d-flex>
-              <v-parallax :src="animalObj.image" height="375px"></v-parallax>
+            <v-flex d-flex style="min-height:450px;">
+              <v-img :src="inneranimalList[animal_id].image" height="420px" contain></v-img>
             </v-flex>
           </v-layout>
         </v-flex>
@@ -115,22 +111,52 @@
 </style>
 
 <script>
+import { animalService } from "@/_services";
+
 export default {
   name: "Animal-profile-component",
-  props: ["animalObj"],
+  props: ["animalList","id","url_id"],
   data() {
     return {
+      inneranimalList:[],
+      isFetching:true,
+      animal_id:0,
+      singleMode:true,
+      current_id:null,
       currentGender: null,
       bottomNav: "recent"
     };
   },
 
-  methods: {},
-  mounted() {},
-  watch: {
-    // whenever question changes, this function will run
-    animalObj: function() {
-      console.log(this.currentGender);
+  methods: {
+    onNextProfile() {
+      if (this.animal_id < this.inneranimalList.length - 1) {
+        this.animal_id++;
+      } else {
+        this.animal_id = 0;
+      }
+      this.$router.push({name: 'AnimalProfile', params: {animalList:this.inneranimalList, id:this.animal_id, url_id:this.animalList[this.animal_id]._id}});
+    },
+    onPreviousProfile() {
+      if (this.animal_id > 0) {
+        this.animal_id--;
+      } else {
+        this.animal_id = this.inneranimalList.length - 1;
+      }
+      this.$router.push({name: 'AnimalProfile', params: {animalList:this.inneranimalList, id:this.animal_id, url_id:this.animalList[this.animal_id]._id}});
+    },
+  },
+  created() {
+    if(!this.animalList){
+      animalService.getById(this.$route.params.url_id).then(animal => {
+      this.inneranimalList.push(animal.animal);
+      this.isFetching = false});
+      this.animal_id = 0;
+    } else {
+      this.animal_id = this.id;
+      this.inneranimalList = this.animalList;
+      this.isFetching = false;
+      this.singleMode = false;
     }
   }
 };

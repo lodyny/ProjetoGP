@@ -40,10 +40,12 @@
                   class="v-item-group v-bottom-nav theme--light v-bottom-nav--absolute v-bottom-nav--active transparent"
                   style="margin-bottom:0px;"
                 >
-                  <v-btn color="teal" flat @click="$emit('close')">
+                <router-link :to="{ name: 'Home'}">
+                  <v-btn color="teal" flat>
                     <span style="margin-top:4px">Cancel without saving</span>
                     <v-icon>fas fa-undo</v-icon>
                   </v-btn>
+                </router-link>
 
                   <v-btn color="teal" flat>
                     <span style="margin-top:4px">Save</span>
@@ -188,6 +190,7 @@
 <script>
 import { constants } from 'crypto';
 export default {
+  props: ["animalObj"],
   name: "Animal-profile-component",
   data() {
     return {
@@ -232,20 +235,6 @@ export default {
           ]
         }
       ],
-      animalObj: {
-        name: "Avô do Chubby",
-        gender: "1",
-        breed: {
-          name: "German Shephard",
-          name_PT: "Pastor Alemão",
-          specie: { name: "Dog", name_PT: "Cão" }
-        },
-        height: 100,
-        weight: 100,
-        birthday: "2019-06-15",
-        details: "O Beau e os seus companheiros tiveram uma vida espetacular numa quinta, mas tudo acabou quando o seu dono morreu. Os cães permaneceram na quinta e foram sendo alimentados pelos vizinhos até que foram enviados para o abrigo. São cães meigos e obedientes e merecem melhor que isto. São membros de família maravilhosos e estão habituados a ter uma casa. O Beau é o mais extrovertido. Enquanto as miúdas podem ser um pouco nervosas em novas circunstâncias, o Beau sentiu-se em casa ao chegar ao abrigo. Qualquer coisa nova interessante, ele tem que ver, tem que sentir o cheiro. Adaptar-se-ia muito bem a uma nova casa. Está vacinado, desparasitado e esterilizado.",
-        image: "https://avatars3.githubusercontent.com/u/16657688?s=460&v=4"
-      },
       currentGender: null,
       bottomNav: "recent",
     };
@@ -309,12 +298,12 @@ export default {
     this.animalName = this.animalObj.name;
     this.animalSex = this.animalObj.gender == 0 ? 'Female' : 'Male';
     this.animalDetails = this.animalObj.details;
-    this.animalSpecie = this.animalObj.breed.specie.name;
-    this.species.forEach(element => {
-        if (element.name == this.animalSpecie) {
-          this.localBreed = element.breeds;
-        }
-    });
+    // this.animalSpecie = this.animalObj.breed.specie.name;
+    // this.species.forEach(element => {
+    //     if (element.name == this.animalSpecie) {
+    //       this.localBreed = element.breeds;
+    //     }
+    // });
     this.animalBreed = this.animalObj.breed.name;
     this.animalWeight = this.animalObj.weight;
     this.animalHeight = this.animalObj.height;
