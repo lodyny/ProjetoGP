@@ -18,10 +18,10 @@ module.exports = {
 
 async function getAnimal(animalId){
     let animal = await Animal.findOne({_id: animalId}).populate('breed');
-    let species = await Specie.find({});
+    let species = await Specie.find({}).populate('breeds');
     var _animal;
     species.forEach(specie => {
-        if (specie.breeds.includes(animal.breed._id)){
+        if (specie.breeds.map(a => a.id).includes(animal.breed.id)){
             _animal = {
                 details : animal.details,
                 image : animal.image,
@@ -53,12 +53,12 @@ async function getBreed(breedId){
 
 async function getAnimals(){
     let animals = await Animal.find({}).populate('breed');
-    let species = await Specie.find({});
+    let species = await Specie.find({}).populate('breeds');
     var _animals = [];
 
     animals.forEach(animal => {
         species.forEach(specie => {
-            if (specie.breeds.includes(animal.breed._id)){
+            if (specie.breeds.map(a => a.id).includes(animal.breed.id)){
                 _animals.push({details : animal.details,
                     image : animal.image,
                     _id : animal.id,
