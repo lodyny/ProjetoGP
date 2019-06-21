@@ -6,7 +6,7 @@
           <v-layout row wrap>
             <v-flex d-flex>
               <v-card style="margin-top:-2px;padding-bottom:60px;height:570px;">
-                    <v-img src="https://res.cloudinary.com/adotaqui/image/upload/v1545271620/adotaqui/61288088.jpg" height="570px" contain></v-img>
+                    <v-img :src="current_animal.image" height="570px" contain></v-img>
               </v-card>
             </v-flex>
           </v-layout>
@@ -41,6 +41,7 @@
 <script>
 export default {
   name: "AnimalAdoption",
+  props:['current_animal'],
   data() {
     return {
         date: new Date().toISOString().substr(0, 10),

@@ -54,10 +54,12 @@
                   {{inneranimalList[animal_id].breed.name_PT}}
                   </h3>
                   <v-spacer></v-spacer>
+                  <router-link :to="{ name: 'AnimalAdoption', params: { current_animal:inneranimalList[animal_id] } }">
                   <v-btn color="success" round style="min-width:145px;max-width:145px;">
                     <v-icon left>fas fa-paw</v-icon>
                     <span>Adota-me</span>
                   </v-btn>
+                  </router-link>
                 </template>
                 <v-card>
                   <v-layout row wrap>

@@ -1,8 +1,8 @@
 <template>
   <div>
-    <!-- <Toolbar @specieChange="onSpecieChange" @breedChange="onBreedChange" @nameChange="onNameChange" v-if="toolBarOpen"/> -->
-    <!-- <AnimalGrid ref="animalGrid" v-bind:animalList="animalList" @closeBar="toolBarOpen = false" @openBar="toolBarOpen = true"/>  -->
-    <AnimalAdoption/>  
+    <Toolbar @specieChange="onSpecieChange" @breedChange="onBreedChange" @nameChange="onNameChange" v-if="toolBarOpen"/>
+    <AnimalGrid ref="animalGrid" v-bind:animalList="animalList" @closeBar="toolBarOpen = false" @openBar="toolBarOpen = true"/> 
+    <!-- <AnimalAdoption/>   -->
     <!-- <UserProfile/> -->
   </div>
 </template>

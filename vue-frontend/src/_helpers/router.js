@@ -10,6 +10,7 @@ import SignUpPage from '@/signup/SignUpPage';
 import AnimalProfile from '@/home/AnimalProfile';
 import UserProfile from '@/home/UserProfile';
 import AnimalCrud from '@/home/AnimalCrud';
+import AnimalAdoption from '@/home/AnimalAdoption';
 
 Vue.use(Router);
 
@@ -45,6 +46,12 @@ export const router = new Router({
             path: '/animal/', 
             name: 'AddAnimal',
             component: AnimalCrud,
+            props: true
+        },
+        { 
+            path: '/animalAdoption/', 
+            name: 'AnimalAdoption',
+            component: AnimalAdoption,
             props: true
         },
         { 

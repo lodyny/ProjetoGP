@@ -295,13 +295,15 @@ export default {
   },
   mounted() {
     if(this.animalObj){
+      console.log(this.animalObj);
     this.animalName = this.animalObj.name;
     this.animalSex = this.animalObj.gender == 0 ? 'Female' : 'Male';
     this.animalDetails = this.animalObj.details;
-    // this.animalSpecie = this.animalObj.breed.specie.name;
+    this.animalSpecie = this.animalObj.specie.name;
+    this.localBreed = this.animalObj.specie.breeds;
     // this.species.forEach(element => {
     //     if (element.name == this.animalSpecie) {
-    //       this.localBreed = element.breeds;
+    //       this. = element.breeds;
     //     }
     // });
     this.animalBreed = this.animalObj.breed.name;
