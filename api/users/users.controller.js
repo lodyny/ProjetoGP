@@ -14,7 +14,7 @@ router.post("/password/reset", authorize(), passwordReset);
 router.post("/password/reset/:token", passwordResetWithToken);
 router.post("/password/forgotten", passwordForgotten);
 router.post("/createRequest", createRequest);
-router.put("/:id", updateUser);
+router.post("/:id", updateUser);
 router.delete("/:id/removeRequest/:requestId", deleteRequest);
 
 module.exports = router;
