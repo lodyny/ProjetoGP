@@ -38,12 +38,12 @@ function updateAnimal(req, res, next) {
     const id = req.params.id;
     if (id == null)
         animalService.
-        createAnimal(req.body.animal)
+        createAnimal(req.body)
         .then(result => (result ? res.json(result) : res.status(400).json({ success: false })))
         .catch(err => next(err));
     else
         animalService
-        .updateAnimal(id, req.body.animal)
+        .updateAnimal(id, req.body)
         .then(result => (result ? res.json(result) : res.status(400).json({ success: false })))
         .catch(err => next(err));
 }
