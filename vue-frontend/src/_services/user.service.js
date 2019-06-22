@@ -3,7 +3,8 @@ import { handleResponse, requestOptions } from '@/_helpers';
 
 export const userService = {
     getAll,
-    getById
+    getById,
+    updateRole
 };
 
 function getAll() {
@@ -14,4 +15,10 @@ function getAll() {
 function getById(id) {
     return fetch(`${config.apiUrl}/users/${id}`, requestOptions.get())
         .then(handleResponse);
+}
+
+function updateRole(role, id) {
+    return fetch(`${config.apiUrl}/users/${id}`, requestOptions.post({role:role}))
+        .then(handleResponse)
+        .then(request => { return request;});
 }

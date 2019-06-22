@@ -4,7 +4,8 @@ import { handleResponse, requestOptions } from '@/_helpers';
 export const animalService = {
     getAll,
     getById,
-    getBreedByAnimalId
+    getBreedByAnimalId,
+    createRequest
 };
 
 function getAll() {
@@ -20,4 +21,10 @@ function getBreedByAnimalId(id) {
 function getById(id) {
     return fetch(`${config.apiUrl}/animals/${id}`, requestOptions.get())
         .then(handleResponse);
+}
+
+function createRequest(email, details, animal) {
+    return fetch(`${config.apiUrl}/users/createRequest`, requestOptions.post({email, request:{details, animal}}))
+        .then(handleResponse)
+        .then(request => { return request;});
 }

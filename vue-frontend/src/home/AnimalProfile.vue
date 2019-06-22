@@ -52,7 +52,7 @@
                   </h3>
                   <v-spacer></v-spacer>
                   <router-link :to="{ name: 'AnimalAdoption', params: { current_animal:inneranimalList[animal_id] } }">
-                  <v-btn color="success" round style="min-width:145px;max-width:145px;">
+                  <v-btn v-if="currentUser" color="success" round style="min-width:145px;max-width:145px;">
                     <v-icon left>fas fa-paw</v-icon>
                     <span>Adota-me</span>
                   </v-btn>
@@ -111,12 +111,15 @@
 
 <script>
 import { animalService } from "@/_services";
+import { authenticationService } from "@/_services";
+import { router, Role } from "@/_helpers";
 
 export default {
   name: "Animal-profile-component",
   props: ["animalList","id","url_id"],
   data() {
     return {
+      currentUser: null,
       inneranimalList:[],
       isFetching:true,
       animal_id:0,
@@ -146,6 +149,7 @@ export default {
     },
   },
   created() {
+    authenticationService.currentUser.subscribe(x => (this.currentUser = x));
     if(!this.animalList){
       animalService.getById(this.$route.params.url_id).then(animal => {
       this.inneranimalList.push(animal.animal);

@@ -152,7 +152,6 @@ export default {
         this.user = this.currentUser;
         this.name = this.currentUser.name;
         this.phonenumber = this.currentUser.phonenumber;
-
     },
     watch: {
     menu(val) {
