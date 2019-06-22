@@ -264,15 +264,6 @@ export default {
       let checker = arr => arr.every(v => v === true);
       return !checker(allConfirmations);
     },
-    initialDate: {
-      get() {
-        var date = new Date();
-        date.setDate(date.getDate());
-        date.setMonth(date.getMonth());
-        date.setFullYear(date.getFullYear() - 16);
-        return date;
-      }
-    }
   },
 
   watch: {

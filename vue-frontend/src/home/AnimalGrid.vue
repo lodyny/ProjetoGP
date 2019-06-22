@@ -1,6 +1,6 @@
 <template>
-  <div class="animal-grid-component">
-    <v-container grid-list-xl>
+  <div class="animal-grid-component" >
+    <v-container grid-list-xl v-if="showAll">
       <v-layout row wrap center justify-center>
         <v-flex
           xs6
@@ -77,7 +77,8 @@ export default {
       animals: [],
       animals:[],
       filteredlist: [],
-      users: []
+      users: [],
+      showAll: false
     };
   },
 
@@ -148,7 +149,7 @@ export default {
     }else{
     animalService.getAll().then(animals => animals.animals.forEach(element => {
       this.animals.push(element);
-    }));
+    })).then(this.showAll = true);
     }
     this.filteredlist = this.animals;
   }

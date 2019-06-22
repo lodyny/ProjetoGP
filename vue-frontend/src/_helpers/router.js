@@ -11,6 +11,7 @@ import AnimalProfile from '@/home/AnimalProfile';
 import UserProfile from '@/home/UserProfile';
 import AnimalCrud from '@/home/AnimalCrud';
 import AnimalAdoption from '@/home/AnimalAdoption';
+import RoleUpdate from '@/home/RoleUpdate';
 
 Vue.use(Router);
 
@@ -25,7 +26,7 @@ export const router = new Router({
         },
         { 
             path: '/admin', 
-            component: AdminPage, 
+            component: RoleUpdate, 
             meta: { authorize: [Role.Admin] } 
         },
         { 
