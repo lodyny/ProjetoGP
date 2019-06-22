@@ -14,12 +14,18 @@ router.post("/password/reset", authorize(), passwordReset);
 router.post("/password/reset/:token", passwordResetWithToken);
 router.post("/password/forgotten", passwordForgotten);
 router.post("/createRequest", createRequest);
+router.put("/:id", updateUser);
 router.delete("/:id/removeRequest/:requestId", deleteRequest);
 
 module.exports = router;
 
 
-
+function updateUser(req, res, next){
+  userService
+    .update(req.params.id, req.body)
+    .then(result => (result ? res.json(result) : res.status(400).json({ success: false })))
+    .catch(err => next(err));
+}
 
 function registration(req, res, next) {
   userService

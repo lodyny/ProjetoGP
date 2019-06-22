@@ -24,8 +24,37 @@ module.exports = {
   passwordReset,
   passwordForgotten,
   createRequest,
-  deleteRequest
+  deleteRequest,
+  update
 };
+
+async function update(id, user){
+  let _user = await User.findOne({ _id: id});
+
+  if(user.password != null)
+    _user.password = _user.generateHash(user.password);
+  
+  if(user.name != null)
+    _user.name = user.name;
+
+  if(user.birthdate != null)
+    _user.birthdate = user.birthdate;
+
+  if(user.phonenumber != null)
+    _user.phonenumber = user.phonenumber;
+
+  if(user.role != null){
+    let _role = await Role.findOne({ title: user.role});
+    _user.role = new ObjectId(_role._id);
+  }
+
+  await User.findOneAndUpdate({ _id: id}, _user);
+  
+  return {
+    success: true,
+    _user
+  }
+}
 
 async function registration(user) {
   let _user = new User(user);
