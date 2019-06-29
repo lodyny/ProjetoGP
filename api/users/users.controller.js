@@ -13,12 +13,11 @@ router.get("/token/:token", emailconfirmed);
 router.post("/password/reset", authorize(), passwordReset);
 router.post("/password/reset/:token", passwordResetWithToken);
 router.post("/password/forgotten", passwordForgotten);
-router.post("/createRequest", createRequest);
-router.post("/:id", updateUser);
-router.delete("/:id/removeRequest/:requestId", deleteRequest);
+router.post("/createRequest", createRequest); // Criar pedido adoção
+router.post("/:id", updateUser); // Actualizar perfil utilizador
+router.delete("/:id/removeRequest/:requestId", deleteRequest); // Apagar pedido adoção (userId/removeRequest/RequestId)
 
 module.exports = router;
-
 
 function updateUser(req, res, next){
   userService

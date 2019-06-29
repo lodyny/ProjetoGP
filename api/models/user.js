@@ -33,7 +33,9 @@ userSchema.methods.toDictionary = function() {
     birthdate: this.birthdate,
     phonenumber: this.phonenumber,
     image: this.image,
-    banned: this.banned
+    banned: this.banned,
+    requests: this.requests,
+    animals: this.animals
   };
 };
 

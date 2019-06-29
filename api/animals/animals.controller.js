@@ -4,12 +4,12 @@ const animalService = require("./animal.service");
 const authorize = require("_helpers/authorize");
 
 // routes
-router.get("/", getAnimals); // obter todos
-router.post("/:id", updateAnimal); //criar ou upd animal
-router.post("/", updateAnimal);
-router.delete("/:id", deleteAnimal); // apagar animal
-router.get("/breed/:id", getBreed);
-router.get("/:id", getAnimal);
+router.get("/", getAnimals); // Obter todos os animais
+router.post("/:id", updateAnimal); // Update animal 
+router.post("/", updateAnimal); // Criar um animal
+router.delete("/:id", deleteAnimal); // Apagar um animal
+router.get("/breed/:id", getBreed); // Obter raças
+router.get("/:id", getAnimal); // Obter um animal
 
 module.exports = router;
 
