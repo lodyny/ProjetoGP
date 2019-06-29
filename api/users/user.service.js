@@ -25,8 +25,16 @@ module.exports = {
   passwordForgotten,
   createRequest,
   deleteRequest,
-  update
+  update,
+  newNotification
 };
+
+async function newNotification(user){
+  console.log(user);
+  return {
+    success: true
+  }
+}
 
 async function update(id, user){
   let _user = await User.findOne({ _id: id});

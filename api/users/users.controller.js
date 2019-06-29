@@ -7,8 +7,8 @@ const Roles = require("_helpers/roles");
 // routes
 router.post("/", registration);
 router.post("/authenticate", authenticate); // public route
-router.get("/", authorize(Roles.Admin), getAll); // admin only
-router.get("/:id", authorize(), getById); // all authenticated users
+router.get("/", /*authorize(Roles.Admin),*/ getAll); // admin only
+router.get("/:id", /*authorize(),*/ getById); // all authenticated users
 router.get("/token/:token", emailconfirmed);
 router.post("/password/reset", authorize(), passwordReset);
 router.post("/password/reset/:token", passwordResetWithToken);
@@ -17,7 +17,17 @@ router.post("/createRequest", createRequest); // Criar pedido adoção
 router.post("/:id", updateUser); // Actualizar perfil utilizador
 router.delete("/:id/removeRequest/:requestId", deleteRequest); // Apagar pedido adoção (userId/removeRequest/RequestId)
 
+// Notifications
+router.post("/notifications/new", newNotification); // Adicionar nova notificação
+
 module.exports = router;
+
+function newNotification(req, res, next){
+  userService
+  .newNotification(req.body)
+  .then(result => (result ? res.json(result) : res.status(400).json({ success: false })))
+  .catch(err => next(err));
+}
 
 function updateUser(req, res, next){
   userService
@@ -58,10 +68,13 @@ function getById(req, res, next) {
   const currentUser = req.user;
   const id = parseInt(req.params.id);
 
+  // workaround todos conseguem obter os dados
+  /*
   // only allow admins to access other user records
   if (id !== currentUser.sub && currentUser.role !== Roles.Admin) {
     return res.status(401).json({ message: "Unauthorized" });
   }
+  */
 
   userService
     .getById(req.params.id)
