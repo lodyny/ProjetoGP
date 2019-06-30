@@ -10,7 +10,7 @@
                   <v-card-title class="justify-center ma-0 pa-0">
                   <h1 >Adopt {{current_animal.name}}</h1>
                   </v-card-title>
-                    <v-img :src="current_animal.image" height="570px" contain></v-img>
+                    <v-img :src="current_animal.image" height="500px" contain></v-img>
               </v-card>
             </v-flex>
           </v-layout>

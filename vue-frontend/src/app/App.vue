@@ -12,6 +12,7 @@
 
       <div class="navbar-nav ml-auto">
           <router-link v-if="isAdmin" to="/admin" class="nav-item nav-link">Administrador</router-link>
+          <router-link v-if="isAdmin" to="/requests" class="nav-item nav-link">Requests</router-link>
           <router-link v-if="currentUser" to="/profile" class="nav-item nav-link">Perfil</router-link>
           <router-link v-if="!currentUser" to="/signup" class="nav-item nav-link">Registar</router-link>
           <router-link v-if="!currentUser" to="/login" class="nav-item nav-link">Entrar</router-link>

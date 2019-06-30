@@ -5,7 +5,9 @@ export const animalService = {
     getAll,
     getById,
     getBreedByAnimalId,
-    createRequest
+    createRequest,
+    acceptAnimalRequest,
+    refuseAnimalRequest
 };
 
 function getAll() {
@@ -27,4 +29,14 @@ function createRequest(email, details, animal) {
     return fetch(`${config.apiUrl}/users/createRequest`, requestOptions.post({email, request:{details, animal}}))
         .then(handleResponse)
         .then(request => { return request;});
+}
+
+function acceptAnimalRequest(userId, requestId) {
+    return fetch(`${config.apiUrl}/users/${userId}/requests/${requestId}/accept`, requestOptions.post())
+        .then(handleResponse);
+}
+
+function refuseAnimalRequest(userId, requestId) {
+    return fetch(`${config.apiUrl}/users/${userId}/requests/${requestId}/refuse`, requestOptions.post())
+        .then(handleResponse);
 }
