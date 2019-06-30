@@ -54,19 +54,14 @@ async function acceptRequest(userId, requestId){
     }
 
   let _animal = await Animal.findOne({_id: animalId});
+  _animal.owner = new ObjectId(_user._id);
+  await _animal.save();
   
   if (_user.animals == null)
-    _user.animals = _animal;
+    _user.animals = new ObjectId(_animal._id);
   else
-    _user.animals.push(_animal);
+    _user.animals.push(new ObjectId(_animal._id));
 
-  await _animal.remove();
-
-    _user.requests.forEach(req => {
-      if (req._id == requestId){
-        req.animal = _animal;
-      }
-    });
   await _user.save();
   
 
@@ -86,9 +81,9 @@ async function refuseRequest(userId, requestId){
       req.state = "Refused";
   });
 
-  await User.findOneAndUpdate({_id: userId}, {requests: _user.requests});
-  
-    // Enviar notficação para o utilizador
+  await _user.save();
+
+  // Enviar notficação para o utilizador
   
   return {
     success: true
