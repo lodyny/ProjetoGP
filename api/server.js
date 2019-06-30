@@ -20,6 +20,7 @@ app.use(cors());
 // api routes
 app.use('/users', require('./users/users.controller'));
 app.use('/animals', require('./animals/animals.controller'));
+app.use('/streams', require('./streams/streams.controller'));
 
 // global error handler
 app.use(errorHandler);
