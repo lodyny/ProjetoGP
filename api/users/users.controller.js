@@ -19,8 +19,8 @@ router.delete("/:id/removeRequest/:requestId", deleteRequest); // Apagar pedido 
 
 
 // Pedidos adoção
-router.post("/:userid/animals/:requestid/accept", acceptRequest); 
-router.post("/:userid/animals/:requestid/refuse", refuseRequest);
+router.post("/:userid/requests/:requestid/accept", acceptRequest); 
+router.post("/:userid/requests/:requestid/refuse", refuseRequest);
 
 
 // Notifications
