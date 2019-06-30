@@ -2,10 +2,10 @@
   <v-app>
     <div>
       <nav class="navbar navbar-expand navbar-dark bg-dark" style="z-index:2">
-        <router-link class="navbar-brand" to="/">
+        <a class="navbar-brand" href="/">
           <b-img width="30" height="30" :src="images.mainIcon"></b-img>
           AdotAqui
-        </router-link>
+        </a>
         <!--<div class="navbar-nav">
           <router-link to="/" class="nav-item nav-link">Home</router-link>
         </div>-->
