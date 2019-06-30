@@ -60,8 +60,15 @@ async function acceptRequest(userId, requestId){
   else
     _user.animals.push(_animal);
 
-  await _user.save();
   await _animal.remove();
+
+    _user.requests.forEach(req => {
+      if (req._id == requestId){
+        req.animal = _animal;
+      }
+    });
+  await _user.save();
+  
 
   // Enviar notificação a avisar o utilizador
 

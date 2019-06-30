@@ -13,16 +13,7 @@ var userSchema = mongoose.Schema({
   phonenumber: String,
   image: { type: String, default: null },
   role: { type: ObjectId, ref: "Role" },
-  animals: [{ 
-    name        : String,
-    gender      : Number, //ISO/IEC 5218
-    breed       : { type: ObjectId, ref: 'Breed' },
-    height      : Number,
-    weight      : Number,
-    birthday    : String,
-    details     : { type: String, default: null },
-    image       : { type: String, default: null }
-  }],
+  animals: [{type: ObjectId, ref: "Animal"}],
   banned: { type: Boolean, default: false },
   emailconfirmed: { type: Boolean, default: false },
   requests: [{
