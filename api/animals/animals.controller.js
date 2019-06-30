@@ -11,10 +11,25 @@ router.delete("/:id", deleteAnimal); // Apagar um animal
 router.get("/breed/:id", getBreed); // Obter raças
 router.get("/:id", getAnimal); // Obter um animal
 
-// Obter todas as Especies
-// Obter todas as raças
+router.get("/types/all", getTypes); // Obter todas as Especies e Raças
 
 module.exports = router;
+
+function getTypes(req, res, next){
+    animalService.getTypes()
+    .then(result => (result ? res.json(result) : res.status(400).json({
+        success: false
+    })))
+    .catch(err => next(err));
+}
+
+function getBreeds(req, res, next){
+    animalService.getBreeds(req.params.id)
+    .then(result => (result ? res.json(result) : res.status(400).json({
+        success: false
+    })))
+    .catch(err => next(err));
+}
 
 function getAnimal(req, res, next){
     animalService.getAnimal(req.params.id)
