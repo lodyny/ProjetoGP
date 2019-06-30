@@ -1,5 +1,21 @@
 <template>
   <div class="RoleUpdate">
+    <v-snackbar
+      v-model="snackbar"
+      color="success"
+        timeout="2000"
+      style="margin-top:50px; z-index:1"
+      top
+      right
+    >
+      Update Success
+      <v-btn
+        flat
+        @click="snackbar = false"
+      >
+        Close
+      </v-btn>
+    </v-snackbar>
       <v-layout column align-center justify-center style="margin-top:100px">
     <v-flex
       xs6
@@ -9,10 +25,11 @@
       class="lg5-custom"
       v-for="(user, idx) in users"
       v-bind:key="idx"
-    >{{user.name}}
+    >
+    {{user.name}}
     <v-select
     
-    :disabled="disable"
+    :disabled="isDisabled(user.id)"
     style="padding-left:20px;padding-right:20px;margin-top:30px;"
     v-model="user.role"
     :items="roles"
@@ -39,22 +56,32 @@ export default {
   data() {
     return {
       users: null,
-      current_user:null,
+      currentUser:null,
       disable:false,
+      snackbar : false,
       roles: ['Admin','User','Vet']
     };
   },
-
-  methods: {updateRole(role, user){
-      if (!(this.currentUser.role == user.role)){
+  computed:{
+    
+  },
+  methods: {
+    updateRole(newRole, selectedUser){
+      this.snackbar = true;
+      if (!(newRole == selectedUser.role)){
       this.disable = true;
-      userService.updateRole(role, user.id).then(this.disable = false);
+      userService.updateRole(newRole, selectedUser.id).then(this.disable = false);
       }
-  }},
+    },
+      isDisabled(id){
+      return this.disable || id == this.currentUser.id;
+    }
+  },
   mounted() {},
   created() {
     authenticationService.currentUser.subscribe(x => (this.currentUser = x));
     userService.getAll().then(users => (this.users = users));
+    console.log(this.currentUser);
   }
 };
 </script>

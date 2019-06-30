@@ -13,9 +13,11 @@ function getAll() {
 }
 
 function getById(id) {
-    return fetch(`${config.apiUrl}/users/${id}`, requestOptions.get())
-        .then(handleResponse);
+     return fetch(`${config.apiUrl}/users/${id}`, requestOptions.get())
+        .then(handleResponse).then(user => {return user;});
 }
+
+
 
 function updateRole(role, id) {
     return fetch(`${config.apiUrl}/users/${id}`, requestOptions.post({role:role}))

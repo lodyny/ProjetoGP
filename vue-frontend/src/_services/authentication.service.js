@@ -24,6 +24,11 @@ function login(email, password) {
         });
 }
 
+function changeUser(user){
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    currentUserSubject.next(user);
+}
+
 function register(email, password, name, birthdate, phonenumber) {
     console.log(password);
     return fetch(`${config.apiUrl}/users/`, requestOptions.post({ email, password, name, birthdate, phonenumber }))

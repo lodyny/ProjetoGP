@@ -41,9 +41,6 @@ export default {
     onNameChange(value) {
       this.$refs.animalGrid.onNameChange(value);
     }
-  },
-  created() {
-    console.log("<<", this.animalList);
   }
 };
 </script>
