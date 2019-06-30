@@ -4,6 +4,7 @@ const Roles = require("_helpers/roles");
 const User = require("models/user");
 const sgMail = require("@sendgrid/mail");
 const Role = require("models/role");
+const Animal = require("models/animal");
 var mongoose = require("mongoose");
 sgMail.setApiKey(config.sendGridApi);
 
@@ -27,11 +28,69 @@ module.exports = {
   deleteRequest,
   update,
   newNotification,
+  readNotification,
+  deleteNotification,
+  acceptRequest,
+  refuseRequest
 };
 
-async function newNotification(email, notification){
+async function acceptRequest(userId, requestId){
+  // Actualizar estado do pedido para accepted
+  let _user = await User.findOne({_id: userId});
+  let animalId;
+
+  _user.requests.forEach(req => {
+    if (req._id == requestId){
+      animalId = req.animal;
+      req.state = "Accepted";
+    }
+  });
+
+
+  // Adicionar o animal à pessoa
+  if (animalId == null)
+    return {
+      success: false
+    }
+
+  let _animal = await Animal.findOne({_id: animalId});
+  
+  if (_user.animals == null)
+    _user.animals = _animal;
+  else
+    _user.animals.push(_animal);
+
+  await _user.save();
+  await _animal.remove();
+
+  // Enviar notificação a avisar o utilizador
+
+  return {
+    success: true
+  }
+}
+
+async function refuseRequest(userId, requestId){
+  // Actualizar estado do pedido para refused
+  let _user = await User.findOne({_id: userId});
+
+  _user.requests.forEach(req => {
+    if (req._id == requestId)
+      req.state = "Refused";
+  });
+
+  await User.findOneAndUpdate({_id: userId}, {requests: _user.requests});
+  
+    // Enviar notficação para o utilizador
+  
+  return {
+    success: true
+  }
+}
+
+async function newNotification(userId, notification){
   let _user = await User.findOne({
-    email: email
+    _id: userId
   });
 
   let _notification = notification;
@@ -43,8 +102,41 @@ async function newNotification(email, notification){
   else
     _user.notifications.push(_notification);
 
-    // Send Email FALTA
-  await User.findOneAndUpdate({email: email}, {notifications: _user.notifications});
+    // Falta enviar email (?)
+  await User.findOneAndUpdate({_id: userId}, {notifications: _user.notifications});
+
+  return {
+    success: true,
+    notification: _notification
+  }
+}
+
+async function readNotification(userId, notificationId){
+  let _user = await User.findOne({_id: userId});
+
+  _user.notifications.forEach(not => {
+    if (not._id == notificationId)
+      not.read = true;
+  });
+
+  await User.findOneAndUpdate({_id: userId}, {notifications: _user.notifications});
+  
+  return {
+    success: true
+  }
+}
+
+async function deleteNotification(userId, notificationId){
+  let _user = await User.findOne({_id: userId});
+
+  let _newNotifications = _user.notifications;
+  let _notification = await _user.notifications.find(function (element){
+    return element._id == notificationId;
+  });
+  
+  _newNotifications.splice(_user.notifications.indexOf(_notification), 1);
+  console.log(_newNotifications);
+  await User.findOneAndUpdate({_id: userId}, {notifications: _newNotifications});
 
   return {
     success: true

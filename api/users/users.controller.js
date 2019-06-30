@@ -17,14 +17,50 @@ router.post("/createRequest", createRequest); // Criar pedido adoção
 router.post("/:id", updateUser); // Actualizar perfil utilizador
 router.delete("/:id/removeRequest/:requestId", deleteRequest); // Apagar pedido adoção (userId/removeRequest/RequestId)
 
+
+// Pedidos adoção
+router.post("/:userid/requests/:requestid/accept", acceptRequest); 
+router.post("/:userid/requests/:requestid/refuse", refuseRequest);
+
+
 // Notifications
-router.post("/notifications/new", newNotification); // Adicionar nova notificação
+router.post("/:userid/notifications", newNotification); // Adicionar nova notificação
+router.post("/:userid/notifications/:notid", readNotification); // Actualizar notificação
+router.delete("/:userid/notifications/:notid", deleteNotification); // Apagar Notificação
 
 module.exports = router;
 
+function acceptRequest(req, res, next){
+  userService
+  .acceptRequest(req.params.userid, req.params.requestid)
+  .then(result => (result ? res.json(result) : res.status(400).json({ success: false })))
+  .catch(err => next(err));
+}
+
+function refuseRequest(req, res, next){
+  userService
+  .refuseRequest(req.params.userid, req.params.requestid)
+  .then(result => (result ? res.json(result) : res.status(400).json({ success: false })))
+  .catch(err => next(err));
+}
+
 function newNotification(req, res, next){
   userService
-  .newNotification(req.body.user, req.body.notification)
+  .newNotification(req.params.userid, req.body.notification)
+  .then(result => (result ? res.json(result) : res.status(400).json({ success: false })))
+  .catch(err => next(err));
+}
+
+function readNotification(req, res, next){
+  userService
+  .readNotification(req.params.userid, req.params.notid)
+  .then(result => (result ? res.json(result) : res.status(400).json({ success: false })))
+  .catch(err => next(err));
+}
+
+function deleteNotification(req, res, next){
+  userService
+  .deleteNotification(req.params.userid, req.params.notid)
   .then(result => (result ? res.json(result) : res.status(400).json({ success: false })))
   .catch(err => next(err));
 }
