@@ -11,6 +11,9 @@ router.delete("/:id", deleteAnimal); // Apagar um animal
 router.get("/breed/:id", getBreed); // Obter raças
 router.get("/:id", getAnimal); // Obter um animal
 
+// Obter todas as Especies
+// Obter todas as raças
+
 module.exports = router;
 
 function getAnimal(req, res, next){
