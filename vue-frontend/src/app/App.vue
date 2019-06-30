@@ -11,6 +11,15 @@
         </div>-->
 
         <div class="navbar-nav ml-auto">
+          <router-link v-if="currentUser" class="nav-item nav-link" to="/notifications">
+            <div class="icon-wrapper">
+              <i
+                class="fas fa-envelope mr-3"
+                style="width:20px; height:20px; margin-right:0px !important;"
+              ></i>
+              <span v-if="unreadNotifications != 0" class="badge">{{this.unreadNotifications}}</span>
+            </div>
+          </router-link>
           <router-link v-if="isAdmin" to="/admin" class="nav-item nav-link">Administrador</router-link>
           <router-link v-if="isAdmin" to="/requests" class="nav-item nav-link">Requests</router-link>
           <router-link v-if="currentUser" to="/profile" class="nav-item nav-link">Perfil</router-link>
@@ -32,13 +41,12 @@
             <h6 class="text-uppercase mb-4 font-weight-bold">AdotAqui</h6>
             <p>
               Albergue destinado aos nossos amigos peludos ou não.
-              <br>
-Sem qualquer fins lucrativos.
+              <br />Sem qualquer fins lucrativos.
             </p>
           </div>
           <!-- Grid column -->
 
-          <hr class="w-100 clearfix d-md-none">
+          <hr class="w-100 clearfix d-md-none" />
 
           <!-- Grid column -->
           <div class="col-md-2 col-lg-2 col-xl-2 mx-auto">
@@ -61,7 +69,7 @@ Sem qualquer fins lucrativos.
           </div>
           <!-- Grid column -->
 
-          <hr class="w-100 clearfix d-md-none">
+          <hr class="w-100 clearfix d-md-none" />
 
           <!-- Grid column -->
           <div class="col-md-3 col-lg-2 col-xl-2 mx-auto">
@@ -75,7 +83,7 @@ Sem qualquer fins lucrativos.
           </div>
 
           <!-- Grid column -->
-          <hr class="w-100 clearfix d-md-none">
+          <hr class="w-100 clearfix d-md-none" />
 
           <!-- Grid column -->
           <div class="col-md-4 col-lg-3 col-xl-3 mx-auto">
@@ -94,7 +102,7 @@ Sem qualquer fins lucrativos.
         </div>
         <!-- Footer links -->
 
-        <hr>
+        <hr />
 
         <!-- Grid row -->
         <div class="row d-flex align-items-center">
@@ -131,6 +139,10 @@ Sem qualquer fins lucrativos.
   </v-app>
 </template>
 
+<style lang="sass" scoped>
+    @import './App.scss';
+</style>
+
 <script>
 import { authenticationService } from "@/_services";
 import { router, Role } from "@/_helpers";
@@ -140,6 +152,7 @@ export default {
   data() {
     return {
       currentUser: null,
+      unreadNotifications: 0,
       images: {
         mainIcon: require("../assets/images/iconwhite.png")
       }
@@ -152,7 +165,9 @@ export default {
   },
   created() {
     authenticationService.currentUser.subscribe(x => (this.currentUser = x));
-  },
+    console.log(this.currentUser.notifications.length);
+    this.unreadNotifications = this.currentUser.notifications.filter(notification => !notification.read).length;
+},
   methods: {
     logout() {
       authenticationService.logout();
