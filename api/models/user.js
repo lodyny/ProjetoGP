@@ -21,6 +21,12 @@ var userSchema = mongoose.Schema({
     details: String,
     state: String,
     animal: {type: ObjectId, ref: "Animal"}
+  }],
+  notifications: [{
+    date: String,
+    title: String,
+    message: String,
+    read: Boolean
   }]
 });
 
@@ -35,7 +41,8 @@ userSchema.methods.toDictionary = function() {
     image: this.image,
     banned: this.banned,
     requests: this.requests,
-    animals: this.animals
+    animals: this.animals,
+    notifications: this.notifications
   };
 };
 

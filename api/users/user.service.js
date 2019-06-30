@@ -26,11 +26,26 @@ module.exports = {
   createRequest,
   deleteRequest,
   update,
-  newNotification
+  newNotification,
 };
 
-async function newNotification(user){
-  console.log(user);
+async function newNotification(email, notification){
+  let _user = await User.findOne({
+    email: email
+  });
+
+  let _notification = notification;
+  _notification.date = new Date().toISOString().substr(0, 10);
+  _notification.read = false;
+
+  if (_user.notifications == null)
+    _user.notifications = _notification;
+  else
+    _user.notifications.push(_notification);
+
+    // Send Email FALTA
+  await User.findOneAndUpdate({email: email}, {notifications: _user.notifications});
+
   return {
     success: true
   }
@@ -146,6 +161,7 @@ async function authenticate({
 async function getAll() {
   const users = await User.find({})
     .populate("role")
+    .populate("requests.animal")
     .exec();
 
   users.map(u => {
@@ -154,6 +170,7 @@ async function getAll() {
       role: u.role.title
     };
   });
+
   return users.map(u => {
     return {
       ...u.toDictionary(),

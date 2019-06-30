@@ -24,7 +24,7 @@ module.exports = router;
 
 function newNotification(req, res, next){
   userService
-  .newNotification(req.body)
+  .newNotification(req.body.user, req.body.notification)
   .then(result => (result ? res.json(result) : res.status(400).json({ success: false })))
   .catch(err => next(err));
 }
