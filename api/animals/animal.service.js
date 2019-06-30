@@ -52,7 +52,7 @@ async function getBreed(breedId){
 }
 
 async function getAnimals(){
-    let animals = await Animal.find({}).populate('breed');
+    let animals = await Animal.find({owner: null}).populate('breed');
     let species = await Specie.find({}).populate('breeds');
     var _animals = [];
 
@@ -68,7 +68,7 @@ async function getAnimals(){
                     height : animal.height,
                     weight : animal.weight,
                     birthday : animal.birthday,
-                    specie : specie
+                    specie : specie,
                 })
             }
         })
