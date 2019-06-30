@@ -6,9 +6,9 @@
           <v-select
             v-model="e1"
             :items="species"
-            item-text="name"
+            item-text="name_PT"
             menu-props="auto"
-            label="Specie"
+            label="Espécie"
             hide-details
             :prepend-icon="currentIcon"
             single-line
@@ -21,9 +21,9 @@
           <v-select
             v-model="e2"
             :items="localBreed"
-            item-text="name"
+            item-text="name_PT"
             menu-props="auto"
-            label="Breed"
+            label="Raça"
             hide-details
             prepend-icon="map"
             single-line
@@ -48,6 +48,8 @@
 </style>
 
 <script>
+import {animalService } from "@/_services";
+
 export default {
   name: "Toolbar-component",
   data() {
@@ -57,32 +59,7 @@ export default {
       filterName: "",
       localBreed: null,
       currentIcon: "fas fa-paw",
-      species: [
-        {
-          id: 1,
-          icon: "fas fa-dog",
-          name: "Cão",
-          breeds: [
-            { id: 1, name: "Pastor Alemão" },
-            { breedId: 1, name: "Labrador" }
-          ]
-        },
-        {
-          id: 2,
-          icon: "fas fa-cat",
-          name: "Gato",
-          breeds: [{ id: 1, name: "Siamês" }, { breedId: 1, name: "Persa" }]
-        },
-        {
-          id: 3,
-          icon: "fas fa-crow",
-          name: "Pássaro",
-          breeds: [
-            { id: 1, name: "Papagaio" },
-            { breedId: 1, name: "Avestruz" }
-          ]
-        }
-      ]
+      species: null
     };
   },
 
@@ -96,11 +73,7 @@ export default {
     specieChange(value) {
       this.e2 = null;
       this.currentIcon = value.icon;
-      this.species.forEach(element => {
-        if (element.id == value.id) {
-          this.localBreed = element.breeds;
-        }
-      });
+      this.localBreed = value.breeds;
       this.$emit("specieChange", value);
     },
     breedChange(value) {
@@ -109,6 +82,8 @@ export default {
     nameChange(value) {
       this.$emit("nameChange", value);
     }
+  }, created(){
+      animalService.getSpecies().then(species => this.species = species.species)
   }
 };
 </script>

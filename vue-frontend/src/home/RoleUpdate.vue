@@ -91,7 +91,6 @@ export default {
   created() {
     authenticationService.currentUser.subscribe(x => (this.currentUser = x));
     userService.getAll().then(users => (this.users = users));
-    console.log(this.currentUser);
   }
 };
 </script>

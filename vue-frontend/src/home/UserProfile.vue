@@ -170,18 +170,14 @@ export default {
     created() {
         authenticationService.currentUser.subscribe(x => (this.currentUser = x));
         
-        // console.log('current user', this.currentUser);
         userService.getById(this.currentUser.id).then(
           x => {
             this.user = x;
             this.name = x.name;
             this.phonenumber = x.phonenumber;
-            console.log(x);}
+            }
           );
 
-        // console.log('local',this.localUser);
-        // // });
-        // console.log(this.currentUser);
         
     },
     watch: {

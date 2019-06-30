@@ -4,12 +4,18 @@ import { handleResponse, requestOptions } from '@/_helpers';
 export const animalService = {
     getAll,
     getById,
+    getSpecies,
     getBreedByAnimalId,
     createRequest
 };
 
 function getAll() {
     return fetch(`${config.apiUrl}/animals`, requestOptions.get())
+    .then(handleResponse);
+}
+
+function getSpecies() {
+    return fetch(`${config.apiUrl}/animals/types/all`, requestOptions.get())
     .then(handleResponse);
 }
 

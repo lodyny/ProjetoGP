@@ -295,7 +295,6 @@ export default {
   },
   mounted() {
     if(this.animalObj){
-      console.log(this.animalObj);
     this.animalName = this.animalObj.name;
     this.animalSex = this.animalObj.gender == 0 ? 'Female' : 'Male';
     this.animalDetails = this.animalObj.details;
@@ -311,12 +310,6 @@ export default {
     this.animalHeight = this.animalObj.height;
     this.animalImage = this.animalObj.image;
     this.animalBirthday = this.animalObj.birthday;
-    }
-  },
-  watch: {
-    // whenever question changes, this function will run
-    animalObj: function() {
-      console.log(this.currentGender);
     }
   }
 };
