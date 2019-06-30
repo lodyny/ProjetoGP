@@ -44,9 +44,6 @@ export default {
     onRemoveFilter(){
       this.$refs.animalGrid.onRemoveFilter();
     }
-  },
-  created() {
-    console.log("<<", this.animalList);
   }
 };
 </script>

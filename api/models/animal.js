@@ -9,7 +9,8 @@ var animalSchema = mongoose.Schema({
     weight      : Number,
     birthday    : String,
     details     : { type: String, default: null },
-    image       : { type: String, default: null }
+    image       : { type: String, default: null },
+    owner       : { type: ObjectId, ref: "User"}
 });
 
 module.exports = mongoose.model('Animal', animalSchema);

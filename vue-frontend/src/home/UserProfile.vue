@@ -1,6 +1,12 @@
 <template>
     <div class="UserProfile">
-        <v-form @submit.prevent="submit">
+      <v-layout  justify-center style="margin-top:100px"
+      xs6
+          sm4
+          md3
+          xl2>
+    
+        <v-form @submit.prevent="submit" >
             
             <v-text-field
               class="ma-0"
@@ -77,7 +83,14 @@
                 @change="save"
               ></v-date-picker>
             </v-menu>
+            <v-btn
+                block
+                type="submit"
+                color="#FC6600"
+                class="white--text"
+              >Login</v-btn>
         </v-form>
+      </v-layout>
     </div>
 </template>
 
@@ -86,7 +99,7 @@
 </style>
 
 <script>
-import { authenticationService } from "@/_services";
+import { authenticationService, userService } from "@/_services";
 import { router, Role } from "@/_helpers";
 
 export default {
@@ -95,6 +108,8 @@ export default {
   },
     data() {
         return {
+            localUser: null,
+            currentUser: null,
             validephone: false,
             existsphone: false,
             valideuser: false,
@@ -132,9 +147,15 @@ export default {
         
     },
     computed: {
-    isAdmin() {
-      return this.currentUser && this.currentUser.role === Role.Admin;
-    },
+    // getAllConfirmations() {
+    // let allConfirmations = [
+    //   this.validemail,
+    //   this.existsmail,
+    //   this.existspassword
+    // ];
+    // let checker = arr => arr.every(v => v === true);
+    // return !checker(allConfirmations);
+    // },
     initialDate: {
       get() {
         var date = new Date();
@@ -148,10 +169,20 @@ export default {
     },
     created() {
         authenticationService.currentUser.subscribe(x => (this.currentUser = x));
-        console.log(this.currentUser);
-        this.user = this.currentUser;
-        this.name = this.currentUser.name;
-        this.phonenumber = this.currentUser.phonenumber;
+        
+        // console.log('current user', this.currentUser);
+        userService.getById(this.currentUser.id).then(
+          x => {
+            this.user = x;
+            this.name = x.name;
+            this.phonenumber = x.phonenumber;
+            console.log(x);}
+          );
+
+        // console.log('local',this.localUser);
+        // // });
+        // console.log(this.currentUser);
+        
     },
     watch: {
     menu(val) {

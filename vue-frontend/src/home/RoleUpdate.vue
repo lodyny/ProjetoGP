@@ -1,26 +1,53 @@
 <template>
-  <div class="RoleUpdate">
-      <v-layout column align-center justify-center style="margin-top:100px">
+  <div class="RoleUpdate" style="padding-bottom:100px">
+    <v-snackbar
+      v-model="snackbar"
+      color="success"
+        timeout="2000"
+      style="margin-top:50px; z-index:1"
+      top
+      right
+    >
+      Update Success
+      <v-btn
+        flat
+        @click="snackbar = false"
+      >
+        Close
+      </v-btn>
+    </v-snackbar>
+    <v-container grid-list-xl>
+      <v-layout row wrap align-center justify-center style="margin-top:100px">
     <v-flex
-      xs6
-      sm4
-      md3
-      xl2
-      class="lg5-custom"
       v-for="(user, idx) in users"
       v-bind:key="idx"
-    >{{user.name}}
+    >
+    <v-card tile width="240px" style="margin:auto">
+
+      <v-card-title primary-title>
+        <div>
+          <div class="headline">{{user.name}}</div>
+          <span class="grey--text">{{user.email}}</span>
+        </div>
+      </v-card-title>
+  <v-img
+          src="https://via.placeholder.com/150"
+          height="200px"
+        >
+        </v-img>
     <v-select
     
-    :disabled="disable"
+    :disabled="isDisabled(user.id)"
     style="padding-left:20px;padding-right:20px;margin-top:30px;"
     v-model="user.role"
     :items="roles"
     label="Role"
     @change="updateRole(user.role, user)"
     ></v-select>
+    </v-card>
     </v-flex>
       </v-layout>
+      </v-container>
   </div>
 </template>
 
@@ -39,22 +66,32 @@ export default {
   data() {
     return {
       users: null,
-      current_user:null,
+      currentUser:null,
       disable:false,
+      snackbar : false,
       roles: ['Admin','User','Vet']
     };
   },
-
-  methods: {updateRole(role, user){
-      if (!(this.currentUser.role == user.role)){
+  computed:{
+    
+  },
+  methods: {
+    updateRole(newRole, selectedUser){
+      this.snackbar = true;
+      if (!(newRole == selectedUser.role)){
       this.disable = true;
-      userService.updateRole(role, user.id).then(this.disable = false);
+      userService.updateRole(newRole, selectedUser.id).then(this.disable = false);
       }
-  }},
+    },
+      isDisabled(id){
+      return this.disable || id == this.currentUser.id;
+    }
+  },
   mounted() {},
   created() {
     authenticationService.currentUser.subscribe(x => (this.currentUser = x));
     userService.getAll().then(users => (this.users = users));
+    console.log(this.currentUser);
   }
 };
 </script>
