@@ -1,5 +1,5 @@
 <template>
-  <div class="RoleUpdate">
+  <div class="RoleUpdate" style="padding-bottom:100px">
     <v-snackbar
       v-model="snackbar"
       color="success"
@@ -16,17 +16,25 @@
         Close
       </v-btn>
     </v-snackbar>
-      <v-layout column align-center justify-center style="margin-top:100px">
+    <v-container grid-list-xl>
+      <v-layout row wrap align-center justify-center style="margin-top:100px">
     <v-flex
-      xs6
-      sm4
-      md3
-      xl2
-      class="lg5-custom"
       v-for="(user, idx) in users"
       v-bind:key="idx"
     >
-    {{user.name}}
+    <v-card tile width="240px" style="margin:auto">
+
+      <v-card-title primary-title>
+        <div>
+          <div class="headline">{{user.name}}</div>
+          <span class="grey--text">{{user.email}}</span>
+        </div>
+      </v-card-title>
+  <v-img
+          src="https://via.placeholder.com/150"
+          height="200px"
+        >
+        </v-img>
     <v-select
     
     :disabled="isDisabled(user.id)"
@@ -36,8 +44,10 @@
     label="Role"
     @change="updateRole(user.role, user)"
     ></v-select>
+    </v-card>
     </v-flex>
       </v-layout>
+      </v-container>
   </div>
 </template>
 
