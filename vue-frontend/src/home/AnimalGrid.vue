@@ -85,7 +85,6 @@ export default {
     cardEdit(animal, idx) {
       this.selectedAnimal = animal;
       this.selectedAnimalIndex = idx;
-      console.log(idx);
       this.$emit("closeBar");
       this.showAddAnimal = true;
     },
@@ -101,11 +100,11 @@ export default {
       var filtro = [...this.animals];
       if (this.breedFilter) {
         filtro = filtro.filter(
-          animal => animal.breed.name_PT == this.breedFilter.name
+          animal => animal.breed._id == this.breedFilter._id
         );
       } else if (this.specieFilter) {
         filtro = filtro.filter(
-          animal => animal.specie.name_PT == this.specieFilter.name
+          animal => animal.specie._id == this.specieFilter._id
         );
       }
       if (this.nameFilter) {
@@ -114,7 +113,6 @@ export default {
       this.filteredlist = filtro;
     },
     onSpecieChange(value) {
-      console.log(value);
       this.specieFilter = value;
       this.breedFilter = null;
       this.filtrar();
@@ -128,7 +126,6 @@ export default {
       this.filtrar();
     }, 
     onRemoveFilter(){
-      console.log("Filter");
       this.breedFilter = null;
       this.nameFilter = null;
       this.specieFilter = null;
@@ -143,7 +140,6 @@ export default {
       return this.currentUser && this.currentUser.role === Role.Admin;      
     },
     checkBarVisibility(){
-      console.log('here>>',this.showAnimalProfile || this.showAddAnimal);
       return this.showAnimalProfile || this.showAddAnimal;
     }
   },
@@ -155,7 +151,7 @@ export default {
     }else{
     animalService.getAll().then(animals => animals.animals.forEach(element => {
       this.animals.push(element);
-    })).then();
+    }));
     }
     this.filteredlist = this.animals;    
   }
