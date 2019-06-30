@@ -1,6 +1,6 @@
 <template>
   <div class="animal-grid-component" >
-    <v-container grid-list-xl v-if="showAll">
+    <v-container grid-list-xl >
       <v-layout row wrap center justify-center>
         <v-flex
           xs6
@@ -77,8 +77,7 @@ export default {
       animals: [],
       animals:[],
       filteredlist: [],
-      users: [],
-      showAll: false
+      users: []
     };
   },
 
@@ -106,15 +105,16 @@ export default {
         );
       } else if (this.specieFilter) {
         filtro = filtro.filter(
-          animal => animal.breed.specie.name_PT == this.specieFilter.name
+          animal => animal.specie.name_PT == this.specieFilter.name
         );
       }
       if (this.nameFilter) {
-        filtro = filtro.filter(animal => animal.name.includes(this.nameFilter));
+        filtro = filtro.filter(animal => animal.name.toUpperCase().includes(this.nameFilter.toUpperCase()));
       }
       this.filteredlist = filtro;
     },
     onSpecieChange(value) {
+      console.log(value);
       this.specieFilter = value;
       this.breedFilter = null;
       this.filtrar();
@@ -126,10 +126,16 @@ export default {
     onNameChange(value) {
       this.nameFilter = !value || value == "" ? null : value;
       this.filtrar();
+    }, 
+    onRemoveFilter(){
+      console.log("Filter");
+      this.breedFilter = null;
+      this.nameFilter = null;
+      this.specieFilter = null;
+      this.filtrar();
     }
   },
   mounted() {
-    
   
   },
   computed: {
@@ -149,9 +155,9 @@ export default {
     }else{
     animalService.getAll().then(animals => animals.animals.forEach(element => {
       this.animals.push(element);
-    })).then(this.showAll = true);
+    })).then();
     }
-    this.filteredlist = this.animals;
+    this.filteredlist = this.animals;    
   }
 };
 </script>

@@ -12,6 +12,7 @@ import UserProfile from '@/home/UserProfile';
 import AnimalCrud from '@/home/AnimalCrud';
 import AnimalAdoption from '@/home/AnimalAdoption';
 import RoleUpdate from '@/home/RoleUpdate';
+import AnimalRequests from '@/home/AnimalRequests';
 
 Vue.use(Router);
 
@@ -58,6 +59,10 @@ export const router = new Router({
         { 
             path: '/profile', 
             component: UserProfile,
+        },
+        { 
+            path: '/requests', 
+            component: AnimalRequests,
         },
         // otherwise redirect to home
         { path: '*', redirect: '/' }
