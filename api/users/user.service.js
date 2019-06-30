@@ -276,6 +276,7 @@ async function getAll() {
 async function getById(id) {
   const user = await User.findById(id)
     .populate("role")
+    .populate("animals")
     .exec();
   if (!user) return;
   return {
