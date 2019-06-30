@@ -17,11 +17,17 @@ function login(email, password) {
     return fetch(`${config.apiUrl}/users/authenticate`, requestOptions.post({ email, password }))
         .then(handleResponse)
         .then(user => {
+            console.log(user);
             // store user details and jwt token in local storage to keep user logged in between page refreshes
             localStorage.setItem('currentUser', JSON.stringify(user));
             currentUserSubject.next(user);
             return user;
         });
+}
+
+function changeUser(user){
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    currentUserSubject.next(user);
 }
 
 function register(email, password, name, birthdate, phonenumber) {

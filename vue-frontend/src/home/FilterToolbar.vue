@@ -33,7 +33,10 @@
         </v-flex>
         <v-spacer></v-spacer>
         <v-flex xs3>
-          <v-text-field placeholder="Nome do Animal" @change="nameChange"></v-text-field>
+          <v-text-field v-model="filterName" placeholder="Nome do Animal" @change="nameChange"></v-text-field>
+        </v-flex>
+        <v-flex xs2 align-center>
+          <v-btn color="warning" style="margin-top:15px" @click="removeFilter">Remover Filtros</v-btn>
         </v-flex>
       </v-layout>
     </v-container>
@@ -51,6 +54,7 @@ export default {
     return {
       e1: "",
       e2: "",
+      filterName: "",
       localBreed: null,
       currentIcon: "fas fa-paw",
       species: [
@@ -83,6 +87,12 @@ export default {
   },
 
   methods: {
+    removeFilter(){
+      this.e1 = "";
+      this.e2 = "";
+      this.filterName = "";
+      this.$emit("removeFilter");
+    },
     specieChange(value) {
       this.e2 = null;
       this.currentIcon = value.icon;

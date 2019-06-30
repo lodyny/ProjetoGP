@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Toolbar @specieChange="onSpecieChange" @breedChange="onBreedChange" @nameChange="onNameChange" v-if="toolBarOpen"/>
+    <Toolbar @specieChange="onSpecieChange" @breedChange="onBreedChange" @nameChange="onNameChange" @removeFilter="onRemoveFilter" v-if="toolBarOpen"/>
     <AnimalGrid ref="animalGrid" v-bind:animalList="animalList" @closeBar="toolBarOpen = false" @openBar="toolBarOpen = true"/> 
     <!-- <RoleUpdate/>   -->
     <!-- <UserProfile/> -->
@@ -40,6 +40,9 @@ export default {
     },
     onNameChange(value) {
       this.$refs.animalGrid.onNameChange(value);
+    },
+    onRemoveFilter(){
+      this.$refs.animalGrid.onRemoveFilter();
     }
   },
   created() {

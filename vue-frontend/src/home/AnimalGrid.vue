@@ -106,15 +106,16 @@ export default {
         );
       } else if (this.specieFilter) {
         filtro = filtro.filter(
-          animal => animal.breed.specie.name_PT == this.specieFilter.name
+          animal => animal.specie.name_PT == this.specieFilter.name
         );
       }
       if (this.nameFilter) {
-        filtro = filtro.filter(animal => animal.name.includes(this.nameFilter));
+        filtro = filtro.filter(animal => animal.name.toUpperCase().includes(this.nameFilter.toUpperCase()));
       }
       this.filteredlist = filtro;
     },
     onSpecieChange(value) {
+      console.log(value);
       this.specieFilter = value;
       this.breedFilter = null;
       this.filtrar();
@@ -125,6 +126,13 @@ export default {
     },
     onNameChange(value) {
       this.nameFilter = !value || value == "" ? null : value;
+      this.filtrar();
+    }, 
+    onRemoveFilter(){
+      console.log("Filter");
+      this.breedFilter = null;
+      this.nameFilter = null;
+      this.specieFilter = null;
       this.filtrar();
     }
   },
