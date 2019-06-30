@@ -58,42 +58,48 @@
           </tr>
         </template>
         <template v-slot:expand="props">
-          <v-container grid-list-xl >
-            <v-layout justify-space-between row fill-height >
-              <v-flex d-flex >
-                <v-card>
-                  <v-layout >
+          <v-container grid-list-xl>
+            <v-layout justify-space-between row fill-height>
+              <v-flex d-flex md7> 
+                <v-card height="160px">
+                  <v-layout>
                     <v-flex xs3>
-                      <v-img :src="props.item.animal.image"></v-img>
+                      <v-dialog v-model="dialog" max-width="600px">
+                        <template v-slot:activator="{ on }">
+                          <v-img :src="props.item.animal.image" class="specialCursor" height="160px" style="min-width:112px" v-on="on"></v-img>
+                        </template>
+                        <v-card>
+                          <v-img :src="props.item.animal.image" contain aspect-ratio="1"></v-img>
+                        </v-card>
+                      </v-dialog>
                     </v-flex>
-                    <v-flex >
+                    <v-flex>
                       <v-card-text>
                         <h4>
                           <p>Request details:</p>
                         </h4>
+                        <v-container id="scroll-target" style="max-height: 90px; padding:0px;" class="scroll-y">
                         {{props.item.details}}
+                        </v-container>
                       </v-card-text>
                     </v-flex>
                   </v-layout>
                 </v-card>
               </v-flex>
-              <v-flex d-flex>
-               <v-card style="margin-right:0px">
-                  <v-layout >
+              <v-flex d-flex md7>
+                <v-card height="160px" >
+                  <v-layout>
                     <v-flex xs3 >
-                      <v-img style="height:100%" src="https://via.placeholder.com/150"></v-img>
+                      <!-- <v-img :src="props.item.animal.image"></v-img> -->
+                      <v-img height="160px" style="min-width:112px" src="https://via.placeholder.com/150"></v-img>
                     </v-flex>
-                    <v-flex >
+                    <v-flex>
                       <v-card-text>
                         <h4>
-                          <p>Requestor details:</p>
+                          <p>Candidate details:</p>
                         </h4>
-                        <p>
-                        {{props.item.userEmail}}
-                        </p>
-                        <p>
-                        {{props.item.userPhone}}
-                        </p>
+                        <a :href="'mailto:' + props.item.userEmail">{{props.item.userEmail}}</a>
+                        <p>{{props.item.userPhone}}</p>
                       </v-card-text>
                     </v-flex>
                   </v-layout>
@@ -127,6 +133,7 @@ export default {
     return {
       usersList: [],
       expand: false,
+      dialog: false,
       search: "",
       newUsersList: [],
       pagination: {
@@ -139,7 +146,7 @@ export default {
         { text: "Animal", value: "animal" },
         { text: "Date", value: "date" },
         { text: "State", value: "state" },
-        { text: "Actions", width: "1px"}
+        { text: "Actions", width: "1px" }
       ]
     };
   },

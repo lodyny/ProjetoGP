@@ -22,10 +22,10 @@
           </router-link>
           <router-link v-if="isAdmin" to="/admin" class="nav-item nav-link">Administrador</router-link>
           <router-link v-if="isAdmin" to="/requests" class="nav-item nav-link">Requests</router-link>
-          <router-link v-if="currentUser" to="/profile" class="nav-item nav-link">Perfil</router-link>
-          <router-link v-if="!currentUser" to="/signup" class="nav-item nav-link">Registar</router-link>
-          <router-link v-if="!currentUser" to="/login" class="nav-item nav-link">Entrar</router-link>
-          <a @click="logout" v-if="currentUser" class="nav-item nav-link">Sair</a>
+          <router-link v-if="currentUser" to="/profile" class="nav-item nav-link">Profile</router-link>
+          <router-link v-if="!currentUser" to="/signup" class="nav-item nav-link">Register</router-link>
+          <router-link v-if="!currentUser" to="/login" class="nav-item nav-link">Login</router-link>
+          <a @click="logout" v-if="currentUser" class="nav-item nav-link">Logout</a>
         </div>
       </nav>
       <router-view></router-view>
