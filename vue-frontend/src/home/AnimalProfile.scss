@@ -5,3 +5,7 @@ $grid-breakpoints: (
   lg: 1250px,
   xl: 1280px
 );
+
+.v-item-group.v-bottom-nav .v-btn {
+  max-width: none;
+}
