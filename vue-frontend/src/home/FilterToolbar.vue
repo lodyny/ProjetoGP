@@ -17,7 +17,7 @@
           ></v-select>
         </v-flex>
 
-        <v-flex xs2>
+        <v-flex xs3>
           <v-select
             v-model="e2"
             :items="localBreed"
