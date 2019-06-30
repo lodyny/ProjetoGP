@@ -21,12 +21,10 @@
                     <v-icon>fas fa-arrow-left</v-icon>
                   </v-btn>
 
-                  <router-link :to="{ name: 'Home', params: { inneranimalList } }">
-                  <v-btn color="teal" flat>
+                  <v-btn color="teal" @click="onBackPressed" flat>
                     <span>Back</span>
                     <v-icon>fas fa-undo</v-icon>
                   </v-btn>
-                  </router-link>
 
                   <v-btn v-if="!singleMode" color="teal" flat @click="onNextProfile()">
                     <span>Next</span>
@@ -51,12 +49,12 @@
                   {{inneranimalList[animal_id].breed.name_PT}}
                   </h3>
                   <v-spacer></v-spacer>
-                  <router-link :to="{ name: 'AnimalAdoption', params: { current_animal:inneranimalList[animal_id] } }">
-                  <v-btn v-if="currentUser" color="success" round style="min-width:145px;max-width:145px;">
+
+                  <v-btn v-if="currentUser" @click="onAdoptionPressed" color="success" round style="min-width:145px;max-width:145px;">
                     <v-icon left>fas fa-paw</v-icon>
                     <span>Adota-me</span>
                   </v-btn>
-                  </router-link>
+                  
                 </template>
                 <v-card>
                   <v-layout row wrap>
@@ -147,6 +145,12 @@ export default {
       }
       this.$router.push({name: 'AnimalProfile', params: {animalList:this.inneranimalList, id:this.animal_id, url_id:this.animalList[this.animal_id]._id}});
     },
+    onBackPressed(){
+      this.$router.push({name: 'Home', params: { current_animal:this.inneranimalList[this.animal_id] } });
+    },
+    onAdoptionPressed(){
+      this.$router.push({name: 'AnimalAdoption', params: { current_animal:this.inneranimalList[this.animal_id] } });
+    }
   },
   created() {
     authenticationService.currentUser.subscribe(x => (this.currentUser = x));

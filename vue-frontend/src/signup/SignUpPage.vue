@@ -282,7 +282,7 @@ created() {
     submit() {
       authenticationService.register(this.email, this.password, this.name, this.date, this.phonenumber).then(
         user => router.push(this.returnUrl),
-        error => { console.log(error); this.error = error; }
+        error => { this.error = error; }
       );
     },
     save(date) {

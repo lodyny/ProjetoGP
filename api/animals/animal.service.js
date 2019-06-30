@@ -13,7 +13,25 @@ module.exports = {
     updateAnimal,
     deleteAnimal,
     getBreed,
-    getAnimal
+    getAnimal,
+    getTypes
+}
+
+async function getTypes(){
+    let _species = await Specie.find({})
+    .populate("breeds")
+    .exec();
+
+    return {
+        success: true,
+        species: _species
+    }
+}
+
+async function getBreeds(specieId){
+    return {
+        success: true
+    }
 }
 
 async function getAnimal(animalId){
