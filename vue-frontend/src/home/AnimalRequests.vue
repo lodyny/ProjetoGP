@@ -38,7 +38,7 @@
       </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="filteredRequests"
+        :items="newList"
         :search="search"
         :pagination.sync="pagination"
         :expand="expand"
@@ -51,9 +51,9 @@
           <th>Animal</th>
           <th>Date</th>
           <th style="width:200px">
-              <v-select @change="stateChange" flat hide-details small multiple clearable :items="['Accepted','Pending','Refused']" 
-              v-model="filters[props.state]">
-              </v-select>
+            <v-select @change="stateChange" flat hide-details small multiple clearable :items="['Accepted','Pending','Refused']" 
+            v-model="filters[props.state]">
+            </v-select>
           </th>
           <th style="width:1px">Actions</th>
           </tr>
@@ -176,6 +176,7 @@ export default {
   data() {
     return {
       usersList: [],
+      newList: [],
       timeout: 2000,
       expand: false,
       snackbar : false,
@@ -321,18 +322,9 @@ export default {
           this.usersList.push(request);
         });
       });
+      this.newList = this.usersList;
     });
   },
-  computed: {
-    filteredRequests() {
-      return this.usersList.filter(d => {
-        return Object.keys(this.filters).every(f => {
-          return this.filters[f].length < 1 || this.filters[f].includes(d[f])
-        })
-      })
 
-      
-    }
-  }
 };
 </script>
