@@ -340,7 +340,17 @@ async function createRequest(req) {
   });
   let _request = req.request;
   _request.state = 'Pending';
-  _request.date = new Date().toISOString().substr(0, 10);
+
+
+var d = new Date,
+dformat = [d.getDay().padLeft(),
+          (d.getMonth()+1).padLeft(),
+           d.getFullYear()].join('/') +' ' +
+          [d.getHours().padLeft(),
+           d.getMinutes().padLeft(),
+           d.getSeconds().padLeft()].join(':');
+
+  _request.date = dformat;
 
   if (_user.requests == null)
     _user.requests = _request;
@@ -438,4 +448,9 @@ async function returnRequest(userId, requestId){
   return {
     success: true
   }
+}
+
+Number.prototype.padLeft = function(base,chr){
+  var  len = (String(base || 10).length - String(this).length)+1;
+  return len > 0? new Array(len).join(chr || '0')+this : this;
 }
