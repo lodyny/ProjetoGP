@@ -75,7 +75,6 @@ export default {
       selectedAnimalIndex: null,
       firstTime : true,
       animals: [],
-      animals:[],
       filteredlist: [],
       users: []
     };

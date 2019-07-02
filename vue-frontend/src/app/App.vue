@@ -163,9 +163,13 @@ export default {
       return this.currentUser && this.currentUser.role === Role.Admin;
     }
   },
+  watch: {
+    currentUser: function (val) {
+      this.unreadNotifications = val.notifications.filter(notification => !notification.read).length;
+    }
+  },
   created() {
-    authenticationService.currentUser.subscribe(x => (this.currentUser = x));
-    this.unreadNotifications = this.currentUser.notifications.filter(notification => !notification.read).length;
+    authenticationService.currentUser.subscribe(x => {this.currentUser = x;});
 },
   methods: {
     logout() {
