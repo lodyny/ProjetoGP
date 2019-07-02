@@ -44,15 +44,14 @@
         :expand="expand"
         item-key="_id"
       >
-      <template slot="headers" slot-scope="props">
+      <template slot="headers">
         <tr>
           <th style="width:1px">Delete</th>
           <th>User</th>
           <th>Animal</th>
           <th>Date</th>
           <th style="width:200px">
-            <v-select @change="stateChange" flat hide-details small multiple clearable :items="['Accepted','Pending','Refused']" 
-            v-model="filters[props.state]">
+            <v-select @change="stateChange" flat hide-details small multiple clearable :items="['Accepted','Pending','Refused']">
             </v-select>
           </th>
           <th style="width:1px">Actions</th>
@@ -204,7 +203,12 @@ export default {
 
   methods: {
     stateChange(val){
-        console.log(val);
+        if(val.length == 0) {
+          this.newList = this.usersList;
+        }
+        else {
+          this.newList = this.usersList.filter(x => val.includes(x.state));
+        }
     },
     columnValueList(val) {
       return this.props.item.state.map(d => d[val]);
@@ -251,6 +255,7 @@ export default {
                 this.usersList.push(request);
                 });
             });
+              this.newList = this.usersList;
             })
         }
       }
@@ -272,6 +277,7 @@ export default {
                 this.usersList.push(request);
                 });
             });
+              this.newList = this.usersList;
             })
         }
       }
