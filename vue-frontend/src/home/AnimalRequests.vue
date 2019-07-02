@@ -312,8 +312,11 @@ export default {
                     console.log(elem.animal.owner);
                 }
             }
-            )}
+            )
+             this.newList = this.usersList;
+            }
           );
+         
     }
   },
   mounted() {},
