@@ -1,21 +1,5 @@
 <template>
   <div class="AnimalRequests">
-      <v-snackbar
-      v-model="snackbar"
-      color="success"
-        :timeout=timeout
-      style="margin-top:50px; z-index:1"
-      top
-      right
-    >
-      {{message}} Success
-      <v-btn
-        flat
-        @click="snackbar = false"
-      >
-        Close
-      </v-btn>
-    </v-snackbar>
     <v-card>
       <v-card-title>
         <h1>Animal Requests</h1>
@@ -46,13 +30,6 @@
       >
         <template v-slot:items="props">
           <tr @click="props.expanded = !props.expanded">
-            <td>
-                <v-icon
-                medium
-                @click.native.stop
-                @click="deleteRequest(props.item.userId, props.item._id)"
-              >delete</v-icon>
-            </td>
             <td class="text-xs-left grey lighten-4">{{ props.item.name }}</td>
             <td class="text-xs-left">
               {{ props.item.animal.name }}
@@ -69,13 +46,13 @@
                 medium
                 class="mr-2"
                 @click.native.stop
-                @click="refuseRequest(props.item.userId, props.item._id, props.item.animal)"
+                @click="refuseRequest(props.item.userId, props.item._id, props.item)"
               >close</v-icon>
               <v-icon
                 medium
                 v-if="!props.item.animal.owner"
                 @click.native.stop
-                @click="acceptRequest(props.item.userId, props.item._id, props.item.animal)"
+                @click="acceptRequest(props.item.userId, props.item._id, props.item)"
               >check</v-icon>
             </td>
           </tr>
@@ -155,20 +132,16 @@ export default {
   data() {
     return {
       usersList: [],
-      timeout: 2000,
       expand: false,
-      snackbar : false,
-      message: "",
       dialog: false,
-      tempOwner: null,
       search: "",
+      newUsersList: [],
       pagination: {
         sortBy: "state",
         ascending: true,
         rowsPerPage: 25
       },
       headers: [
-        { text: "Delete", value: "delete", width: "1px" },
         { text: "User", value: "name" },
         { text: "Animal", value: "animal" },
         { text: "Date", value: "date" },
@@ -179,73 +152,32 @@ export default {
   },
 
   methods: {
-    acceptRequest(userId, requestId, animal) {
+    acceptRequest(userId, requestId, actualProp) {
       animalService.acceptAnimalRequest(userId, requestId).then(x => {
         if (x.success) {
-          this.updateInfo(requestId, animal);
-          this.deploySnackbar("Accepted");
+          this.usersList = this.updateInfo();
         }
       });
     },
-    refuseRequest(userId, requestId, animal) {
+    refuseRequest(userId, requestId, actualProp) {
       animalService.refuseAnimalRequest(userId, requestId).then(x => {
         if (x.success) {
-          this.updateInfo(requestId, animal);
-          this.deploySnackbar("Refused");
+          this.usersList = this.updateInfo();
         }
       });
     },
-    deleteRequest(userId, requestId){
-    animalService.deleteAnimalRequest(userId, requestId).then(
-        x => {
-        if (x.success) {
-            this.usersList = [];
-          userService.getAll().then(x => {
-            x.forEach(element => {
-                element.requests.forEach(request => {
-                request.name = element.name;
-                request.userId = element.id;
-                request.userEmail = element.email;
-                request.userPhone = element.phonenumber;
-                this.usersList.push(request);
-                });
-            });
-            })
-        }
-      }
-    );
-    },
-    deploySnackbar(message) {
-          this.message = message;
-          this.snackbar = true;
-    },
-    updateInfo(requestId, animal) {
+    updateInfo() {
+      this.newUsersList = [];
       userService.getAll().then(x => {
         x.forEach(element => {
           element.requests.forEach(request => {
-            if (request._id == requestId){
             request.name = element.name;
             request.userId = element.id;
-            request.userEmail = element.email;
-            request.userPhone = element.phonenumber;
-            this.tempOwner = request.animal.owner;
-            console.log(this.tempOwner);
-            this.usersList = this.usersList.filter(elem => elem._id != requestId);
-            this.usersList.push(request);
-            }
-          })
-        })  
-      }).then(() => {
-            this.usersList.forEach(elem => {
-                if(elem.animal._id == animal._id){
-                    console.log('elem owner', elem.animal.owner);
-                    console.log('this owner', this.tempOwner);
-                    elem.animal.owner = this.tempOwner;
-                    console.log(elem.animal.owner);
-                }
-            }
-            )}
-          );
+            this.newUsersList.push(request);
+          });
+        });
+      });
+      return this.newUsersList;
     }
   },
   mounted() {},
@@ -260,6 +192,7 @@ export default {
           this.usersList.push(request);
         });
       });
+      console.log(this.usersList);
     });
   }
 };
