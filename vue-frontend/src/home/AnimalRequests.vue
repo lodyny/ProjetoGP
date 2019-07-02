@@ -38,19 +38,33 @@
       </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="usersList"
+        :items="filteredRequests"
         :search="search"
         :pagination.sync="pagination"
         :expand="expand"
         item-key="_id"
       >
+      <template slot="headers" slot-scope="props">
+        <tr>
+          <th style="width:1px">Delete</th>
+          <th>User</th>
+          <th>Animal</th>
+          <th>Date</th>
+          <th style="width:200px">
+              <v-select @change="stateChange" flat hide-details small multiple clearable :items="['Accepted','Pending','Refused']" 
+              v-model="filters[props.state]">
+              </v-select>
+          </th>
+          <th style="width:1px">Actions</th>
+          </tr>
+      </template>
         <template v-slot:items="props">
           <tr @click="props.expanded = !props.expanded">
             <td>
                 <v-icon
                 medium
                 @click.native.stop
-                @click="deleteRequest(props.item.userId, props.item._id)"
+                @click="deleteRequest(props.item.userId, props.item._id, props.item.animal._id, props.item.state)"
               >delete</v-icon>
             </td>
             <td class="text-xs-left grey lighten-4">{{ props.item.name }}</td>
@@ -64,19 +78,26 @@
             </td>
             <td class="text-xs-left grey lighten-4">{{ props.item.date }}</td>
             <td class="text-xs-left">{{ props.item.state }}</td>
-            <td class="align-center layout px-0" v-if="props.item.state == 'Pending'">
+            <td class="align-center layout px-0">
               <v-icon
                 medium
                 class="mr-2"
+                v-if="props.item.state == 'Pending'"
                 @click.native.stop
                 @click="refuseRequest(props.item.userId, props.item._id, props.item.animal)"
               >close</v-icon>
               <v-icon
                 medium
-                v-if="!props.item.animal.owner"
+                v-if="!props.item.animal.owner && props.item.state == 'Pending'"
                 @click.native.stop
                 @click="acceptRequest(props.item.userId, props.item._id, props.item.animal)"
               >check</v-icon>
+              <v-icon
+                medium
+                v-if="props.item.state == 'Accepted'"
+                @click.native.stop
+                @click="returnRequest(props.item.userId, props.item._id, props.item.animal._id, props.item.state)"
+              >replay</v-icon>
             </td>
           </tr>
         </template>
@@ -172,13 +193,29 @@ export default {
         { text: "User", value: "name" },
         { text: "Animal", value: "animal" },
         { text: "Date", value: "date" },
-        { text: "State", value: "state" },
-        { text: "Actions", width: "1px" }
-      ]
+      ],
+      filters: {
+      state: [],
+    },
+    selected: [],
     };
   },
 
   methods: {
+    stateChange(val){
+        console.log(val);
+    },
+    columnValueList(val) {
+      return this.props.item.state.map(d => d[val]);
+    },
+    changeSort (column) {
+      if (this.pagination.sortBy === column) {
+        this.pagination.descending = !this.pagination.descending
+      } else {
+        this.pagination.sortBy = column
+        this.pagination.descending = false
+      }
+    },
     acceptRequest(userId, requestId, animal) {
       animalService.acceptAnimalRequest(userId, requestId).then(x => {
         if (x.success) {
@@ -195,8 +232,32 @@ export default {
         }
       });
     },
-    deleteRequest(userId, requestId){
+    deleteRequest(userId, requestId, animalId, requestState){
+    if (requestState == 'Accepted'){
+        animalService.returnAnimal(userId,animalId);
+    }
     animalService.deleteAnimalRequest(userId, requestId).then(
+        x => {
+        if (x.success) {
+            this.usersList = [];
+          userService.getAll().then(x => {
+            x.forEach(element => {
+                element.requests.forEach(request => {
+                request.name = element.name;
+                request.userId = element.id;
+                request.userEmail = element.email;
+                request.userPhone = element.phonenumber;
+                this.usersList.push(request);
+                });
+            });
+            })
+        }
+      }
+    );
+    },
+    returnRequest(userId, requestId, animalId, requestState){
+    animalService.returnAnimal(userId,animalId);
+    animalService.returnAnimalRequest(userId, requestId).then(
         x => {
         if (x.success) {
             this.usersList = [];
@@ -261,6 +322,17 @@ export default {
         });
       });
     });
+  },
+  computed: {
+    filteredRequests() {
+      return this.usersList.filter(d => {
+        return Object.keys(this.filters).every(f => {
+          return this.filters[f].length < 1 || this.filters[f].includes(d[f])
+        })
+      })
+
+      
+    }
   }
 };
 </script>

@@ -165,7 +165,6 @@ export default {
   },
   created() {
     authenticationService.currentUser.subscribe(x => (this.currentUser = x));
-    console.log(this.currentUser.notifications.length);
     this.unreadNotifications = this.currentUser.notifications.filter(notification => !notification.read).length;
 },
   methods: {

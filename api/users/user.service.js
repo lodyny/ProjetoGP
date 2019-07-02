@@ -8,6 +8,9 @@ const Animal = require("models/animal");
 var mongoose = require("mongoose");
 sgMail.setApiKey(config.sendGridApi);
 
+const animalService = require("../animals/animal.service"); // Rever melhor opção
+
+
 var ObjectId = mongoose.Types.ObjectId;
 
 // users hardcoded for simplicity, store in a db for production applications
@@ -31,7 +34,9 @@ module.exports = {
   readNotification,
   deleteNotification,
   acceptRequest,
-  refuseRequest
+  refuseRequest,
+  returnRequest,
+  returnAnimal
 };
 
 async function acceptRequest(userId, requestId){
@@ -373,6 +378,63 @@ async function deleteRequest(userId, requestId){
     console.log(_newRequests);
     await User.findOneAndUpdate({_id: userId}, {requests: _newRequests});
 
+  return {
+    success: true
+  }
+}
+
+async function returnAnimal(userId, animalId){
+  let _user = await User.findOne({ _id: userId});
+  if (_user == null)
+    return {
+      success: false,
+      message: "Invalid User"
+    }
+
+  let _animal = await _user.animals.find(function (element){
+    return element._id == animalId;
+  });
+  if (_animal == null)
+    return {
+      success: false,
+      message: "Invalid Animal"
+    }
+    console.log(_animal);
+    let _newAnimals = _user.animals;
+    console.log(_newAnimals);
+    console.log(_user.animals.indexOf(_animal));
+    _newAnimals.splice(_user.animals.indexOf(_animal), 1);
+    console.log(_newAnimals);
+    await User.findOneAndUpdate({_id: userId}, {animals: _newAnimals});
+    await removeOwnership(_animal);
+
+  return {
+    success: true
+  }
+}
+
+async function removeOwnership(animalId){
+  // Remover pessoa do animal
+  let _animal = await Animal.findOne({_id: animalId});
+  _animal.owner = null;
+  await _animal.save();
+  
+}
+
+async function returnRequest(userId, requestId){
+  // Actualizar estado do pedido para returned
+  let _user = await User.findOne({_id: userId});
+  console.log(requestId);
+  console.log(_user);
+  _user.requests.forEach(req => {
+    if (req._id == requestId)
+      req.state = "Returned";
+  });
+
+  await _user.save();
+
+  // Enviar notficação para o utilizador
+  
   return {
     success: true
   }

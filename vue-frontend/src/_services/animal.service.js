@@ -9,7 +9,9 @@ export const animalService = {
     createRequest,
     acceptAnimalRequest,
     refuseAnimalRequest,
-    deleteAnimalRequest
+    deleteAnimalRequest,
+    returnAnimalRequest,
+    returnAnimal
 };
 
 function getAll() {
@@ -49,6 +51,16 @@ function refuseAnimalRequest(userId, requestId) {
 }
 
 function deleteAnimalRequest(userId, requestId) {
-    return fetch(`${config.apiUrl}/users/${userId}/removeRequest/${requestId}`, requestOptions.delete())
+    return fetch(`${config.apiUrl}/users/${userId}/requests/${requestId}/delete`, requestOptions.delete())
+        .then(handleResponse);
+}
+
+function returnAnimalRequest(userId, requestId) {
+    return fetch(`${config.apiUrl}/users/${userId}/requests/${requestId}/return`, requestOptions.post())
+        .then(handleResponse);
+}
+
+function returnAnimal(userId, animalId) {
+    return fetch(`${config.apiUrl}/users/${userId}/animal/${animalId}/return`, requestOptions.delete())
         .then(handleResponse);
 }

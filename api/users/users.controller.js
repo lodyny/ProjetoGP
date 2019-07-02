@@ -15,12 +15,14 @@ router.post("/password/reset/:token", passwordResetWithToken);
 router.post("/password/forgotten", passwordForgotten);
 router.post("/createRequest", createRequest); // Criar pedido adoção
 router.post("/:id", updateUser); // Actualizar perfil utilizador
-router.delete("/:id/removeRequest/:requestId", deleteRequest); // Apagar pedido adoção (userId/removeRequest/RequestId)
-
+router.delete("/:id/requests/:requestId/delete", deleteRequest); // Apagar pedido adoção (userId/requests/RequestId/remove)
+router.post("/:id/requests/:requestId/return", returnRequest); // Mudar pedido adoção para Returned (userId/requests/RequestId/return)
+router.delete("/:id/animal/:animalId/return", returnAnimal); // Apagar animal de utilizador
 
 // Pedidos adoção
 router.post("/:userid/requests/:requestid/accept", acceptRequest); 
 router.post("/:userid/requests/:requestid/refuse", refuseRequest);
+
 
 
 // Notifications
@@ -163,4 +165,18 @@ function deleteRequest(req, res, next){
     .deleteRequest(req.params.id, req.params.requestId)
     .then(result => (result ? res.json(result) : res.status(400).json({ success: false})))
     .catch(err => next(err));
+}
+
+function returnAnimal(req, res, next){
+  userService
+    .returnAnimal(req.params.id, req.params.animalId)
+    .then(result => (result ? res.json(result) : res.status(400).json({ success: false})))
+    .catch(err => next(err));
+}
+
+function returnRequest(req, res, next){
+  userService
+  .returnRequest(req.params.id, req.params.requestId)
+  .then(result => (result ? res.json(result) : res.status(400).json({ success: false })))
+  .catch(err => next(err));
 }
