@@ -88,7 +88,7 @@
                 type="submit"
                 color="#FC6600"
                 class="white--text"
-              >Login</v-btn>
+              >Save</v-btn>
         </v-form>
       </v-layout>
     </div>

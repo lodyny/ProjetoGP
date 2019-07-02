@@ -51,7 +51,7 @@
           <th>Animal</th>
           <th>Date</th>
           <th style="width:200px">
-            <v-select @change="stateChange" flat hide-details small multiple clearable :items="['Accepted','Pending','Refused']">
+            <v-select @change="stateChange" flat hide-details small multiple clearable :items="filters">
             </v-select>
           </th>
           <th style="width:1px">Actions</th>
@@ -176,6 +176,7 @@ export default {
     return {
       usersList: [],
       newList: [],
+      filters: [],
       timeout: 2000,
       expand: false,
       snackbar : false,
@@ -194,9 +195,6 @@ export default {
         { text: "Animal", value: "animal" },
         { text: "Date", value: "date" },
       ],
-      filters: {
-      state: [],
-    },
     selected: [],
     };
   },
@@ -319,7 +317,11 @@ export default {
          
     }
   },
-  mounted() {},
+  watch: {
+    usersList: function (val) {
+      this.filters = [...new Set(val.map(item => item.state))].sort();
+    }
+  },
   created() {
     userService.getAll().then(x => {
       x.forEach(element => {

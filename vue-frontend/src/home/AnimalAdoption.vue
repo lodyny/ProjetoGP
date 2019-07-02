@@ -60,25 +60,14 @@ export default {
   data() {
     return {
         currentUser: null,
-        date: new Date().toISOString().substr(0, 10),
         menu:false,
         adoptionDetails:null
     };
   },
 
   methods: {
-      save(date) {
-      this.$refs.menu.save(date);
-    },
     submit() {
       animalService.createRequest(this.currentUser.email, this.adoptionDetails , this.current_animal._id);  
-    },
-    deltaDate(input, days, months, years) {
-      var date = new Date(input);
-      date.setDate(date.getDate() + days);
-      date.setMonth(date.getMonth() + months);
-      date.setFullYear(date.getFullYear() + years);
-      return date;
     }
   },
     watch: {

@@ -20,6 +20,7 @@
         <v-flex xs3>
           <v-select
             v-model="e2"
+            :disabled="isDisabled"
             :items="localBreed"
             item-text="name_PT"
             menu-props="auto"
@@ -56,6 +57,7 @@ export default {
     return {
       e1: "",
       e2: "",
+      isDisabled: true,
       filterName: "",
       localBreed: null,
       currentIcon: "fas fa-paw",
@@ -65,12 +67,14 @@ export default {
 
   methods: {
     removeFilter(){
+      this.isDisabled = true;
       this.e1 = "";
       this.e2 = "";
       this.filterName = "";
       this.$emit("removeFilter");
     },
     specieChange(value) {
+      this.isDisabled = false;
       this.e2 = null;
       this.currentIcon = value.icon;
       this.localBreed = value.breeds;
