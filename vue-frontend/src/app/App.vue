@@ -11,15 +11,8 @@
         </div>-->
 
         <div class="navbar-nav ml-auto">
-          <router-link v-if="currentUser" class="nav-item nav-link" to="/notifications">
-            <div class="icon-wrapper">
-              <i
-                class="fas fa-envelope mr-3"
-                style="width:20px; height:20px; margin-right:0px !important;"
-              ></i>
-              <span v-if="unreadNotifications != 0" class="badge">{{this.unreadNotifications}}</span>
-            </div>
-          </router-link>
+          
+          <NotificationWindow/>
           <router-link v-if="isAdmin" to="/admin" class="nav-item nav-link">Administrador</router-link>
           <router-link v-if="isAdmin" to="/requests" class="nav-item nav-link">Requests</router-link>
           <router-link v-if="currentUser" to="/profile" class="nav-item nav-link">Profile</router-link>
@@ -146,13 +139,18 @@
 <script>
 import { authenticationService } from "@/_services";
 import { router, Role } from "@/_helpers";
+import NotificationWindow from "../home/NotificationWindow";
+
 
 export default {
   name: "app",
+  components: {
+    NotificationWindow
+  },
   data() {
-    return {
+    return {  
+      unreadNotifications : 0,
       currentUser: null,
-      unreadNotifications: 0,
       images: {
         mainIcon: require("../assets/images/iconwhite.png")
       }
@@ -165,6 +163,7 @@ export default {
   },
   watch: {
     currentUser: function (val) {
+      console.log(val);
       this.unreadNotifications = val.notifications.filter(notification => !notification.read).length;
     }
   },

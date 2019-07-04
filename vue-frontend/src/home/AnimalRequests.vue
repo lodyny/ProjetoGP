@@ -1,20 +1,15 @@
 <template>
   <div class="AnimalRequests">
-      <v-snackbar
+    <v-snackbar
       v-model="snackbar"
       color="success"
-        :timeout=timeout
+      :timeout="timeout"
       style="margin-top:50px; z-index:1"
       top
       right
     >
       {{message}} Success
-      <v-btn
-        flat
-        @click="snackbar = false"
-      >
-        Close
-      </v-btn>
+      <v-btn flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
     <v-card>
       <v-card-title>
@@ -44,23 +39,30 @@
         :expand="expand"
         item-key="_id"
       >
-      <template slot="headers">
-        <tr>
-          <th style="width:1px">Delete</th>
-          <th>User</th>
-          <th>Animal</th>
-          <th>Date</th>
-          <th style="width:200px">
-            <v-select @change="stateChange" flat hide-details small multiple clearable :items="filters">
-            </v-select>
-          </th>
-          <th style="width:1px">Actions</th>
+        <template slot="headers">
+          <tr>
+            <th style="width:1px">Delete</th>
+            <th>User</th>
+            <th>Animal</th>
+            <th>Date</th>
+            <th style="width:200px">
+              <v-select
+                @change="stateChange"
+                flat
+                hide-details
+                small
+                multiple
+                clearable
+                :items="filters"
+              ></v-select>
+            </th>
+            <th style="width:1px">Actions</th>
           </tr>
-      </template>
+        </template>
         <template v-slot:items="props">
           <tr @click="props.expanded = !props.expanded">
             <td>
-                <v-icon
+              <v-icon
                 medium
                 @click.native.stop
                 @click="deleteRequest(props.item.userId, props.item._id, props.item.animal._id, props.item.state)"
@@ -103,13 +105,19 @@
         <template v-slot:expand="props">
           <v-container grid-list-xl>
             <v-layout justify-space-between row fill-height>
-              <v-flex d-flex md7> 
+              <v-flex d-flex md7>
                 <v-card height="160px">
                   <v-layout>
                     <v-flex xs3>
                       <v-dialog v-model="dialog" max-width="600px">
                         <template v-slot:activator="{ on }">
-                          <v-img :src="props.item.animal.image" class="specialCursor" height="160px" style="min-width:112px" v-on="on"></v-img>
+                          <v-img
+                            :src="props.item.animal.image"
+                            class="specialCursor"
+                            height="160px"
+                            style="min-width:112px"
+                            v-on="on"
+                          ></v-img>
                         </template>
                         <v-card>
                           <v-img :src="props.item.animal.image" contain aspect-ratio="1"></v-img>
@@ -121,20 +129,26 @@
                         <h4>
                           <p>Request details:</p>
                         </h4>
-                        <v-container id="scroll-target" style="max-height: 90px; padding:0px;" class="scroll-y">
-                        {{props.item.details}}
-                        </v-container>
+                        <v-container
+                          id="scroll-target"
+                          style="max-height: 90px; padding:0px;"
+                          class="scroll-y"
+                        >{{props.item.details}}</v-container>
                       </v-card-text>
                     </v-flex>
                   </v-layout>
                 </v-card>
               </v-flex>
               <v-flex d-flex md7>
-                <v-card height="160px" >
+                <v-card height="160px">
                   <v-layout>
-                    <v-flex xs3 >
+                    <v-flex xs3>
                       <!-- <v-img :src="props.item.animal.image"></v-img> -->
-                      <v-img height="160px" style="min-width:112px" src="https://via.placeholder.com/150"></v-img>
+                      <v-img
+                        height="160px"
+                        style="min-width:112px"
+                        src="https://via.placeholder.com/150"
+                      ></v-img>
                     </v-flex>
                     <v-flex>
                       <v-card-text>
@@ -144,6 +158,15 @@
                         <a :href="'mailto:' + props.item.userEmail">{{props.item.userEmail}}</a>
                         <p>{{props.item.userPhone}}</p>
                       </v-card-text>
+                      <span
+                        class="pointerCursor"
+                        style="position:absolute;right:0;bottom:5px;font-size:10px;"
+                      >
+                        <i
+                          class="fas fa-envelope mr-3"
+                          style="width:25px; height:25px;"
+                        ></i>
+                      </span>
                     </v-flex>
                   </v-layout>
                 </v-card>
@@ -179,7 +202,7 @@ export default {
       filters: [],
       timeout: 2000,
       expand: false,
-      snackbar : false,
+      snackbar: false,
       message: "",
       dialog: false,
       tempOwner: null,
@@ -193,30 +216,29 @@ export default {
         { text: "Delete", value: "delete", width: "1px" },
         { text: "User", value: "name" },
         { text: "Animal", value: "animal" },
-        { text: "Date", value: "date" },
+        { text: "Date", value: "date" }
       ],
-    selected: [],
+      selected: []
     };
   },
 
   methods: {
-    stateChange(val){
-        if(val.length == 0) {
-          this.newList = this.usersList;
-        }
-        else {
-          this.newList = this.usersList.filter(x => val.includes(x.state));
-        }
+    stateChange(val) {
+      if (val.length == 0) {
+        this.newList = this.usersList;
+      } else {
+        this.newList = this.usersList.filter(x => val.includes(x.state));
+      }
     },
     columnValueList(val) {
       return this.props.item.state.map(d => d[val]);
     },
-    changeSort (column) {
+    changeSort(column) {
       if (this.pagination.sortBy === column) {
-        this.pagination.descending = !this.pagination.descending
+        this.pagination.descending = !this.pagination.descending;
       } else {
-        this.pagination.sortBy = column
-        this.pagination.descending = false
+        this.pagination.sortBy = column;
+        this.pagination.descending = false;
       }
     },
     acceptRequest(userId, requestId, animal) {
@@ -235,90 +257,88 @@ export default {
         }
       });
     },
-    deleteRequest(userId, requestId, animalId, requestState){
-    if (requestState == 'Accepted'){
-        animalService.returnAnimal(userId,animalId);
-    }
-    animalService.deleteAnimalRequest(userId, requestId).then(
-        x => {
+    deleteRequest(userId, requestId, animalId, requestState) {
+      if (requestState == "Accepted") {
+        animalService.returnAnimal(userId, animalId);
+      }
+      animalService.deleteAnimalRequest(userId, requestId).then(x => {
         if (x.success) {
-            this.usersList = [];
+          this.usersList = [];
           userService.getAll().then(x => {
             x.forEach(element => {
-                element.requests.forEach(request => {
+              element.requests.forEach(request => {
                 request.name = element.name;
                 request.userId = element.id;
                 request.userEmail = element.email;
                 request.userPhone = element.phonenumber;
                 this.usersList.push(request);
-                });
+              });
             });
-              this.newList = this.usersList;
-            })
+            this.newList = this.usersList;
+          });
         }
-      }
-    );
+      });
     },
-    returnRequest(userId, requestId, animalId, requestState){
-    animalService.returnAnimal(userId,animalId);
-    animalService.returnAnimalRequest(userId, requestId).then(
-        x => {
+    returnRequest(userId, requestId, animalId, requestState) {
+      animalService.returnAnimal(userId, animalId);
+      animalService.returnAnimalRequest(userId, requestId).then(x => {
         if (x.success) {
-            this.usersList = [];
+          this.usersList = [];
           userService.getAll().then(x => {
             x.forEach(element => {
-                element.requests.forEach(request => {
+              element.requests.forEach(request => {
                 request.name = element.name;
                 request.userId = element.id;
                 request.userEmail = element.email;
                 request.userPhone = element.phonenumber;
                 this.usersList.push(request);
-                });
+              });
             });
-              this.newList = this.usersList;
-            })
+            this.newList = this.usersList;
+          });
         }
-      }
-    );
+      });
     },
     deploySnackbar(message) {
-          this.message = message;
-          this.snackbar = true;
+      this.message = message;
+      this.snackbar = true;
     },
     updateInfo(requestId, animal) {
-      userService.getAll().then(x => {
-        x.forEach(element => {
-          element.requests.forEach(request => {
-            if (request._id == requestId){
-            request.name = element.name;
-            request.userId = element.id;
-            request.userEmail = element.email;
-            request.userPhone = element.phonenumber;
-            this.tempOwner = request.animal.owner;
-            console.log(this.tempOwner);
-            this.usersList = this.usersList.filter(elem => elem._id != requestId);
-            this.usersList.push(request);
+      userService
+        .getAll()
+        .then(x => {
+          x.forEach(element => {
+            element.requests.forEach(request => {
+              if (request._id == requestId) {
+                request.name = element.name;
+                request.userId = element.id;
+                request.userEmail = element.email;
+                request.userPhone = element.phonenumber;
+                this.tempOwner = request.animal.owner;
+                console.log(this.tempOwner);
+                this.usersList = this.usersList.filter(
+                  elem => elem._id != requestId
+                );
+                this.usersList.push(request);
+              }
+            });
+          });
+        })
+        .then(() => {
+          this.usersList.forEach(elem => {
+            if (elem.animal._id == animal._id) {
+              console.log("elem owner", elem.animal.owner);
+              console.log("this owner", this.tempOwner);
+              elem.animal.owner = this.tempOwner;
+              console.log(elem.animal.owner);
             }
-          })
-        })  
-      }).then(() => {
-            this.usersList.forEach(elem => {
-                if(elem.animal._id == animal._id){
-                    console.log('elem owner', elem.animal.owner);
-                    console.log('this owner', this.tempOwner);
-                    elem.animal.owner = this.tempOwner;
-                    console.log(elem.animal.owner);
-                }
-            }
-            )
-             this.newList = this.usersList;
-            }
-          );
-         
+          });
+          this.newList = this.usersList;
+        });
     }
   },
   watch: {
-    usersList: function (val) {
+    usersList: function(val) {
       this.filters = [...new Set(val.map(item => item.state))].sort();
     }
   },
@@ -335,7 +355,6 @@ export default {
       });
       this.newList = this.usersList;
     });
-  },
-
+  }
 };
 </script>
