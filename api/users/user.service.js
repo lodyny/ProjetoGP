@@ -8,8 +8,6 @@ const Animal = require("models/animal");
 var mongoose = require("mongoose");
 sgMail.setApiKey(config.sendGridApi);
 
-const animalService = require("../animals/animal.service"); // Rever melhor opção
-
 
 var ObjectId = mongoose.Types.ObjectId;
 
@@ -36,7 +34,8 @@ module.exports = {
   acceptRequest,
   refuseRequest,
   returnRequest,
-  returnAnimal
+  returnAnimal,
+  
 };
 
 async function acceptRequest(userId, requestId){
@@ -277,6 +276,8 @@ async function getAll() {
     };
   });
 }
+
+
 
 async function getById(id) {
   const user = await User.findById(id)

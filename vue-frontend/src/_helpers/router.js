@@ -13,6 +13,7 @@ import AnimalCrud from '@/home/AnimalCrud';
 import AnimalAdoption from '@/home/AnimalAdoption';
 import RoleUpdate from '@/home/RoleUpdate';
 import AnimalRequests from '@/home/AnimalRequests';
+import RequestChat from '@/home/RequestChat';
 
 Vue.use(Router);
 
@@ -63,6 +64,10 @@ export const router = new Router({
         { 
             path: '/requests', 
             component: AnimalRequests,
+        },
+        { 
+            path: '/requestsChat', 
+            component: RequestChat,
         },
         // otherwise redirect to home
         { path: '*', redirect: '/' }

@@ -230,9 +230,6 @@ export default {
         this.newList = this.usersList.filter(x => val.includes(x.state));
       }
     },
-    columnValueList(val) {
-      return this.props.item.state.map(d => d[val]);
-    },
     changeSort(column) {
       if (this.pagination.sortBy === column) {
         this.pagination.descending = !this.pagination.descending;

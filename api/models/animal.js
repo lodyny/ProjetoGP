@@ -5,6 +5,7 @@ var animalSchema = mongoose.Schema({
     name        : String,
     gender      : Number, //ISO/IEC 5218
     breed       : { type: ObjectId, ref: 'Breed' },
+    chats       : [{ type: ObjectId, ref: 'Chat' }],
     height      : Number,
     weight      : Number,
     birthday    : String,

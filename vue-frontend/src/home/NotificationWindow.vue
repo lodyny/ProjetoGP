@@ -1,7 +1,7 @@
 <template>
   <div class="text-xs-center">
     <!-- <v-dialog v-model="dialog" scrollable max-width="300px"> -->
-    <v-menu bottom offset-y>
+    <v-menu bottom offset-y v-if="currentUser">
       <template v-slot:activator="{ on }">
         <span class="nav-item nav-link specialCursor" v-on="on">
           <div class="icon-wrapper">
@@ -13,7 +13,12 @@
           </div>
         </span>
       </template>
-      <v-card width="300" style="margin-top:20px">
+      <v-card width="300" style="margin-top:20px" v-if="unreadNotifications == 0">
+          <v-card-actions>
+            No messages here
+        </v-card-actions>
+      </v-card>
+      <v-card width="300" style="margin-top:20px" v-if="unreadNotifications != 0">
         
         <v-card-actions>
           <v-btn color="#f4f4f4" @click="readAllNotifications()">Mark all as read</v-btn>
