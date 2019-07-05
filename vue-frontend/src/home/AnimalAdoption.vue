@@ -67,7 +67,9 @@ export default {
 
   methods: {
     submit() {
-      animalService.createRequest(this.currentUser.email, this.adoptionDetails , this.current_animal._id);  
+      animalService.createRequest(this.currentUser.email, this.adoptionDetails , this.current_animal._id).then(request => {
+        if (request.success === true) this.$router.push({name: 'Home', params: {}});
+        });  
     }
   },
     watch: {
