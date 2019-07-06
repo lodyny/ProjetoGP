@@ -9,7 +9,8 @@ var chatSchema = mongoose.Schema({
     messages: [{
         date: String,
         message: String,
-        state: String
+        state: String,
+        sender    : { type: ObjectId, ref: 'User'},
       }],
 });
 

@@ -35,8 +35,21 @@ module.exports = {
   refuseRequest,
   returnRequest,
   returnAnimal,
-  
+  checkUserAnimalRequest
 };
+
+async function checkUserAnimalRequest(userId, animalId){
+  let _user = await User.findOne({_id: userId});
+  console.log(_user);
+  console.log(animalId);
+  let output = {availability: true}
+  _user.requests.forEach(req => {
+    if (req.animal == animalId){
+      output = {availability: false};
+    }
+  });
+  return output;
+}
 
 async function acceptRequest(userId, requestId){
   // Actualizar estado do pedido para accepted

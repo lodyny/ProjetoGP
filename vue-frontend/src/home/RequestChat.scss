@@ -42,5 +42,28 @@ body {font-family: "Lato", sans-serif;}
 
 .tab-item-wrapper {
     /* vuetify sets the v-tabs__container height to 48px */
-    height: calc(100vh - 300px)
+    min-height:600px;
+  }
+
+  // .v-window__container{
+  //   height: 900px !important;
+  // }
+
+  
+  .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+  
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+  }
+  
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
   }

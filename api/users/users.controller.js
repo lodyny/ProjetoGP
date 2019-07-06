@@ -22,6 +22,7 @@ router.delete("/:id/animal/:animalId/return", returnAnimal); // Apagar animal de
 // Pedidos adoção
 router.post("/:userid/requests/:requestid/accept", acceptRequest); 
 router.post("/:userid/requests/:requestid/refuse", refuseRequest);
+router.get("/:userid/checkAnimalRequest/:animalId/", checkUserAnimalRequest);
 
 
 
@@ -31,6 +32,13 @@ router.post("/:userid/notifications/:notid", readNotification); // Actualizar no
 router.delete("/:userid/notifications/:notid", deleteNotification); // Apagar Notificação
 
 module.exports = router;
+
+function checkUserAnimalRequest(req, res, next){
+  userService
+  .checkUserAnimalRequest(req.params.userid, req.params.animalId)
+  .then(result => (result ? res.json(result) : res.status(400).json({ success: false })))
+  .catch(err => next(err));
+}
 
 function acceptRequest(req, res, next){
   userService

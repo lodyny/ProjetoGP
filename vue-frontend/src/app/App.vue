@@ -163,7 +163,6 @@ export default {
   },
   watch: {
     currentUser: function (val) {
-      console.log(val);
       this.unreadNotifications = val.notifications.filter(notification => !notification.read).length;
     }
   },

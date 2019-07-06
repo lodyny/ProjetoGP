@@ -16,6 +16,7 @@ populateDB.populate();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
+// app.disable('etag');
 
 // api routes
 app.use('/users', require('./users/users.controller'));

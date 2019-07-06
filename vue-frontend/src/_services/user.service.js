@@ -4,11 +4,18 @@ import { handleResponse, requestOptions } from '@/_helpers';
 export const userService = {
     getAll,
     getById,
-    updateRole
+    updateRole,
+    checkUserAnimalRequest
 };
 
 function getAll() {
     return fetch(`${config.apiUrl}/users`, requestOptions.get())
+    .then(handleResponse);
+}
+
+
+function checkUserAnimalRequest(userId, animalId) {
+    return fetch(`${config.apiUrl}/users/${userId}/checkAnimalRequest/${animalId}`, requestOptions.get())
     .then(handleResponse);
 }
 
