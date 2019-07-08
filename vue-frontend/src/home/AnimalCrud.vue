@@ -47,7 +47,7 @@
                   </v-btn>
                 </router-link>
 
-                  <v-btn color="teal" flat>
+                  <v-btn color="teal" @click="saveClick" flat>
                     <span style="margin-top:4px">Save</span>
                     <v-icon>fas fa-save</v-icon>
                   </v-btn>
@@ -203,8 +203,7 @@ export default {
       animalHeight : "",
       animalBirthday : null,
       animalImage: "",
-
-
+      file: [],
       sex: ["Male", "Female"],
       localBreed: null,
       currentIcon: "fas fa-paw",
@@ -241,6 +240,21 @@ export default {
   },
 
   methods: {
+    saveClick(){
+			var formdata = new FormData();
+      formdata.append('file', this.file);
+			formdata.append('cloud_name', 'adotaqui');
+			formdata.append('upload_preset', 'xs29qdst');
+			
+			var xhr = new XMLHttpRequest();
+			xhr.open('POST', "https://api.cloudinary.com/v1_1/adotaqui/image/upload",true);
+			
+			xhr.onload = function () {
+	    	// do something to response
+	    		console.log(this.responseText);
+			};
+			xhr.send(formdata);		
+    },
     save(date) {
       this.$refs.menu.save(date);
     },
@@ -276,8 +290,9 @@ export default {
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
+      this.file = files[0];
       if (!files.length) return;
-      this.createImage(files[0]);
+      this.createImage(this.file);
     },
     createImage(file) {
       var image = new Image();
