@@ -100,7 +100,8 @@ async function getAnimals(){
 
 async function createAnimal(animal){
     let _animal = new Animal(animal);
-    let _breed = await Breed.findOne({name: animal.breed});
+    let _breed = await Breed.findOne({name_PT: animal.breed.name_PT});
+    console.log(_breed  );
     _animal.breed = new ObjectId(_breed._id);
     let newAnimal = await _animal.save();
     if (!newAnimal) return;
@@ -112,12 +113,12 @@ async function createAnimal(animal){
 }
 
 async function updateAnimal(id, animal){
-    let _animal = await Animal.findOne({ _id: id}).exec();
+    let _animal = await Animal.findById(id);
     if (!_animal) return { success: false, message: "Cant find animal"};
     _animal.name = animal.name;
     _animal.gender = animal.gender;
-    let _breed = await Breed.findOne({name: animal.breed});
-    _animal.breed = new ObjectId(_breed._id);
+    let _breed = await Breed.findOne({name_PT: animal.breed});
+    _animal.breed = new ObjectId(_breed.id);
     _animal.height = animal.height;
     _animal.weight = animal.weight;
     _animal.birthday = animal.birthday;

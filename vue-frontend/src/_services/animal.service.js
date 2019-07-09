@@ -6,6 +6,8 @@ export const animalService = {
     getById,
     getSpecies,
     getBreedByAnimalId,
+    updateAnimal,
+    createAnimal,
     createRequest,
     acceptAnimalRequest,
     refuseAnimalRequest,
@@ -32,6 +34,19 @@ function getBreedByAnimalId(id) {
 function getById(id) {
     return fetch(`${config.apiUrl}/animals/${id}`, requestOptions.get())
         .then(handleResponse);
+}
+
+function updateAnimal(id, animal){
+    return fetch(`${config.apiUrl}/animals/${id}`, requestOptions.post(animal))
+    .then(handleResponse)
+    .then(request => { return request;});
+}
+
+function createAnimal(animal){
+    console.log("Teste");
+    return fetch(`${config.apiUrl}/animals`, requestOptions.post(animal))
+    .then(handleResponse)
+    .then(request => { return request;});
 }
 
 function createRequest(email, details, animal) {

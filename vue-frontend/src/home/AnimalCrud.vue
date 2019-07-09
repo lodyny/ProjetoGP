@@ -36,16 +36,12 @@
                   v-model="animalDetails"
                 ></v-textarea>
 
-                <v-card
-                  class="v-item-group v-bottom-nav theme--light v-bottom-nav--absolute v-bottom-nav--active transparent"
-                  style="margin-bottom:0px;"
-                >
-                <router-link :to="{ name: 'Home'}">
-                  <v-btn color="teal" flat>
+                <v-bottom-nav :active.sync="bottomNav" :value="true" absolute color="transparent">
+
+                  <v-btn color="teal" flat @click="backClick">
                     <span style="margin-top:4px">Cancel without saving</span>
                     <v-icon>fas fa-undo</v-icon>
                   </v-btn>
-                </router-link>
 
                   <v-btn color="teal" @click="saveClick" flat>
                     <span style="margin-top:4px">Save</span>
@@ -62,7 +58,7 @@
                     <span style="margin-top:4px">Remove photo</span>
                     <font-awesome-icon icon="trash" size="2x"/>
                   </v-btn>
-                </v-card>
+                </v-bottom-nav>
               </v-card>
             </v-flex>
           </v-layout>
@@ -75,9 +71,9 @@
                  <v-select
                     v-model="animalSpecie"
                     :items="species"
-                    item-text="name"
+                    item-text="name_PT"
                     menu-props="auto"
-                    label="Specie"
+                    label="Espécie"
                     hide-details
                     :prepend-icon="currentIcon"
                     single-line
@@ -89,9 +85,10 @@
                   <v-select
                     v-model="animalBreed"
                     :items="localBreed"
-                    item-text="name"
+                    :disabled="isDisabled"
+                    item-text="name_PT"
                     menu-props="auto"
-                    label="Breed"
+                    label="Raça"
                     hide-details
                     prepend-icon="map"
                     single-line
@@ -205,6 +202,7 @@ export default {
       animalWeight : "",
       animalHeight : "",
       menu: null,
+      isDisabled: true,
       animalBirthday : null,
       animalImage: "",
       file: [],
@@ -219,6 +217,9 @@ export default {
   },
 
   methods: {
+    backClick(){
+      this.$router.push({name: 'Home'});
+    },
     saveClick(){
 			var formdata = new FormData();
       formdata.append('file', this.file);
@@ -227,10 +228,27 @@ export default {
 			
 			var xhr = new XMLHttpRequest();
 			xhr.open('POST', "https://api.cloudinary.com/v1_1/adotaqui/image/upload",true);
-			
+      const animal = this.animalObj;
+      const animalData = { name: this.animalName,
+            gender: this.animalSex == 'Female' ? 2 : 1,
+            breed: this.animalBreed,
+            height: this.animalHeight,
+            weight: this.animalWeight,
+            birthday: this.animalBirthday,
+            details: this.animalDetails,
+            image: this.animalImage
+          };
 			xhr.onload = function () {
-	    	// do something to response
-	    		console.log(this.responseText);
+          if (this.responseText){ 
+            const responseObj = JSON.parse(this.responseText);
+            animalData.image = responseObj.url;
+          }
+          console.log(animalData);
+          if(animal){
+              animalService.updateAnimal(animal._id, animalData);
+          } else {
+              animalService.createAnimal(animalData);
+          }
 			};
 			xhr.send(formdata);		
     },
@@ -258,14 +276,14 @@ export default {
       }
     },
     specieChange(value) {
+      this.isDisabled = false;
       this.animalBreed = null;
       this.currentIcon = value.icon;
       this.species.forEach(element => {
-        if (element.id == value.id) {
+        if (element._id == value._id) {
           this.localBreed = element.breeds;
         }
       });
-      this.$emit("specieChange", value);
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
@@ -290,16 +308,13 @@ export default {
   mounted() {
     if(this.animalObj){
     this.animalName = this.animalObj.name;
-    this.animalSex = this.animalObj.gender == 0 ? 'Female' : 'Male';
+    this.animalSex = this.animalObj.gender == 2 ? 'Female' : 'Male';
     this.animalDetails = this.animalObj.details;
-    this.animalSpecie = this.animalObj.specie.name;
-    this.localBreed = this.animalObj.specie.breeds;
     // this.species.forEach(element => {
     //     if (element.name == this.animalSpecie) {
     //       this. = element.breeds;
     //     }
     // });
-    this.animalBreed = this.animalObj.breed.name;
     this.animalWeight = this.animalObj.weight;
     this.animalHeight = this.animalObj.height;
     this.animalImage = this.animalObj.image;
@@ -307,7 +322,16 @@ export default {
     }
   },
   created(){
-    animalService.getSpecies().then(species => this.species = species.species);
+    animalService.getSpecies().then(species => 
+    { 
+      this.species = species.species;
+      if(this.animalObj){
+        this.isDisabled = false;
+        this.animalSpecie = this.animalObj.specie.name_PT;
+        this.localBreed = this.animalObj.specie.breeds;
+        this.animalBreed = this.animalObj.breed.name_PT;
+      }
+    });
   }
 };
 </script>
