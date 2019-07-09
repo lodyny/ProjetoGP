@@ -183,11 +183,14 @@
   </div>
 </template>
 
+ 
+
 <style lang="sass" scoped>
     @import './AnimalCrud.scss';
 </style>
 
 <script>
+import {animalService } from "@/_services";
 import { constants } from 'crypto';
 export default {
   props: ["animalObj"],
@@ -201,6 +204,7 @@ export default {
       animalBreed : "",
       animalWeight : "",
       animalHeight : "",
+      menu: null,
       animalBirthday : null,
       animalImage: "",
       file: [],
@@ -208,32 +212,7 @@ export default {
       localBreed: null,
       currentIcon: "fas fa-paw",
       date: new Date().toISOString().substr(0, 10),
-      species: [
-        {
-          id: 1,
-          icon: "fas fa-dog",
-          name: "Dog",
-          breeds: [
-            { id: 1, name: "German Shephard" },
-            { breedId: 1, name: "Labrador" }
-          ]
-        },
-        {
-          id: 2,
-          icon: "fas fa-cat",
-          name: "Cat",
-          breeds: [{ id: 1, name: "Siamês" }, { breedId: 1, name: "Persa" }]
-        },
-        {
-          id: 3,
-          icon: "fas fa-crow",
-          name: "Bird",
-          breeds: [
-            { id: 1, name: "Papagaio" },
-            { breedId: 1, name: "Avestruz" }
-          ]
-        }
-      ],
+      species: null,
       currentGender: null,
       bottomNav: "recent",
     };
@@ -326,6 +305,9 @@ export default {
     this.animalImage = this.animalObj.image;
     this.animalBirthday = this.animalObj.birthday;
     }
+  },
+  created(){
+    animalService.getSpecies().then(species => this.species = species.species);
   }
 };
 </script>
