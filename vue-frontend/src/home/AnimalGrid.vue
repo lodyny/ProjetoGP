@@ -10,7 +10,7 @@
           class="lg5-custom"
           v-if="isAdmin"
         >
-        <router-link :to="{ name: 'AnimalCrud' }" tag="li">
+        <router-link :to="{ name: 'AnimalCrud' }" tag="aaaa">
         <v-card tile>
             <v-img src="https://res.cloudinary.com/adotaqui/image/upload/v1560768741/addimage.bmp" height="250px"></v-img>
             <v-card-title primary-title class="ma-0 pa-0 justify-center">
