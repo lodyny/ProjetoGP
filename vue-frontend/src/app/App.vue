@@ -14,8 +14,11 @@
           
           <NotificationWindow/>
           <router-link v-if="isAdmin" to="/admin" class="nav-item nav-link">Administrador</router-link>
+          <router-link v-if="isAdmin" to="/allconversations" class="nav-item nav-link">Conversations</router-link>
+          <router-link v-if="!isAdmin" to="/myconversations" class="nav-item nav-link">Conversations</router-link>
           <router-link v-if="isAdmin" to="/requests" class="nav-item nav-link">Requests</router-link>
           <router-link v-if="currentUser" to="/profile" class="nav-item nav-link">Profile</router-link>
+          <router-link v-if="currentUser" to="/stream" class="nav-item nav-link">Streams</router-link>
           <router-link v-if="!currentUser" to="/signup" class="nav-item nav-link">Register</router-link>
           <router-link v-if="!currentUser" to="/login" class="nav-item nav-link">Login</router-link>
           <a @click="logout" v-if="currentUser" class="nav-item nav-link">Logout</a>
@@ -137,7 +140,7 @@
 </style>
 
 <script>
-import { authenticationService } from "@/_services";
+import { authenticationService, userService } from "@/_services";
 import { router, Role } from "@/_helpers";
 import NotificationWindow from "../home/NotificationWindow";
 

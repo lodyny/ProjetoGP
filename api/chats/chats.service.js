@@ -8,6 +8,7 @@ const Chat = require("models/chat");
 const Specie = require("models/specie");
 const Animal = require("models/animal");
 var mongoose = require("mongoose");
+const userService = require("../users/user.service");
 
 var ObjectId = mongoose.Types.ObjectId;
 
@@ -89,6 +90,9 @@ async function getOpenChats() {
       }
     });
     await _user.save();
+
+    let _notification = {'title' : 'New Conversation', 'message' : 'Admin has started a conversation'};
+    await userService.newNotification(_user._id, _notification);
 
     newChat = JSON.parse(JSON.stringify(newChat));
     return newChat;

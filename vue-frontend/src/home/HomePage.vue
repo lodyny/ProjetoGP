@@ -20,6 +20,7 @@
 
 
 <script>
+import { userService } from "@/_services";
 import Toolbar from "./FilterToolbar";
 import AnimalGrid from "./AnimalGrid";
 import AnimalCrud from "./AnimalCrud";

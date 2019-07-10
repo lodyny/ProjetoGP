@@ -6,6 +6,7 @@
       There are no animal requests chats
     </v-alert>
 
+
     <v-tabs
       v-model="active_tab"
       v-if="petsChat.length > 0"
@@ -212,6 +213,9 @@ export default {
         this.petsChat.push(element);
       })
     )
+    if(this.$route.params.animalId){
+      console.log('redirected', this.$route.params.animalId);
+    }
   },
   computed: {
     formIsValid() {

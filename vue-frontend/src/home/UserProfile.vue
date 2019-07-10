@@ -2,45 +2,50 @@
   <div class="UserProfile">
     <v-container  >
       <v-layout row wrap>
-      <v-flex xs8>
+      <v-flex xs8 v-if="currentUser.requests.length > 0">
     <h2>My requests</h2>
-    <v-timeline>
+    <v-timeline >
       <v-timeline-item
-        v-for="request in this.currentUser.requests"
+        v-for="request in currentUser.requests"
         :key="request._id"
         color="red lighten-2"
         large
       >
         <template v-slot:opposite>
           <img :src="request.animal.image" 
-          v-if="request.state == 'Accepted'"
+          v-if="request.state == 'Accepted' || request.state == 'Refused'" 
           height="100px">
-          <span v-if="request.state != 'Accepted'">{{request.state}}</span>
-          <p><span v-if="request.state != 'Accepted'">{{request.date}}</span></p>
+          
+          <!-- <span v-if="request.state == 'Pending'">{{request.state}}</span> -->
+          <p><span v-if="request.state == 'Pending'">{{request.date}}</span></p>
         </template>
         <template v-slot:icon>
           <v-avatar>
           <img :src="request.animal.image"
-          v-on="on"
-          class="specialCursor"
-          v-if="request.state != 'Accepted'">
+          v-if="request.state == 'Pending'">
+
           <img src="https://res.cloudinary.com/adotaqui/image/upload/v1562709461/check.png"
           v-if="request.state == 'Accepted'">
+          <img src="https://res.cloudinary.com/adotaqui/image/upload/v1562709461/crossed.png"
+          v-if="request.state == 'Refused'">
+          <img src="https://res.cloudinary.com/adotaqui/image/upload/v1562709461/returned.png"
+          v-if="request.state == 'Returned'">
         </v-avatar>
         </template>
         <v-card>
-          <v-card-title class="title breaker">Adoção de {{request.animal.name}} &nbsp;<span v-if="request.state == 'Accepted'">({{request.state}})</span></v-card-title>
+          <v-card-title class="title breaker">Adoção de {{request.animal.name}} &nbsp;({{request.state}})</v-card-title>
           <v-card-text class="white text--primary">
             <p class="breaker">{{request.details}}.</p> 
-            <v-btn class="mx-0" v-if="request.state == 'Pending'">Go to chat</v-btn>
+            <v-btn class="mx-0" v-if="request.chat" @click="redirectToChat(request.animal._id)">Go to chats</v-btn>
           </v-card-text>
         </v-card>
       </v-timeline-item>
     </v-timeline>
       </v-flex>
     
-    <v-layout justify-center style="margin-top:100px" >
+    <v-layout justify-center  >
       <v-form @submit.prevent="submit">
+        <h2>My info</h2>
         <img v-if="currentUser.image" :src="currentUser.image">
         <img v-else src="https://via.placeholder.com/150">
         <v-text-field
@@ -93,13 +98,13 @@
           full-width
           min-width="290px"
         >
-          <template v-slot:activator="{ on }">
+          <template v-slot:activator="{ ondate }">
             <v-text-field
               class="ma-0 text-colort"
               v-model="date"
               label="Data de nascimento"
               readonly
-              v-on="on"
+              v-on="ondate"
             >
               <v-icon slot="append" color="blue">event</v-icon>
             </v-text-field>
@@ -142,6 +147,8 @@ export default {
       existsuser: false,
       dialog : false,
       dialog2 : false,
+      onzoom: false,
+      ondate: false,
       name: "",
       phonenumber: "",
       menu: false,
@@ -167,8 +174,6 @@ export default {
       }
     };
   },
-
-  methods: {},
   mounted() {},
   computed: {
     // getAllConfirmations() {
@@ -215,6 +220,12 @@ export default {
     },
     save(date) {
       this.$refs.menu.save(date);
+    },
+     redirectToChat(animalId){
+        this.$router.push({
+              name: "Myconversations",
+              params: { 'animalId': animalId }
+            });
     }
   }
 };

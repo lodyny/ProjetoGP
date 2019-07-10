@@ -1,7 +1,7 @@
 ﻿const request = require('request');
 
 module.exports = {
-  teste
+  getAll
 };
 
 function doRequest(url) {
@@ -22,7 +22,7 @@ function doRequest(url) {
   });
 }
 
-async function teste(){
+async function getAll(){
   let res = await doRequest('https://api.twitch.tv/helix/streams?game_id=565');
   return {
     success: true,

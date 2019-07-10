@@ -31,11 +31,19 @@
                 v-model="adoptionDetails"
               ></v-textarea>
               <v-alert :value="true" color="warning" outline icon="warning" v-if="!availability">
-                You can only apply once to a animal
+                <p>You can only apply once to a animal</p>
+                <span v-if="!hasChat">
+                Your request is still pending
+                </span>
+                  <span v-if="hasChat">
+                There is a chat open for the request
+                </span>
                 <v-btn
+                  v-if="hasChat"
+                  @click="redirectToChat()"
                   color="warning"
                   style="float:right; margin-right:20px; margin-top:30px;"
-                >Go to animal request</v-btn>
+                >Go to animal chat</v-btn>
               </v-alert>
               <v-btn
                 color="teal"
@@ -68,11 +76,17 @@ export default {
       currentUser: null,
       menu: false,
       adoptionDetails: null,
-      availability: false
+      availability: false,
+      hasChat: false
     };
   },
 
   methods: {
+    redirectToChat(){
+    this.$router.push({
+          name: "Myconversations"
+        });
+    },
     submit() {
       animalService
         .createRequest(
@@ -99,7 +113,7 @@ export default {
     authenticationService.currentUser.subscribe(x => (this.currentUser = x));
     userService
       .checkUserAnimalRequest(this.currentUser.id, this.current_animal._id)
-      .then(request => (this.availability = request.availability));
+      .then(request => (this.availability = request.availability, this.hasChat = request.hasChat));
   }
 };
 </script>

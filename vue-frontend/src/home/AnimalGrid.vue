@@ -8,15 +8,16 @@
           md3
           xl2
           class="lg5-custom"
+          v-if="isAdmin"
         >
-        <router-link :to="{ name: 'AnimalCrud' }">
+        <router-link :to="{ name: 'AnimalCrud' }" tag="li">
         <v-card tile>
             <v-img src="https://res.cloudinary.com/adotaqui/image/upload/v1560768741/addimage.bmp" height="250px"></v-img>
             <v-card-title primary-title class="ma-0 pa-0 justify-center">
               <div>
                 <h3
-                  class="card-tile"
-                  style="margin-top:10px;font-size: 14px;line-height: 1.0;font-weight: bold;"
+                  class="card-tile removeall"
+                  style="margin-top:10px;font-size: 14px;line-height: 1.0;font-weight: bold"
                 >Add animal</h3>
               </div>
             </v-card-title>
