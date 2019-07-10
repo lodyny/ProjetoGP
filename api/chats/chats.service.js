@@ -15,7 +15,8 @@ module.exports = {
   getOpenChats,
   createChat,
   getById,
-  createMessage
+  createMessage,
+  getUserChats
 }
 
 async function getOpenChats() {
@@ -56,6 +57,16 @@ async function getOpenChats() {
     const chat = await Chat.findById(id)
       .populate({ path: 'user', select: ['name', 'email', 'image', 'phonenumber'] })
       .exec();
+    if (!chat) return;
+    return chat;
+  }
+
+  async function getUserChats(id) { // rever
+    const chat = await Chat.findById(id)
+      .populate({ path: 'user', select: ['name', 'email', 'image', 'phonenumber'] })
+      .exec();
+      const _user = await User.findById('5cfbf19d10062826c0b07fca').select({"image": 3, "email": 2, "name": 1, "_id": 0});
+      chat.user = _user;
     if (!chat) return;
     return chat;
   }

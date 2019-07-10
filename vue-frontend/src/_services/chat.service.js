@@ -5,7 +5,8 @@ export const chatService = {
     getAll,
     getChatById,
     sendMessage,
-    createChat
+    createChat,
+    getUserChatById
 };
 
 function getAll() {
@@ -15,6 +16,11 @@ function getAll() {
 
 function getChatById(id) {
     return fetch(`${config.apiUrl}/chats/${id}`, requestOptions.get())
+    .then(handleResponse);
+}
+
+function getUserChatById(id) {
+    return fetch(`${config.apiUrl}/chats/user/${id}`, requestOptions.get())
     .then(handleResponse);
 }
 

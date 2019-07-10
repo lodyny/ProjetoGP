@@ -1,6 +1,7 @@
 ﻿require('rootpath')();
 const express = require('express');
 const app = express();
+const router = express.Router();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const errorHandler = require('_helpers/error-handler');
@@ -26,6 +27,12 @@ app.use('/streams', require('./streams/streams.controller'));
 
 // global error handler
 app.use(errorHandler);
+
+var swaggerUi = require('swagger-ui-express'),
+    swaggerDocument = require('./docs/swagger.json');
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api/v1', router);
 
 // start server
 const port = process.env.NODE_ENV === 'production' ? 80 : 4000;

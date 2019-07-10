@@ -8,6 +8,7 @@ router.get("/",/*authorize(Roles.Admin),*/getOpenChats); // Retorna todos os cha
 router.post("/", createChat); // cria chat (requestId, user(id), animalId)
 router.post("/:id/createMessage", createMessage); // cria messagem (chatId, message.message)
 router.get("/:id", getChat); // Obter um chat
+router.get("/user/:id", getUserChats); // Obter um chat como user
 
 module.exports = router;
 
@@ -23,6 +24,14 @@ function getOpenChats(req, res, next) {
         createChat(req.body)
         .then(result => (result ? res.json(result) : res.status(400).json({ success: false })))
         .catch(err => next(err));
+}
+
+function getUserChats(req, res, next){
+  chatService.getUserChats(req.params.id)
+  .then(result => (result ? res.json(result) : res.status(400).json({
+      success: false
+  })))
+  .catch(err => next(err));
 }
 
 function getChat(req, res, next){

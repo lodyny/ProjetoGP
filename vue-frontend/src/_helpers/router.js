@@ -14,6 +14,7 @@ import AnimalAdoption from '@/home/AnimalAdoption';
 import RoleUpdate from '@/home/RoleUpdate';
 import AnimalRequests from '@/home/AnimalRequests';
 import RequestChat from '@/home/RequestChat';
+import RequestChatUser from '@/home/RequestChatUser';
 
 Vue.use(Router);
 
@@ -68,6 +69,11 @@ export const router = new Router({
         { 
             path: '/requestsChat', 
             component: RequestChat,
+            meta: { authorize: [Role.Admin] } 
+        },
+        { 
+            path: '/requestsChatUser', 
+            component: RequestChatUser,
         },
         // otherwise redirect to home
         { path: '*', redirect: '/' }

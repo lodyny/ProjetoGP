@@ -84,7 +84,7 @@ export default {
           if (request.success === true)
             this.$router.push({
               name: "Home",
-              params: { outMessage: "Adoption success!" }
+              params: { outMessage: "Adoption request success!" }
             });
         });
     }
