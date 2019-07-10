@@ -47,7 +47,7 @@ export const router = new Router({
         },
         { 
             path: '/animal/', 
-            name: 'AddAnimal',
+            name: 'AnimalCrud',
             component: AnimalCrud,
             props: true
         },

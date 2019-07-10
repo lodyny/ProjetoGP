@@ -131,8 +131,8 @@
                         </h4>
                         <v-container
                           id="scroll-target"
-                          style="max-height: 90px; padding:0px;"
-                          class="scroll-y"
+                          style="max-height: 90px; max-width:500px; padding:0px;"
+                          class="scroll-y breaker"
                         >{{props.item.details}}</v-container>
                       </v-card-text>
                     </v-flex>
@@ -158,15 +158,24 @@
                         <a :href="'mailto:' + props.item.userEmail">{{props.item.userEmail}}</a>
                         <p>{{props.item.userPhone}}</p>
                       </v-card-text>
-                      <span
-                        class="pointerCursor"
-                        style="position:absolute;right:0;bottom:5px;font-size:10px;"
+                     
+                      <v-btn
+                        color="success"
+                        class="white--text"
+                        v-if="!props.item.chat"
+                        style="position:absolute;right:0;bottom:5px;font-size:10px"
+                        @click="createChat(props.item._id, props.item.userId, props.item.animal)"
                       >
-                        <i
-                          class="fas fa-envelope mr-3"
-                          style="width:25px; height:25px;"
-                        ></i>
-                      </span>
+                        Create Chat
+                      </v-btn>
+                      <v-btn
+                        color="success"
+                        class="white--text"
+                        v-if="props.item.chat"
+                        style="position:absolute;right:0;bottom:5px;font-size:10px"
+                      >
+                        Go to Chat
+                      </v-btn>
                     </v-flex>
                   </v-layout>
                 </v-card>
@@ -191,7 +200,7 @@
 </style>
 
 <script>
-import { authenticationService, userService, animalService } from "@/_services";
+import { authenticationService, userService, animalService, chatService } from "@/_services";
 
 export default {
   name: "AnimalRequests",
@@ -237,6 +246,11 @@ export default {
         this.pagination.sortBy = column;
         this.pagination.descending = false;
       }
+    },
+    createChat(requestId, userId, animal){
+      chatService.createChat(requestId, userId, animal._id);
+      // this.updateInfo(requestId, animal);
+      this.deploySnackbar("Chat created");
     },
     acceptRequest(userId, requestId, animal) {
       animalService.acceptAnimalRequest(userId, requestId).then(x => {
@@ -347,6 +361,7 @@ export default {
           request.userId = element.id;
           request.userEmail = element.email;
           request.userPhone = element.phonenumber;
+          if (element.chat){request.chat = element.chat;}
           this.usersList.push(request);
         });
       });

@@ -1,5 +1,8 @@
 <template>
   <div class="UserProfile">
+    <v-container  >
+      <v-layout row wrap>
+      <v-flex xs8>
     <h2>My requests</h2>
     <v-timeline>
       <v-timeline-item
@@ -9,25 +12,37 @@
         large
       >
         <template v-slot:opposite>
-          <span>{{request.state}}</span>
-          <p><span>{{request.date}}</span></p>
+          <img :src="request.animal.image" 
+          v-if="request.state == 'Accepted'"
+          height="100px">
+          <span v-if="request.state != 'Accepted'">{{request.state}}</span>
+          <p><span v-if="request.state != 'Accepted'">{{request.date}}</span></p>
         </template>
         <template v-slot:icon>
-        <v-avatar>
-          <img src="https://via.placeholder.com/25">
+          <v-avatar>
+          <img :src="request.animal.image"
+          v-on="on"
+          class="specialCursor"
+          v-if="request.state != 'Accepted'">
+          <img src="https://res.cloudinary.com/adotaqui/image/upload/v1562709461/check.png"
+          v-if="request.state == 'Accepted'">
         </v-avatar>
         </template>
         <v-card>
-          <v-card-title class="title">{{request.animal}}</v-card-title>
+          <v-card-title class="title breaker">Adoção de {{request.animal.name}} &nbsp;<span v-if="request.state == 'Accepted'">({{request.state}})</span></v-card-title>
           <v-card-text class="white text--primary">
-            <p>{{request.details}}.</p>
+            <p class="breaker">{{request.details}}.</p> 
             <v-btn class="mx-0" v-if="request.state == 'Pending'">Go to chat</v-btn>
           </v-card-text>
         </v-card>
       </v-timeline-item>
     </v-timeline>
-    <v-layout justify-center style="margin-top:100px" xs6 sm4 md3 xl2>
+      </v-flex>
+    
+    <v-layout justify-center style="margin-top:100px" >
       <v-form @submit.prevent="submit">
+        <img v-if="currentUser.image" :src="currentUser.image">
+        <img v-else src="https://via.placeholder.com/150">
         <v-text-field
           class="ma-0"
           label="Nome"
@@ -101,6 +116,8 @@
         <v-btn block type="submit" color="#FC6600" class="white--text">Save</v-btn>
       </v-form>
     </v-layout>
+    </v-layout>
+    </v-container>
   </div>
 </template>
 
@@ -123,6 +140,8 @@ export default {
       existsphone: false,
       valideuser: false,
       existsuser: false,
+      dialog : false,
+      dialog2 : false,
       name: "",
       phonenumber: "",
       menu: false,
@@ -178,6 +197,7 @@ export default {
       this.user = x;
       this.name = x.name;
       this.phonenumber = x.phonenumber;
+      this.currentUser = x;
     });
   },
   watch: {

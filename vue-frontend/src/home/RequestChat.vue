@@ -1,5 +1,9 @@
 <template>
   <v-card>
+    
+    <v-alert :value="true" color="warning" outline icon="warning" >
+      There are no animal requests chats
+    </v-alert>
     <v-tabs
       v-model="active_tab"
       background-color="deep-purple accent-4"
@@ -88,8 +92,6 @@
                       maxlength="700"
                       no-resize
                       auto-grow
-                      required
-                      :rules="rules.message"
                       v-model="form.message"
                       ></v-textarea>
                       </v-flex>
@@ -145,9 +147,6 @@ export default {
 
     return {
       form: Object.assign({}, defaultForm),
-      rules: {
-        message:  [val => (val || "").length > 0 || "This field is required"]
-      },
       active_tab: 0,
       currentUser:null,
       petsChat: [],
@@ -170,16 +169,8 @@ export default {
             var textarea = document.getElementById("scroll-target");
                 textarea.scrollTop = textarea.scrollHeight;
         }
-          
-        //   chatService.getChatById(current_chatId).then(chat => {
-        //     console.log(chat);
-        //     console.log(current_chat);
-            
-        //     current_chat = chat;
-        //     
-        //   }
-        // )
         );
+        this.form.message = '';
     },
     resetUser() {
       this.selected_user = null;
@@ -211,7 +202,7 @@ export default {
       this.cur_chatId = chatId;
       this.selected_user = user;
 
-      this.updateVisibleMessages(messages, user);
+      this.updateVisibleMessages(messages, this.currentUser.id);
       
       var i, tabcontent, tablinks;
       tabcontent = document.getElementsByClassName("tabcontent");

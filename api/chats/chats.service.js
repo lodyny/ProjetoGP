@@ -62,12 +62,23 @@ async function getOpenChats() {
 
   async function createChat(chatInfo){
     let _chat = new Chat();
+
+
     _chat.requestId = chatInfo.requestId;
     _chat.user = chatInfo.user;
     _chat.animal = chatInfo.animal;
     _chat.state = 'Open';
     let newChat = await _chat.save();
     if (!newChat) return;
+
+    let _user = await User.findOne({_id: chatInfo.user});
+    _user.requests.forEach(req => {
+      if (req._id == chatInfo.requestId){
+        req.chat = newChat._id;
+      }
+    });
+    await _user.save();
+
     newChat = JSON.parse(JSON.stringify(newChat));
     return newChat;
 }

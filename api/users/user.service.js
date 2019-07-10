@@ -4,6 +4,7 @@ const Roles = require("_helpers/roles");
 const User = require("models/user");
 const sgMail = require("@sendgrid/mail");
 const Role = require("models/role");
+const Chat = require("models/chat");
 const Animal = require("models/animal");
 var mongoose = require("mongoose");
 sgMail.setApiKey(config.sendGridApi);
@@ -296,6 +297,7 @@ async function getById(id) {
   const user = await User.findById(id)
     .populate("role")
     .populate("animals")
+    .populate("requests.animal")
     .exec();
   if (!user) return;
   return {
@@ -394,13 +396,11 @@ async function deleteRequest(userId, requestId){
       success: false,
       message: "Invalid Request"
     }
-    console.log(_request);
+    
     let _newRequests = _user.requests;
-    console.log(_newRequests);
-    console.log(_user.requests.indexOf(_request));
     _newRequests.splice(_user.requests.indexOf(_request), 1);
-    console.log(_newRequests);
     await User.findOneAndUpdate({_id: userId}, {requests: _newRequests});
+    await Chat.deleteMany({user : _user._id, requestId : _request._id});
 
   return {
     success: true
