@@ -226,6 +226,7 @@ export default {
       this.user = x;
       this.name = x.name;
       this.phonenumber = x.phonenumber;
+      this.date = x.birthdate;
       this.currentUser = x;
     });    
 

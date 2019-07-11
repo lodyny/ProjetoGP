@@ -90,6 +90,9 @@ export default {
       setTimeout(function() {userService.getById(vm.currentUser.id).then(x => {
         vm.currentUser = x;
         vm.myNotifications = x.notifications.reverse();
+        vm.unreadNotifications = x.notifications.filter(
+        notification => !notification.read
+      ).length;
       })}, 100);
     },
     readNotification(notificationId, item) {

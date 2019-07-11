@@ -55,7 +55,7 @@
                     :id="chat._id"
                     class="tabcontent"
                   >
-                    <span style="font-size:22px">Chatting with {{chat.user.name}}</span>
+                    <span style="font-size:22px">A falar com {{chat.user.name}}</span>
                     <span style="font-size:12px">({{chat._id}})</span>
                     <v-card>
                       <v-alert :value="true" color="info" outline icon="info" v-if="!petChat.chat_windows[active_tab]">

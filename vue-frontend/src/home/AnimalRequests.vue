@@ -145,7 +145,7 @@
                     <v-flex>
                       <v-card-text>
                         <h4>
-                          <p>Request details:</p>
+                          <p>Detalhes do animal:</p>
                         </h4>
                         <v-container
                           id="scroll-target"
@@ -171,7 +171,7 @@
                     <v-flex>
                       <v-card-text>
                         <h4>
-                          <p>Candidate details:</p>
+                          <p>Detalhes do candidato:</p>
                         </h4>
                         <a :href="'mailto:' + props.item.userEmail">{{props.item.userEmail}}</a>
                         <p>{{props.item.userPhone}}</p>
@@ -185,7 +185,7 @@
                         style="position:absolute;right:0;bottom:5px;font-size:10px"
                         @click="createChat(props.item._id, props.item.userId, props.item.animal, props.item)"
                       >
-                        Create Chat
+                        Criar conversa
                       </v-btn>
                     </span>
                       <v-btn
@@ -195,7 +195,7 @@
                         @click="redirectToChat"
                         style="position:absolute;right:0;bottom:5px;font-size:10px"
                       >
-                        Go to Chat
+                        Ir para conversa
                       </v-btn>
 
                     </v-flex>
