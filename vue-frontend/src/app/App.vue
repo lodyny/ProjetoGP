@@ -14,11 +14,11 @@
           
           <NotificationWindow/>
           <router-link v-if="isAdmin" to="/admin" class="nav-item nav-link">Administrador</router-link>
-          <router-link v-if="isAdmin" to="/allconversations" class="nav-item nav-link">Conversas</router-link>
-          <router-link v-if="!isAdmin" to="/myconversations" class="nav-item nav-link">Conversas</router-link>
+          <router-link v-if="isAdmin && currentUser" to="/allconversations" class="nav-item nav-link">Conversas</router-link>
+          <router-link v-if="!isAdmin && currentUser" to="/myconversations" class="nav-item nav-link">Conversas</router-link>
           <router-link v-if="isAdmin" to="/requests" class="nav-item nav-link">Pedidos</router-link>
           <router-link v-if="currentUser" to="/profile" class="nav-item nav-link">Perfil</router-link>
-          <router-link v-if="currentUser" to="/stream" class="nav-item nav-link">Streams</router-link>
+          <router-link to="/stream" class="nav-item nav-link">Streams</router-link>
           <router-link v-if="!currentUser" to="/signup" class="nav-item nav-link">Registar</router-link>
           <router-link v-if="!currentUser" to="/login" class="nav-item nav-link">Login</router-link>
           <a @click="logout" v-if="currentUser" class="nav-item nav-link">Logout</a>

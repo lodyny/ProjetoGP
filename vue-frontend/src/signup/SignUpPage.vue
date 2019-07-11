@@ -175,7 +175,7 @@ export default {
       errors_name: null,
       errors_pw: null,
       valid: false,
-      e1: false,
+      e1: true,
       validemail: false,
       existsmail: false,
       validepwC: false,

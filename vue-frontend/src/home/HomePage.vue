@@ -11,7 +11,7 @@
       right
     >
       {{message}}
-      <v-btn flat @click="snackbar = false">Close</v-btn>
+      <v-btn flat @click="snackbar = false">Fechar</v-btn>
     </v-snackbar>
     <!-- <RoleUpdate/>   -->
     <!-- <UserProfile/> -->

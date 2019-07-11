@@ -3,7 +3,7 @@
     
     <v-alert :value="true" color="warning" outline icon="warning"
     v-if="petsChat.length == 0" >
-      There are no animal requests chats
+      Não existem conversas
     </v-alert>
 
     <v-tabs
@@ -46,7 +46,7 @@
           <div class="tab-item-wrapper">
             <v-layout fill-height style="min-height:600px">
               <v-flex shrink>
-                <h5>Candidates</h5>
+                <h5>Candidatos</h5>
                 <v-layout column v-for="chat in petChat.chat_windows" :key="chat._id">
                   <v-chip
                     outline
@@ -73,11 +73,11 @@
                     class="tabcontent"
                     style="display:none"
                   >
-                    <span style="font-size:22px">Chatting with {{chat.user.name}}</span>
+                    <span style="font-size:22px">A falar com {{chat.user.name}}</span>
                     <span style="font-size:12px">({{chat._id}})</span>
                     <v-card>
                       <v-alert :value="true" color="info" outline icon="info" v-if="!visible_messages">
-                        No messages, nothing to see here!
+                        Sem mensagens, nada para ver aqui!
                       </v-alert>
                       <v-container style="height: 380px;" class="scroll-y" id="scroll-target">
                         <v-card-text v-html="visible_messages"  >

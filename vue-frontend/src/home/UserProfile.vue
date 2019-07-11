@@ -8,13 +8,13 @@
       top
       right
     >
-      {{message}} Success
-      <v-btn flat @click="snackbar = false">Close</v-btn>
+      {{message}} com sucesso
+      <v-btn flat @click="snackbar = false">Fechar</v-btn>
     </v-snackbar>
     <v-container  >
       <v-layout row wrap>
       <v-flex xs8 v-if="currentUser.requests.length > 0">
-    <h2>My requests</h2>
+    <h2>Meus pedidos</h2>
     <v-timeline >
       <v-timeline-item
         v-for="request in currentUser.requests"
@@ -24,23 +24,23 @@
       >
         <template v-slot:opposite>
           <img :src="request.animal.image" 
-          v-if="request.state == 'Accepted' || request.state == 'Refused'" 
+          v-if="request.state == 'Aceite' || request.state == 'Recusado'" 
           height="100px">
           
           <!-- <span v-if="request.state == 'Pending'">{{request.state}}</span> -->
-          <p><span v-if="request.state == 'Pending'">{{request.date}}</span></p>
+          <p><span v-if="request.state == 'Pendente'">{{request.date}}</span></p>
         </template>
         <template v-slot:icon>
           <v-avatar>
           <img :src="request.animal.image"
-          v-if="request.state == 'Pending'">
+          v-if="request.state == 'Pendente'">
 
           <img src="https://res.cloudinary.com/adotaqui/image/upload/v1562709461/check.png"
-          v-if="request.state == 'Accepted'">
+          v-if="request.state == 'Aceite'">
           <img src="https://res.cloudinary.com/adotaqui/image/upload/v1562709461/crossed.png"
-          v-if="request.state == 'Refused'">
+          v-if="request.state == 'Recusado'">
           <img src="https://res.cloudinary.com/adotaqui/image/upload/v1562709461/returned.png"
-          v-if="request.state == 'Returned'">
+          v-if="request.state == 'Devolvido'">
         </v-avatar>
         </template>
         <v-card>
@@ -56,7 +56,7 @@
     
     <v-layout justify-center  >
       <v-form @submit.prevent="submit">
-        <h2>My info</h2>
+        <h2>Minha informação</h2>
         <img v-if="initialImage" :src="initialImage" style="max-width:300px">
         <img v-if="!initialImage" src="https://via.placeholder.com/150">
         <input type="file" ref="file" style="display: none" @change="onFileChange">
@@ -263,7 +263,7 @@ export default {
             userData.image = responseObj.url;
           }
       userService.updateUser(vm.currentUser.id, userData);
-      vm.deploySnackbar("User update");
+      vm.deploySnackbar("Update de utilizador");
       }
 		xhr.send(formdata);		
       }

@@ -31,12 +31,12 @@
                 v-model="adoptionDetails"
               ></v-textarea>
               <v-alert :value="true" color="warning" outline icon="warning" v-if="!availability">
-                <p>You can only apply once to a animal</p>
+                <p>Só pode fazer um pedido por animal</p>
                 <span v-if="!hasChat">
-                Your request is still pending
+                O seu pedido ainda está pendente
                 </span>
                   <span v-if="hasChat">
-                There is a chat open for the request
+                Existe uma conversa para o seu pedido
                 </span>
                 <v-btn
                   v-if="hasChat"
@@ -98,7 +98,7 @@ export default {
           if (request.success === true)
             this.$router.push({
               name: "Home",
-              params: { outMessage: "Adoption request success!" }
+              params: { outMessage: "Pedido de adoção realizado com sucesso!" }
             });
         });
     }

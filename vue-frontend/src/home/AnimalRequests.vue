@@ -59,10 +59,10 @@
       >
         <template slot="headers">
           <tr>
-            <th style="width:1px">Delete</th>
-            <th>User</th>
+            <th style="width:1px">Apagar</th>
+            <th>Utilizador</th>
             <th>Animal</th>
-            <th>Date</th>
+            <th>Data de pedido</th>
             <th style="width:200px">
               <v-select
                 @change="stateChange"
@@ -74,7 +74,7 @@
                 :items="filters"
               ></v-select>
             </th>
-            <th style="width:1px">Actions</th>
+            <th style="width:1px">Acções</th>
           </tr>
         </template>
         <template v-slot:items="props">
@@ -101,19 +101,19 @@
               <v-icon
                 medium
                 class="mr-2"
-                v-if="props.item.state == 'Pending'"
+                v-if="props.item.state == 'Pendente'"
                 @click.native.stop
                 @click="refuseRequest(props.item.userId, props.item._id, props.item.animal)"
               >close</v-icon>
               <v-icon
                 medium
-                v-if="!props.item.animal.owner && props.item.state == 'Pending'"
+                v-if="!props.item.animal.owner && props.item.state == 'Pendente'"
                 @click.native.stop
                 @click="acceptRequest(props.item.userId, props.item._id, props.item.animal)"
               >check</v-icon>
               <v-icon
                 medium
-                v-if="props.item.state == 'Accepted'"
+                v-if="props.item.state == 'Aceite'"
                 @click.native.stop
                 @click="returnRequest(props.item.userId, props.item._id, props.item.animal._id, props.item.state)"
               >replay</v-icon>
@@ -177,13 +177,13 @@
                         <p>{{props.item.userPhone}}</p>
                       </v-card-text>
                      
-                     <span v-if="props.item.state == 'Pending'">
+                     <span v-if="props.item.state == 'Pendente'">
                       <v-btn
                         color="info"
                         class="white--text"
-                        v-if="!props.item.chat && !active_b"
+                        v-if="!props.item.chat"
                         style="position:absolute;right:0;bottom:5px;font-size:10px"
-                        @click="createChat(props.item._id, props.item.userId, props.item.animal)"
+                        @click="createChat(props.item._id, props.item.userId, props.item.animal, props.item)"
                       >
                         Create Chat
                       </v-btn>
@@ -191,7 +191,7 @@
                       <v-btn
                         color="success"
                         class="white--text"
-                        v-if="props.item.chat || active_b"
+                        v-if="props.item.chat"
                         @click="redirectToChat"
                         style="position:absolute;right:0;bottom:5px;font-size:10px"
                       >
@@ -210,7 +210,7 @@
             :value="true"
             color="error"
             icon="warning"
-          >Your search for "{{ search }}" found no results.</v-alert>
+          >Não foram encontrados resultados para "{{ search }}".</v-alert>
         </template>
       </v-data-table>
     </v-card>
@@ -234,6 +234,7 @@ export default {
       timeout: 2000,
       expand: false,
       snackbar: false,
+      index:null,
       message: "",
       dialog: false,
       deleteDialog: false,
@@ -284,16 +285,17 @@ export default {
         this.pagination.descending = false;
       }
     },
-    createChat(requestId, userId, animal){
+    createChat(requestId, userId, animal, prop){
       chatService.createChat(requestId, userId, animal._id);
-      this.deploySnackbar("Chat created");
+      prop.chat = true;
+      this.deploySnackbar("Conversa criada");
       this.active_b = true;
     },
     acceptRequest(userId, requestId, animal) {
       animalService.acceptAnimalRequest(userId, requestId).then(x => {
         if (x.success) {
           this.updateInfo(requestId, animal);
-          this.deploySnackbar("Accepted");
+          this.deploySnackbar("Aceite");
         }
       });
     },
@@ -301,7 +303,7 @@ export default {
       animalService.refuseAnimalRequest(userId, requestId).then(x => {
         if (x.success) {
           this.updateInfo(requestId, animal);
-          this.deploySnackbar("Refused");
+          this.deploySnackbar("Recusado");
         }
       });
     },
@@ -310,29 +312,18 @@ export default {
       let requestId = this.selected_prop['item_id'];
       let animalId = this.selected_prop['animal_id'];
       let requestState = this.selected_prop['item_state'];
-      console.log(userId);
-      if (requestState == "Accepted") {
+      
+      if (requestState == "Aceite") {
         animalService.returnAnimal(userId, animalId);
       }
       animalService.deleteAnimalRequest(userId, requestId).then(x => {
         if (x.success) {
           this.newList.forEach(element => {
-            console.log(element);
-            // if(element.)
+            if(requestId == element._id){
+                this.index = this.newList.indexOf(element);
+            }
           });
-          // this.usersList = [];
-          // userService.getAll().then(x => {
-          //   x.forEach(element => {
-          //     element.requests.forEach(request => {
-          //       request.name = element.name;
-          //       request.userId = element.id;
-          //       request.userEmail = element.email;
-          //       request.userPhone = element.phonenumber;
-          //       this.newList.push(request);
-          //     });
-          //   });
-          //   // this.newList = this.usersList;
-          // });
+          this.newList.splice(this.index, 1);
         }
       });
       this.deleteDialog = false;

@@ -15,14 +15,14 @@
       </template>
       <v-card width="300" style="margin-top:20px" v-if="myNotifications == 0">
           <v-card-actions>
-            No messages here
+            Não existem notificações
         </v-card-actions>
       </v-card>
       <v-card width="300" style="margin-top:20px" v-if="myNotifications != 0">
         
         <v-card-actions>
-          <v-btn color="#f4f4f4" @click="readAllNotifications()">Mark all as read</v-btn>
-          <v-btn color="black" flat @click="dialog = false">Close</v-btn>
+          <!-- <v-btn color="#f4f4f4" @click="readAllNotifications()">Ler todas</v-btn> -->
+          <v-btn color="black" flat @click="dialog = false">Fechar</v-btn>
         </v-card-actions>
 
       <v-card class="scroll" max-height="300px" >
@@ -30,12 +30,11 @@
           <v-card
             :class="!item.read ? 'specialCursor applyZoom' : ''"
             :style="item.read ? 'background-color:white' : 'background-color:#dcdcdc'"
-            @click="readNotification(item._id, item)"
           >
             <span>
               <v-layout>
                 <v-flex>
-                  <v-card-text style="font-size:12px;padding-top:7px;padding-bottom:7px">
+                  <v-card-text style="font-size:12px;padding-top:7px;padding-bottom:7px" @click="readNotification(item._id, item)">
                     <p v-if="item.read" style="font-size:16px;margin-bottom:10px;">{{item.title}}</p>
                     <p v-else style="font-size:16px;font-weight:bold;margin-bottom:10px;">{{item.title}}</p>
                     {{item.message}}
@@ -76,60 +75,64 @@ export default {
       currentUser: null,
       dialog: false,
       unreadNotifications: 0,
-      myNotifications: []
+      myNotifications: [],
+      index:null
     };
   },
   methods: {
     deleteNotification(notificationId){
+      
+      let vm = this;
+
       notificationService.deleteNotification(this.currentUser.id, notificationId);
-      userService.getById(this.currentUser.id).then(x => {
-        this.currentUser = x;
-      });
-      this.refreshNotifications(this.currentUser.notifications);
-      console.log(this.currentUser.id);
-      console.log(notificationId);
+      this.myNotifications = [];
+
+      setTimeout(function() {userService.getById(vm.currentUser.id).then(x => {
+        vm.currentUser = x;
+        vm.myNotifications = x.notifications.reverse();
+      })}, 100);
     },
     readNotification(notificationId, item) {
-      notificationService.readNotification(this.currentUser.id, notificationId);
-      userService.getById(this.currentUser.id).then(x => {
-        this.currentUser = x;
-      });
-      item.read = true;
-      this.refreshNotifications(this.currentUser.notifications);
-      let route = item.title == 'New Conversation' ? 'Myconversations' : 'Profile';
-      console.log(route);
-      console.log(item.title);
 
-      this.$router.push({
-        name: route,
-        });
-    },
-    readAllNotifications() {
-      console.log('readall');
-    },
-    refreshNotifications(notifications){
-      this.unreadNotifications = 0;
-      this.unreadNotifications = this.currentUser.notifications.filter(
+      let vm = this;
+
+      notificationService.readNotification(this.currentUser.id, notificationId);
+      this.myNotifications = [];
+
+      setTimeout(function() {userService.getById(vm.currentUser.id).then(x => {
+        vm.currentUser = x;
+        vm.myNotifications = x.notifications.reverse();
+        vm.unreadNotifications = x.notifications.filter(
         notification => !notification.read
       ).length;
-      this.myNotifications = [];
-      notifications.reverse();
-      notifications.forEach(element => {
-        this.myNotifications.push(element);
+      })}, 100);
+      
+    },
+    readAllNotifications() {
+      let vm = this;
+      let userId = this.currentUser.id;
+      console.log(this.currentUser.notifications);
+      this.currentUser.notifications.forEach(element => {
+        notificationService.readNotification(this.currentUser.id, element._id);
+        console.log('here');
+        console.log(element._id, this.currentUser.id);
       });
-    }
+      
+      this.myNotifications = [];
+
+      setTimeout(function() {userService.getById(vm.currentUser.id).then(x => {
+        vm.currentUser = x;
+        vm.myNotifications = x.notifications.reverse();
+        vm.unreadNotifications = x.notifications.filter(
+        notification => !notification.read
+      ).length;
+      })}, 100);
+      console.log(this.currentUser.notifications);
+    },
   },
   computed: {
     isAdmin() {
       return this.currentUser && this.currentUser.role === Role.Admin;
-    }
-  },
-  watch: {
-    currentUser: function(val) {
-      this.unreadNotifications = val.notifications.filter(
-        notification => !notification.read
-      ).length;
-      this.myNotifications = val.notifications.reverse();
     }
   },
   created() {
@@ -138,7 +141,12 @@ export default {
     });
     userService.getById(this.currentUser.id).then(x => {
       this.currentUser = x;
+      this.unreadNotifications = x.notifications.filter(
+        notification => !notification.read
+      ).length;
+      this.myNotifications = x.notifications.reverse();
     });
+
   }
 };
 </script>

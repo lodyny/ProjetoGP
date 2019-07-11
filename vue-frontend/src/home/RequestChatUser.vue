@@ -3,7 +3,7 @@
     
     <v-alert :value="true" color="warning" outline icon="warning"
     v-if="petsChat.length == 0" >
-      There are no animal requests chats
+      Não existem conversas
     </v-alert>
 
 
@@ -59,7 +59,7 @@
                     <span style="font-size:12px">({{chat._id}})</span>
                     <v-card>
                       <v-alert :value="true" color="info" outline icon="info" v-if="!petChat.chat_windows[active_tab]">
-                        No messages, nothing to see here!
+                        Sem mensagens, nada para ver aqui!
                       </v-alert>
                       <v-container style="height: 380px;" class="scroll-y" id="scroll-target">
                         <v-card-text v-html="my_messages"  >

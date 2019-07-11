@@ -6,7 +6,8 @@ export const userService = {
     getById,
     updateRole,
     checkUserAnimalRequest,
-    updateUser
+    updateUser,
+    updateState
 };
 
 function getAll() {
@@ -26,7 +27,13 @@ function getById(id) {
 }
 
 function updateRole(role, id) {
-    return fetch(`${config.apiUrl}/users/${id}`, requestOptions.post({role:role}))
+    return fetch(`${config.apiUrl}/users/${id}`, requestOptions.post({userData: {role:role}}))
+        .then(handleResponse)
+        .then(request => { return request;});
+}
+
+function updateState(banned, id) {
+    return fetch(`${config.apiUrl}/users/${id}`, requestOptions.post({userData: {banned:banned}}))
         .then(handleResponse)
         .then(request => { return request;});
 }

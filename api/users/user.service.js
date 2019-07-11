@@ -60,7 +60,7 @@ async function acceptRequest(userId, requestId){
   _user.requests.forEach(req => {
     if (req._id == requestId){
       animalId = req.animal;
-      req.state = "Accepted";
+      req.state = "Aceite";
     }
   });
 
@@ -82,7 +82,7 @@ async function acceptRequest(userId, requestId){
 
   await _user.save();
 
-  let _notification = {'title' : 'Request state change', 'message' : 'Your Request has been accepted', 'route' : 'Profile'};
+  let _notification = {'title' : 'Mudança de estado pedido', 'message' : 'O seu pedido foi aceite', 'route' : 'Profile'};
   await newNotification(userId, _notification);// Enviar notificação a avisar o utilizador
 
   return {
@@ -96,13 +96,13 @@ async function refuseRequest(userId, requestId){
 
   _user.requests.forEach(req => {
     if (req._id == requestId)
-      req.state = "Refused";
+      req.state = "Recusado";
   });
 
   await _user.save();
 
   // Enviar notficação para o utilizador
-  let _notification = {'title' : 'Request state change', 'message' : 'Your Request has been denied', 'route' : 'Profile'};
+  let _notification = {'title' : 'Mudança de estado pedido', 'message' : 'O seu pedido foi recusado', 'route' : 'Profile'};
   await newNotification(userId, _notification);
 
   return {
@@ -174,6 +174,9 @@ async function update(id, user){
   
   if(user.userData.name != null)
     _user.name = user.userData.name;
+
+  if(user.userData.banned != null)
+    _user.banned = user.userData.banned;
 
   if(user.userData.birthdate != null)
     _user.birthdate = user.userData.birthdate;
@@ -254,19 +257,19 @@ async function authenticate({
     .exec();
   if (!user) return {
     success: false,
-    message: "Email or password is incorrect"
+    message: "Email ou password incorrectos"
   };
   if (!user.emailconfirmed) return {
     success: false,
-    message: "Email is not active yet."
+    message: "Conta ainda não está activa"
   };
   if (!user.validPassword(password)) return {
     success: false,
-    message: "Email or password is incorrect"
+    message: "Email ou password incorrectos"
   };
   if (user.banned) return {
     success: false,
-    message: "User banned"
+    message: "Utilizador banido"
   };
   const token = jwt.sign({
     sub: user.id,
@@ -366,7 +369,7 @@ async function createRequest(req) {
     email: req.email
   });
   let _request = req.request;
-  _request.state = 'Pending';
+  _request.state = 'Pendente';
 
 
 var d = new Date,
@@ -386,7 +389,7 @@ dformat = [d.getDay().padLeft(),
 
   await User.findOneAndUpdate({email: req.email}, {requests: _user.requests});
 
-  let _notification = {'title' : 'Request sucessfuly made', 'message' : 'Pending consideration', 'route' : 'Profile'};
+  let _notification = {'title' : 'Pedido feito com sucesso', 'message' : 'Pedido pendente', 'route' : 'Profile'};
   await newNotification(_user._id, _notification);
 
   return {
@@ -416,7 +419,7 @@ async function deleteRequest(userId, requestId){
     await User.findOneAndUpdate({_id: userId}, {requests: _newRequests});
     await Chat.deleteMany({user : _user._id, requestId : _request._id});
 
-    let _notification = {'title' : 'Request removed', 'message' : 'A request has been removed', 'route' : 'Profile'};
+    let _notification = {'title' : 'Pedido removido', 'message' : 'Um pedido foi removido', 'route' : 'Profile'};
     await newNotification(_user._id, _notification);
 
   return {
@@ -449,7 +452,7 @@ async function returnAnimal(userId, animalId){
     await User.findOneAndUpdate({_id: userId}, {animals: _newAnimals});
     await removeOwnership(_animal);
 
-    let _notification = {'title' : 'Request removed', 'message' : 'A request has been removed from the system', 'route' : 'Profile'};
+    let _notification = {'title' : 'Animal devolvido', 'message' : 'Um animal foi devolvido', 'route' : 'Profile'};
     await newNotification(_user._id, _notification);
 
   return {
@@ -472,7 +475,7 @@ async function returnRequest(userId, requestId){
   console.log(_user);
   _user.requests.forEach(req => {
     if (req._id == requestId)
-      req.state = "Returned";
+      req.state = "Devolvido";
   });
 
   await _user.save();

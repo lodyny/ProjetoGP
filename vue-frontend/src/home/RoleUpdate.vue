@@ -8,12 +8,12 @@
       top
       right
     >
-      Update Success
+      Updated com sucesso
       <v-btn
         flat
         @click="snackbar = false"
       >
-        Close
+        Fechar
       </v-btn>
     </v-snackbar>
     <v-container grid-list-xl>
@@ -41,9 +41,20 @@
     style="padding-left:20px;padding-right:20px;margin-top:30px;"
     v-model="user.role"
     :items="roles"
-    label="Role"
+    label="Cargo"
     @change="updateRole(user.role, user)"
     ></v-select>
+
+    <v-select
+    
+    :disabled="isDisabled(user.id)"
+    style="padding-left:20px;padding-right:20px;margin-top:30px;"
+    v-model="user.banned"
+    :items="banstate"
+    label="Banido"
+    @change="updateState(user.banned, user)"
+    ></v-select>
+
     </v-card>
     </v-flex>
       </v-layout>
@@ -69,7 +80,8 @@ export default {
       currentUser:null,
       disable:false,
       snackbar : false,
-      roles: ['Admin','User','Vet']
+      roles: ['Admin','User','Vet'],
+      banstate : [true, false]
     };
   },
   computed:{
@@ -80,6 +92,13 @@ export default {
       // if (!(newRole == selectedUser.role)){
       this.disable = true;
       userService.updateRole(newRole, selectedUser.id).then(this.disable = false);
+      this.snackbar = true;
+      // }
+    },
+    updateState(newstate, selectedUser){
+      // if (!(newRole == selectedUser.role)){
+      this.disable = true;
+      userService.updateState(newstate, selectedUser.id).then(this.disable = false);
       this.snackbar = true;
       // }
     },

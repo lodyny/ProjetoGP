@@ -73,8 +73,13 @@ async function getOpenChats() {
   }
 
   async function createChat(chatInfo){
-    let _chat = new Chat();
 
+    let _chat = await Chat.findOne({requestId: chatInfo.requestId, user : chatInfo.user, animal : chatInfo.animal});
+    if(_chat){
+      return;
+    }
+
+    let _chat = new Chat();
 
     _chat.requestId = chatInfo.requestId;
     _chat.user = chatInfo.user;
@@ -91,7 +96,7 @@ async function getOpenChats() {
     });
     await _user.save();
 
-    let _notification = {'title' : 'New Conversation', 'message' : 'Admin has started a conversation'};
+    let _notification = {'title' : 'Nova conversa', 'message' : 'Uma conversa foi iniciada'};
     await userService.newNotification(_user._id, _notification);
 
     newChat = JSON.parse(JSON.stringify(newChat));
