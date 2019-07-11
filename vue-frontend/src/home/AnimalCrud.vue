@@ -8,8 +8,8 @@
       top
       right
     >
-      {{message}} Success
-      <v-btn flat @click="snackbar = false">Close</v-btn>
+      {{message}} Sucesso
+      <v-btn flat @click="snackbar = false">Fechar</v-btn>
     </v-snackbar>
     <v-container grid-list-sm>
       <v-layout row wrap>
@@ -21,7 +21,7 @@
                   <v-flex xs8>
                     <v-text-field
                       style="padding-left:20px;padding-right:20px;margin-top:30px;"
-                      label="Animal name"
+                      label="Nome do animal"
                       v-model="animalName"
                       clearable
                       maxlength="20"
@@ -32,13 +32,13 @@
                       style="padding-left:20px;padding-right:20px;margin-top:30px;"
                       v-model="animalSex"
                       :items="sex"
-                      label="Sex"
+                      label="Sexo"
                     ></v-select>
                   </v-flex>
                 </v-layout>
                 <v-textarea
                   style="padding-left:20px;padding-right:20px;margin-top:0px;"
-                  label="Details"
+                  label="Detalhes"
                   counter
                   class="mb-0 pa-0;"
                   maxlength="700"
@@ -50,23 +50,23 @@
                 <v-bottom-nav :active.sync="bottomNav" :value="true" absolute color="transparent">
 
                   <v-btn color="teal" flat @click="backClick">
-                    <span style="margin-top:4px">Cancel without saving</span>
+                    <span style="margin-top:4px">Voltar</span>
                     <v-icon>fas fa-undo</v-icon>
                   </v-btn>
 
                   <v-btn color="teal" @click="saveClick" flat>
-                    <span style="margin-top:4px">Save</span>
+                    <span style="margin-top:4px">Guardar</span>
                     <v-icon>fas fa-save</v-icon>
                   </v-btn>
                   <input type="file" ref="file" style="display: none" @change="onFileChange">
 
                   <v-btn color="teal" flat v-if="!animalImage" @click="$refs.file.click()">
-                    <span style="margin-top:4px">Attach photo</span>
+                    <span style="margin-top:4px">Anexar foto</span>
                     <font-awesome-icon icon="camera" size="2x"/>
                   </v-btn>
 
                   <v-btn color="teal" flat v-if="animalImage" @click="removeImage">
-                    <span style="margin-top:4px">Remove photo</span>
+                    <span style="margin-top:4px">Remover foto</span>
                     <font-awesome-icon icon="trash" size="2x"/>
                   </v-btn>
                 </v-bottom-nav>
@@ -114,7 +114,7 @@
                   <v-layout column>
                     <v-flex>
                       <v-text-field
-                        label="Weight"
+                        label="Peso"
                         @keypress="isNumber($event)"
                         v-model="animalWeight"
                       >
@@ -129,7 +129,7 @@
                   <v-layout column>
                     <v-flex d-flex>
                       <v-text-field
-                        label="Height"
+                        label="Altura"
                         @keypress="isNumber($event)"
                         v-model="animalWeight"
                       >
@@ -158,7 +158,7 @@
                           <v-text-field
                             class=" text-colort"
                             v-model="animalBirthday"
-                            label="Birthday"
+                            label="Data nascimento"
                             readonly
                             v-on="on"
                           >
@@ -220,7 +220,7 @@ export default {
       animalBirthday : null,
       animalImage: "",
       file: [],
-      sex: ["Male", "Female"],
+      sex: ["Macho", "Femea"],
       localBreed: null,
       currentIcon: "fas fa-paw",
       date: new Date().toISOString().substr(0, 10),
@@ -248,7 +248,7 @@ export default {
 			xhr.open('POST', "https://api.cloudinary.com/v1_1/adotaqui/image/upload",true);
       const animal = this.animalObj;
       const animalData = { name: this.animalName,
-            gender: this.animalSex == 'Female' ? 2 : 1,
+            gender: this.animalSex == 'Femea' ? 2 : 1,
             breed: this.animalBreed,
             height: this.animalHeight,
             weight: this.animalWeight,
@@ -330,7 +330,7 @@ export default {
   mounted() {
     if(this.animalObj){
     this.animalName = this.animalObj.name;
-    this.animalSex = this.animalObj.gender == 2 ? 'Female' : 'Male';
+    this.animalSex = this.animalObj.gender == 2 ? 'Femea' : 'Macho';
     this.animalDetails = this.animalObj.details;
     // this.species.forEach(element => {
     //     if (element.name == this.animalSpecie) {

@@ -7,7 +7,7 @@
             <v-flex d-flex>
               <v-card style="margin-top:-2px;padding-bottom:60px;height:570px;">
                 <v-card-title class="justify-center" style="margin-top:15px; margin-bottom:-20px">
-                  <h1>Adopt {{current_animal.name}}</h1>
+                  <h1>Adoptar {{current_animal.gender == 1 ? 'o' : 'a'}} {{current_animal.name}}</h1>
                 </v-card-title>
                 <v-img :src="current_animal.image" height="490px" contain></v-img>
               </v-card>
@@ -21,7 +21,7 @@
               <v-container id="scroll-target" style="max-height: 400px;" class="scroll-y"></v-container>
               <v-textarea
                 style="padding-left:20px;padding-right:20px;margin-top:-27px; ma-0 pa-0"
-                label="Request details"
+                label="Detalhes do pedido"
                 counter
                 class="mb-0 pa-0;"
                 maxlength="700"
@@ -50,7 +50,7 @@
                 @click="submit()"
                 v-if="availability"
                 style="float:right; margin-right:20px; margin-top:30px;"
-              >Submit request</v-btn>
+              >Submeter pedido</v-btn>
             </v-card>
             <v-flex d-flex style="min-height:450px;"></v-flex>
           </v-layout>

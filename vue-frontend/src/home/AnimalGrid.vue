@@ -18,7 +18,7 @@
                 <h3
                   class="card-tile removeall"
                   style="margin-top:10px;font-size: 14px;line-height: 1.0;font-weight: bold"
-                >Add animal</h3>
+                >Adicionar animal</h3>
               </div>
             </v-card-title>
           </v-card>

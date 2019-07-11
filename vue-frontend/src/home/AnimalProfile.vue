@@ -17,17 +17,17 @@
                 </v-container>
                 <v-bottom-nav :active.sync="bottomNav" :value="true" absolute color="transparent">
                   <v-btn v-if="!singleMode" color="teal" flat @click="onPreviousProfile()">
-                    <span>Previous</span>
+                    <span>Anterior</span>
                     <v-icon>fas fa-arrow-left</v-icon>
                   </v-btn>
 
                   <v-btn color="teal" @click="onBackPressed" flat>
-                    <span>Back</span>
+                    <span>Voltar</span>
                     <v-icon>fas fa-undo</v-icon>
                   </v-btn>
 
                   <v-btn v-if="!singleMode" color="teal" flat @click="onNextProfile()">
-                    <span>Next</span>
+                    <span>Próximo</span>
                     <v-icon>fas fa-arrow-right</v-icon>
                   </v-btn>
                 </v-bottom-nav>

@@ -8,18 +8,36 @@
       top
       right
     >
-      {{message}} Success
-      <v-btn flat @click="snackbar = false">Close</v-btn>
+      {{message}} Sucesso
+      <v-btn flat @click="snackbar = false">Fechar</v-btn>
     </v-snackbar>
+    <v-dialog
+      width="500"
+      v-model="deleteDialog"
+    >
+    <v-card>
+      <v-toolbar color="blue" dense flat>
+        <v-toolbar-title class="white--text">Confirmar apagar pedido</v-toolbar-title>
+      </v-toolbar>
+      <v-card-text><p>Está prestes a apagar um pedido</p>
+      <p>O animal correspondente será retornado à lista principal. O pedido sobre o animal e chat serão apagados</p></v-card-text>
+      <v-card-actions class="pt-0">
+        <v-spacer></v-spacer>
+        <v-btn color="primary darken-1" flat="flat" @click="deleteRequest()">Sim</v-btn>
+        <v-btn color="grey" flat="flat" @click="deleteDialog = false">Cancelar</v-btn>
+      </v-card-actions>
+    </v-card>
+    </v-dialog>
+
     <v-card>
       <v-card-title>
-        <h1>Animal Requests</h1>
+        <h1>Pedidos de adoção</h1>
         <v-spacer></v-spacer>
         <div>
           <v-text-field
             v-model="search"
             append-icon="search"
-            label="Search"
+            label="Pesquisar"
             single-line
             hide-details
             style="padding-top: 0px; margin-right:10px"
@@ -29,7 +47,7 @@
           color="warning"
           dark
           @click="expand = !expand"
-        >{{ expand ? 'Keep' : 'Close' }} other rows</v-btn>
+        >{{ expand ? 'Manter' : 'Fechar' }} multiplas linhas</v-btn>
       </v-card-title>
       <v-data-table
         :headers="headers"
@@ -62,32 +80,11 @@
         <template v-slot:items="props">
           <tr @click="props.expanded = !props.expanded">
             <td>
-                                <v-dialog
-      v-model="deleteDialog"
-      width="500"
-    >
-      <template v-slot:activator="{ on }">
+  
          <v-icon
                 medium
-                v-on="on"
-                @click="selectProp(props.item.userId, props.item._id, props.item.animal._id, props.item.state)"
+                @click.stop="deleteDialog = true, selectProp(props.item.userId, props.item._id, props.item.animal._id, props.item.state)"
               >delete</v-icon>
-      </template>
-
-    <v-card>
-      <v-toolbar color="blue" dense flat>
-        <v-toolbar-title class="white--text">Delete Request Confirmation</v-toolbar-title>
-      </v-toolbar>
-      <v-card-text><p>You're about to delete a request, is this your intention?</p>
-      <p>The animal will be returned to the main list and user/animal chat deleted</p></v-card-text>
-      <v-card-actions class="pt-0">
-        <v-spacer></v-spacer>
-        <v-btn color="primary darken-1" flat="flat" @click="deleteRequest()">Yes</v-btn>
-        <v-btn color="grey" flat="flat" @click="deleteDialog = false">Cancel</v-btn>
-      </v-card-actions>
-    </v-card>
-    </v-dialog>
-
             </td>
             <td class="text-xs-left grey lighten-4">{{ props.item.name }}</td>
             <td class="text-xs-left">
@@ -261,6 +258,7 @@ export default {
 
   methods: {
     selectProp(userId, item_id, animal_id, item_state) {
+      console.log('selectProp');
         this.selected_prop['userId'] = userId;
         this.selected_prop['item_id'] = item_id;
         this.selected_prop['animal_id'] = animal_id;
@@ -312,24 +310,29 @@ export default {
       let requestId = this.selected_prop['item_id'];
       let animalId = this.selected_prop['animal_id'];
       let requestState = this.selected_prop['item_state'];
+      console.log(userId);
       if (requestState == "Accepted") {
         animalService.returnAnimal(userId, animalId);
       }
       animalService.deleteAnimalRequest(userId, requestId).then(x => {
         if (x.success) {
-          this.usersList = [];
-          userService.getAll().then(x => {
-            x.forEach(element => {
-              element.requests.forEach(request => {
-                request.name = element.name;
-                request.userId = element.id;
-                request.userEmail = element.email;
-                request.userPhone = element.phonenumber;
-                this.usersList.push(request);
-              });
-            });
-            this.newList = this.usersList;
+          this.newList.forEach(element => {
+            console.log(element);
+            // if(element.)
           });
+          // this.usersList = [];
+          // userService.getAll().then(x => {
+          //   x.forEach(element => {
+          //     element.requests.forEach(request => {
+          //       request.name = element.name;
+          //       request.userId = element.id;
+          //       request.userEmail = element.email;
+          //       request.userPhone = element.phonenumber;
+          //       this.newList.push(request);
+          //     });
+          //   });
+          //   // this.newList = this.usersList;
+          // });
         }
       });
       this.deleteDialog = false;

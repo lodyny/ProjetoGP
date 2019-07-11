@@ -417,7 +417,7 @@ async function deleteRequest(userId, requestId){
     await Chat.deleteMany({user : _user._id, requestId : _request._id});
 
     let _notification = {'title' : 'Request removed', 'message' : 'A request has been removed', 'route' : 'Profile'};
-    await newNotification(user._id, _notification);
+    await newNotification(_user._id, _notification);
 
   return {
     success: true
