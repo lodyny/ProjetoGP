@@ -74,8 +74,8 @@ async function getOpenChats() {
 
   async function createChat(chatInfo){
 
-    let _chat = await Chat.findOne({requestId: chatInfo.requestId, user : chatInfo.user, animal : chatInfo.animal});
-    if(_chat){
+    let _chat_t = await Chat.findOne({requestId: chatInfo.requestId, user : chatInfo.user, animal : chatInfo.animal});
+    if(_chat_t){
       return;
     }
 

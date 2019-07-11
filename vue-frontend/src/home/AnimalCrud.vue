@@ -8,7 +8,7 @@
       top
       right
     >
-      {{message}} Sucesso
+      {{message}} com sucesso
       <v-btn flat @click="snackbar = false">Fechar</v-btn>
     </v-snackbar>
     <v-container grid-list-sm>
@@ -266,10 +266,10 @@ export default {
           console.log(animalData.image);
           if(animal){
               animalService.updateAnimal(animal._id, animalData);
-              vm.deploySnackbar("Animal update");
+              vm.deploySnackbar("Update de animal");
           } else {
               animalService.createAnimal(animalData);
-              vm.deploySnackbar("Animal creation");
+              vm.deploySnackbar("Criação de animal");
           }
 			};
 			xhr.send(formdata);		

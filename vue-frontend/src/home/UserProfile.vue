@@ -47,7 +47,7 @@
           <v-card-title class="title breaker">Adoção de {{request.animal.name}} &nbsp;({{request.state}})</v-card-title>
           <v-card-text class="white text--primary">
             <p class="breaker">{{request.details}}.</p> 
-            <v-btn class="mx-0" v-if="request.chat" @click="redirectToChat(request.animal._id)">Go to chats</v-btn>
+            <v-btn class="mx-0" v-if="request.chat" @click="redirectToChat(request.animal._id)">Ir para conversas</v-btn>
           </v-card-text>
         </v-card>
       </v-timeline-item>
@@ -60,8 +60,8 @@
         <img v-if="initialImage" :src="initialImage" style="max-width:300px">
         <img v-if="!initialImage" src="https://via.placeholder.com/150">
         <input type="file" ref="file" style="display: none" @change="onFileChange">
-        <v-btn v-if="initialImage" @click="removeImage" block color="#FC6600" class="white--text">Change picture</v-btn>
-        <v-btn v-if="!initialImage" @click="$refs.file.click()" block color="#FC6600" class="white--text">Attach picture</v-btn>
+        <v-btn v-if="initialImage" @click="removeImage" block color="#FC6600" class="white--text">Remover foto</v-btn>
+        <v-btn v-if="!initialImage" @click="$refs.file.click()" block color="#FC6600" class="white--text">Adicionar foto</v-btn>
 
         <v-text-field
           class="ma-0"
@@ -133,7 +133,7 @@
             @change="save"
           ></v-date-picker>
         </v-menu>
-        <v-btn block @click="saveClick()" color="#FC6600" class="white--text">Save</v-btn>
+        <v-btn block @click="saveClick()" color="#FC6600" class="white--text">Salvar</v-btn>
       </v-form>
     </v-layout>
     </v-layout>
