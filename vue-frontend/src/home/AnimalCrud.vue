@@ -238,12 +238,13 @@ export default {
             details: this.animalDetails,
             image: this.animalImage
           };
+      console.log(animalData.image);
 			xhr.onload = function () {
-          if (this.responseText){ 
+          if (this.status == 200 && this.responseText){ 
             const responseObj = JSON.parse(this.responseText);
             animalData.image = responseObj.url;
           }
-          console.log(animalData);
+          console.log(animalData.image);
           if(animal){
               animalService.updateAnimal(animal._id, animalData);
           } else {
