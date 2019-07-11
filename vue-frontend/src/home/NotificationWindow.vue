@@ -13,12 +13,12 @@
           </div>
         </span>
       </template>
-      <v-card width="300" style="margin-top:20px" v-if="unreadNotifications == 0">
+      <v-card width="300" style="margin-top:20px" v-if="myNotifications == 0">
           <v-card-actions>
             No messages here
         </v-card-actions>
       </v-card>
-      <v-card width="300" style="margin-top:20px" v-if="unreadNotifications != 0">
+      <v-card width="300" style="margin-top:20px" v-if="myNotifications != 0">
         
         <v-card-actions>
           <v-btn color="#f4f4f4" @click="readAllNotifications()">Mark all as read</v-btn>
@@ -26,22 +26,31 @@
         </v-card-actions>
 
       <v-card class="scroll" max-height="300px" >
-        <span v-for="(item, i) in myNotifications" :key="i">
+        <span v-for="(item, i) in myNotifications"
+         v-bind:item="item"
+          v-bind:key="item.id">
           <v-card
             :class="!item.read ? 'specialCursor applyZoom' : ''"
-            :style="item.read ? 'background-color:white' : 'background-color:#f4f4f4'"
-            @click="readNotification(item)"
+            :style="item.read ? 'background-color:white' : 'background-color:#dcdcdc'"
+            @click="readNotification(item._id, item)"
           >
             <span>
               <v-layout>
                 <v-flex>
                   <v-card-text style="font-size:12px;padding-top:7px;padding-bottom:7px">
-                    <p style="font-size:16px;font-weight:bold;margin-bottom:10px;">{{item.title}}</p>
+                    <p v-if="item.read" style="font-size:16px;margin-bottom:10px;">{{item.title}}</p>
+                    <p v-else style="font-size:16px;font-weight:bold;margin-bottom:10px;">{{item.title}}</p>
                     {{item.message}}
                   </v-card-text>
                   <span
                     style="position:absolute;right:0;bottom:5px;margin-right:5px;font-size:10px;"
                   >{{item.date}}</span>
+                  <span
+                    style="position:absolute;right:0;top:0;padding:0;">
+                    <v-btn flat icon @click="deleteNotification(item._id)">
+                    <font-awesome-icon icon="trash" size="1x"/>
+                    </v-btn>
+                    </span>
                 </v-flex>
               </v-layout>
             </span>
@@ -58,8 +67,9 @@
 </style>
 
 <script>
-import { authenticationService } from "@/_services";
+import { authenticationService, userService, notificationService } from "@/_services";
 import { router, Role } from "@/_helpers";
+import { constants } from 'crypto';
 
 export default {
   name: "NotificationWindow",
@@ -72,11 +82,36 @@ export default {
     };
   },
   methods: {
-    readNotification(val) {
-      console.log(val);
+    deleteNotification(notificationId){
+      notificationService.deleteNotification(this.currentUser.id, notificationId);
+      userService.getById(this.currentUser.id).then(x => {
+        this.currentUser = x;
+      });
+      this.refreshNotifications(this.currentUser.notifications);
+      console.log(this.currentUser.id);
+      console.log(notificationId);
+    },
+    readNotification(notificationId, item) {
+      notificationService.readNotification(this.currentUser.id, notificationId);
+      userService.getById(this.currentUser.id).then(x => {
+        this.currentUser = x;
+      });
+      item.read = true;
+      this.refreshNotifications(this.currentUser.notifications);
     },
     readAllNotifications() {
-      this.dialog = false;
+      console.log('readall');
+    },
+    refreshNotifications(notifications){
+      this.unreadNotifications = 0;
+      this.unreadNotifications = this.currentUser.notifications.filter(
+        notification => !notification.read
+      ).length;
+      this.myNotifications = [];
+      notifications.reverse();
+      notifications.forEach(element => {
+        this.myNotifications.push(element);
+      });
     }
   },
   computed: {
@@ -89,11 +124,14 @@ export default {
       this.unreadNotifications = val.notifications.filter(
         notification => !notification.read
       ).length;
-      this.myNotifications = val.notifications;
+      this.myNotifications = val.notifications.reverse();
     }
   },
   created() {
     authenticationService.currentUser.subscribe(x => {
+      this.currentUser = x;
+    });
+    userService.getById(this.currentUser.id).then(x => {
       this.currentUser = x;
     });
   }

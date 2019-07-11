@@ -62,11 +62,32 @@
         <template v-slot:items="props">
           <tr @click="props.expanded = !props.expanded">
             <td>
-              <v-icon
+                                <v-dialog
+      v-model="deleteDialog"
+      width="500"
+    >
+      <template v-slot:activator="{ on }">
+         <v-icon
                 medium
-                @click.native.stop
-                @click="deleteRequest(props.item.userId, props.item._id, props.item.animal._id, props.item.state)"
+                v-on="on"
+                @click="selectProp(props.item.userId, props.item._id, props.item.animal._id, props.item.state)"
               >delete</v-icon>
+      </template>
+
+    <v-card>
+      <v-toolbar color="blue" dense flat>
+        <v-toolbar-title class="white--text">Delete Request Confirmation</v-toolbar-title>
+      </v-toolbar>
+      <v-card-text><p>You're about to delete a request, is this your intention?</p>
+      <p>The animal will be returned to the main list and user/animal chat deleted</p></v-card-text>
+      <v-card-actions class="pt-0">
+        <v-spacer></v-spacer>
+        <v-btn color="primary darken-1" flat="flat" @click="deleteRequest()">Yes</v-btn>
+        <v-btn color="grey" flat="flat" @click="deleteDialog = false">Cancel</v-btn>
+      </v-card-actions>
+    </v-card>
+    </v-dialog>
+
             </td>
             <td class="text-xs-left grey lighten-4">{{ props.item.name }}</td>
             <td class="text-xs-left">
@@ -131,8 +152,8 @@
                         </h4>
                         <v-container
                           id="scroll-target"
-                          style="max-height: 90px; padding:0px;"
-                          class="scroll-y"
+                          style="max-height: 90px; max-width:500px; padding:0px;"
+                          class="scroll-y breaker"
                         >{{props.item.details}}</v-container>
                       </v-card-text>
                     </v-flex>
@@ -158,15 +179,28 @@
                         <a :href="'mailto:' + props.item.userEmail">{{props.item.userEmail}}</a>
                         <p>{{props.item.userPhone}}</p>
                       </v-card-text>
-                      <span
-                        class="pointerCursor"
-                        style="position:absolute;right:0;bottom:5px;font-size:10px;"
+                     
+                     <span v-if="props.item.state == 'Pending'">
+                      <v-btn
+                        color="info"
+                        class="white--text"
+                        v-if="!props.item.chat && !active_b"
+                        style="position:absolute;right:0;bottom:5px;font-size:10px"
+                        @click="createChat(props.item._id, props.item.userId, props.item.animal)"
                       >
-                        <i
-                          class="fas fa-envelope mr-3"
-                          style="width:25px; height:25px;"
-                        ></i>
-                      </span>
+                        Create Chat
+                      </v-btn>
+                    </span>
+                      <v-btn
+                        color="success"
+                        class="white--text"
+                        v-if="props.item.chat || active_b"
+                        @click="redirectToChat"
+                        style="position:absolute;right:0;bottom:5px;font-size:10px"
+                      >
+                        Go to Chat
+                      </v-btn>
+
                     </v-flex>
                   </v-layout>
                 </v-card>
@@ -191,7 +225,7 @@
 </style>
 
 <script>
-import { authenticationService, userService, animalService } from "@/_services";
+import { authenticationService, userService, animalService, chatService } from "@/_services";
 
 export default {
   name: "AnimalRequests",
@@ -205,8 +239,11 @@ export default {
       snackbar: false,
       message: "",
       dialog: false,
+      deleteDialog: false,
+      active_b: false,
       tempOwner: null,
       search: "",
+      selected_prop:{userId: '', item_id: '', animal_id: '', item_state: ''},
       pagination: {
         sortBy: "state",
         ascending: true,
@@ -223,6 +260,17 @@ export default {
   },
 
   methods: {
+    selectProp(userId, item_id, animal_id, item_state) {
+        this.selected_prop['userId'] = userId;
+        this.selected_prop['item_id'] = item_id;
+        this.selected_prop['animal_id'] = animal_id;
+        this.selected_prop['item_state'] = item_state;
+    },
+    redirectToChat(){
+        this.$router.push({
+              name: "Allconversations",
+            });
+    },
     stateChange(val) {
       if (val.length == 0) {
         this.newList = this.usersList;
@@ -237,6 +285,11 @@ export default {
         this.pagination.sortBy = column;
         this.pagination.descending = false;
       }
+    },
+    createChat(requestId, userId, animal){
+      chatService.createChat(requestId, userId, animal._id);
+      this.deploySnackbar("Chat created");
+      this.active_b = true;
     },
     acceptRequest(userId, requestId, animal) {
       animalService.acceptAnimalRequest(userId, requestId).then(x => {
@@ -254,7 +307,11 @@ export default {
         }
       });
     },
-    deleteRequest(userId, requestId, animalId, requestState) {
+    deleteRequest() {
+      let userId = this.selected_prop['userId'];
+      let requestId = this.selected_prop['item_id'];
+      let animalId = this.selected_prop['animal_id'];
+      let requestState = this.selected_prop['item_state'];
       if (requestState == "Accepted") {
         animalService.returnAnimal(userId, animalId);
       }
@@ -275,6 +332,7 @@ export default {
           });
         }
       });
+      this.deleteDialog = false;
     },
     returnRequest(userId, requestId, animalId, requestState) {
       animalService.returnAnimal(userId, animalId);
@@ -347,6 +405,7 @@ export default {
           request.userId = element.id;
           request.userEmail = element.email;
           request.userPhone = element.phonenumber;
+          if (element.chat){request.chat = element.chat;}
           this.usersList.push(request);
         });
       });

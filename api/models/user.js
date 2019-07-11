@@ -20,6 +20,7 @@ var userSchema = mongoose.Schema({
     date: String,
     details: String,
     state: String,
+    chat: {type: ObjectId, ref: "Chat"},
     animal: {type: ObjectId, ref: "Animal"}
   }],
   notifications: [{

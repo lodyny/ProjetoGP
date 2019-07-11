@@ -14,6 +14,8 @@ import AnimalAdoption from '@/home/AnimalAdoption';
 import RoleUpdate from '@/home/RoleUpdate';
 import AnimalRequests from '@/home/AnimalRequests';
 import RequestChat from '@/home/RequestChat';
+import RequestChatUser from '@/home/RequestChatUser';
+import Streams from '@/home/Streams';
 
 Vue.use(Router);
 
@@ -47,7 +49,7 @@ export const router = new Router({
         },
         { 
             path: '/animal/', 
-            name: 'AddAnimal',
+            name: 'AnimalCrud',
             component: AnimalCrud,
             props: true
         },
@@ -66,8 +68,20 @@ export const router = new Router({
             component: AnimalRequests,
         },
         { 
-            path: '/requestsChat', 
+            path: '/allconversations', 
+            name: 'Allconversations', 
             component: RequestChat,
+            meta: { authorize: [Role.Admin] } 
+        },
+        { 
+            path: '/myconversations', 
+            name: 'Myconversations', 
+            component: RequestChatUser,
+        },
+        { 
+            path: '/stream', 
+            name: 'Stream', 
+            component: Streams,
         },
         // otherwise redirect to home
         { path: '*', redirect: '/' }

@@ -8,6 +8,7 @@ const Chat = require("models/chat");
 const Specie = require("models/specie");
 const Animal = require("models/animal");
 var mongoose = require("mongoose");
+const userService = require("../users/user.service");
 
 var ObjectId = mongoose.Types.ObjectId;
 
@@ -15,7 +16,8 @@ module.exports = {
   getOpenChats,
   createChat,
   getById,
-  createMessage
+  createMessage,
+  getUserChats
 }
 
 async function getOpenChats() {
@@ -60,14 +62,38 @@ async function getOpenChats() {
     return chat;
   }
 
+  async function getUserChats(id) { // rever
+    const chat = await Chat.findById(id)
+      .populate({ path: 'user', select: ['name', 'email', 'image', 'phonenumber'] })
+      .exec();
+      const _user = await User.findById('5cfbf19d10062826c0b07fca').select({"image": 3, "email": 2, "name": 1, "_id": 0});
+      chat.user = _user;
+    if (!chat) return;
+    return chat;
+  }
+
   async function createChat(chatInfo){
     let _chat = new Chat();
+
+
     _chat.requestId = chatInfo.requestId;
     _chat.user = chatInfo.user;
     _chat.animal = chatInfo.animal;
     _chat.state = 'Open';
     let newChat = await _chat.save();
     if (!newChat) return;
+
+    let _user = await User.findOne({_id: chatInfo.user});
+    _user.requests.forEach(req => {
+      if (req._id == chatInfo.requestId){
+        req.chat = newChat._id;
+      }
+    });
+    await _user.save();
+
+    let _notification = {'title' : 'New Conversation', 'message' : 'Admin has started a conversation'};
+    await userService.newNotification(_user._id, _notification);
+
     newChat = JSON.parse(JSON.stringify(newChat));
     return newChat;
 }

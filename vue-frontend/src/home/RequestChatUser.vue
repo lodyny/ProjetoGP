@@ -6,6 +6,7 @@
       There are no animal requests chats
     </v-alert>
 
+
     <v-tabs
       v-model="active_tab"
       v-if="petsChat.length > 0"
@@ -19,7 +20,6 @@
         <v-card
           height="160px"
           :color="active_tab == index ? '#535353' : '#424242'"
-          @click="resetUser()"
         >
           <v-layout>
             <v-flex>
@@ -45,24 +45,7 @@
         <v-tab-item v-for="(petChat, index) in petsChat" :key="index">
           <div class="tab-item-wrapper">
             <v-layout fill-height style="min-height:600px">
-              <v-flex shrink>
-                <h5>Candidates</h5>
-                <v-layout column v-for="chat in petChat.chat_windows" :key="chat._id">
-                  <v-chip
-                    outline
-                    selected
-                    color="primary"
-                    class="tablinks"
-                    :id="chat._id + '_b'"
-                    @click="openTab(chat._id, chat.user, chat.messages)"
-                  >
-                    <v-avatar>
-                      <img src="https://via.placeholder.com/25" :alt="chat.user.name" />
-                    </v-avatar>
-                    {{chat.user.name}}
-                  </v-chip>
-                  <!-- <v-btn class="tablinks" :id="chat._id + '_b'" @click="openTab(chat._id)">{{chat.user.name}}</v-btn> -->
-                </v-layout>
+              <v-flex  md1>
               </v-flex>
               <v-flex>
                 <v-layout fill-height>
@@ -71,16 +54,15 @@
                     :key="chat._id"
                     :id="chat._id"
                     class="tabcontent"
-                    style="display:none"
                   >
                     <span style="font-size:22px">Chatting with {{chat.user.name}}</span>
                     <span style="font-size:12px">({{chat._id}})</span>
                     <v-card>
-                      <v-alert :value="true" color="info" outline icon="info" v-if="!visible_messages">
+                      <v-alert :value="true" color="info" outline icon="info" v-if="!petChat.chat_windows[active_tab]">
                         No messages, nothing to see here!
                       </v-alert>
                       <v-container style="height: 380px;" class="scroll-y" id="scroll-target">
-                        <v-card-text v-html="visible_messages"  >
+                        <v-card-text v-html="my_messages"  >
                         </v-card-text>
                       </v-container>
                     </v-card>
@@ -107,19 +89,18 @@
                 </v-layout>
               </v-flex>
               <v-flex md2>
-                <v-layout v-if="selected_user">
-                  <v-container>
+                <v-layout>
+                  <v-container v-if="petChat.chat_windows[active_tab]">
                     <div class="justify-center">
                       <v-img
                         style="height:160px;width:112px;max-width:112px;margin:auto;"
-                        src="https://via.placeholder.com/150"
+                        :src="petChat.chat_windows[active_tab].user.image"
                       ></v-img>
                     </div>
                     <v-divider></v-divider>
                     <v-flex shrink>
-                      <div class="subheading">{{selected_user.name}}</div>
-                      <div class="body-1">{{selected_user.email}}</div>
-                      <div class="body-1">{{selected_user.phonenumber}}</div>
+                      <div class="subheading">{{petChat.chat_windows[active_tab].user.name}}</div>
+                      <div class="body-1">{{petChat.chat_windows[active_tab].user.email}}</div>
                     </v-flex>
                   </v-container>
                 </v-layout>
@@ -160,6 +141,13 @@ export default {
       cur_chatId: null
     };
   },
+  watch: {
+    visible_messages: function (){
+      var textarea = document.getElementById("scroll-target");
+            if(textarea){
+                textarea.scrollTop = textarea.scrollHeight;}
+    }
+  },
   methods: {
     sendMessage(current_chatId, current_chat) {
       chatService
@@ -169,9 +157,8 @@ export default {
           this.currentUser.id
         ).then(new_message => {
             current_chat.messages.push(new_message);
-            this.updateVisibleMessages(current_chat.messages,current_chat.user._id);
-            var textarea = document.getElementById("scroll-target");
-                textarea.scrollTop = textarea.scrollHeight;
+            this.updateVisibleMessages(current_chat.messages,current_chat.user);
+            
         }
         );
         this.form.message = '';
@@ -200,54 +187,57 @@ export default {
         + element.date + 
         '</p></div>'
       });
+      
+      return this.visible_messages;
     },
     openTab(chatId, user, messages) {
-
       this.cur_chatId = chatId;
       this.selected_user = user;
 
       this.updateVisibleMessages(messages, user);
       
-      var i, tabcontent, tablinks;
-      tabcontent = document.getElementsByClassName("tabcontent");
-      for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-      }
-      tablinks = document.getElementsByClassName("tablinks");
-      document.getElementById(chatId).style.display = "block";
     }
   },
   mounted() {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].style.display = "none";
-    }
   },
   created() {
     authenticationService.currentUser.subscribe(x => (this.currentUser = x));
-    chatService.getAll().then(petsChat =>
+    chatService.getAll().then(petsChat => 
       petsChat.forEach(element => {
         element.chat_windows = [];
         element.chats.forEach(chatId => {
           chatService
-            .getChatById(chatId)
+            .getUserChatById(chatId)
             .then(chat => element.chat_windows.push(chat));
         });
         this.petsChat.push(element);
       })
-    );
+    )
+    if(this.$route.params.animalId){
+      console.log('redirected', this.$route.params.animalId);
+    }
   },
   computed: {
     formIsValid() {
       return this.form.message;
+    },
+    my_messages(){
+      if(!this.petsChat[this.active_tab].chat_windows[this.active_tab]){
+        return '';
+      } else {
+      return this.updateVisibleMessages(this.petsChat[this.active_tab].chat_windows[this.active_tab].messages, this.petsChat[this.active_tab].chat_windows[this.active_tab].user);
+      }
     }
   },
   updated: function () {
   this.$nextTick(function () {
-    var textarea = document.getElementById("scroll-target");
+    setTimeout(function() {
+       var textarea = document.getElementById("scroll-target");
+    if(textarea){
         textarea.scrollTop = textarea.scrollHeight;
-  })
+        }
+    }, 100);
+  });
 }
 };
 </script>

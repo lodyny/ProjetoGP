@@ -3,13 +3,13 @@ const router = express.Router();
 const streamsService = require("./streams.service");
 
 // routes
-router.get("/", teste);
+router.get("/", getAll);
 
 module.exports = router;
 
-function teste(req, res, next){
+function getAll(req, res, next){
   streamsService
-  .teste()
+  .getAll()
   .then(result => (result ? res.json(result) : res.status(400).json({ success: false })))
   .catch(err => next(err));
 }

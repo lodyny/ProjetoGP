@@ -4,6 +4,7 @@ const Roles = require("_helpers/roles");
 const User = require("models/user");
 const sgMail = require("@sendgrid/mail");
 const Role = require("models/role");
+const Chat = require("models/chat");
 const Animal = require("models/animal");
 var mongoose = require("mongoose");
 sgMail.setApiKey(config.sendGridApi);
@@ -45,7 +46,7 @@ async function checkUserAnimalRequest(userId, animalId){
   let output = {availability: true}
   _user.requests.forEach(req => {
     if (req.animal == animalId){
-      output = {availability: false};
+      output = {availability: false, hasChat : req.chat};
     }
   });
   return output;
@@ -80,9 +81,9 @@ async function acceptRequest(userId, requestId){
     _user.animals.push(new ObjectId(_animal._id));
 
   await _user.save();
-  
 
-  // Enviar notificação a avisar o utilizador
+  let _notification = {'title' : 'Request state change', 'message' : 'Your Request has been accepted'};
+  await newNotification(userId, _notification);// Enviar notificação a avisar o utilizador
 
   return {
     success: true
@@ -101,7 +102,9 @@ async function refuseRequest(userId, requestId){
   await _user.save();
 
   // Enviar notficação para o utilizador
-  
+  let _notification = {'title' : 'Request state change', 'message' : 'Your Request has been denied'};
+  await newNotification(userId, _notification);
+
   return {
     success: true
   }
@@ -139,7 +142,7 @@ async function readNotification(userId, notificationId){
   });
 
   await User.findOneAndUpdate({_id: userId}, {notifications: _user.notifications});
-  
+
   return {
     success: true
   }
@@ -154,7 +157,7 @@ async function deleteNotification(userId, notificationId){
   });
   
   _newNotifications.splice(_user.notifications.indexOf(_notification), 1);
-  console.log(_newNotifications);
+
   await User.findOneAndUpdate({_id: userId}, {notifications: _newNotifications});
 
   return {
@@ -296,7 +299,9 @@ async function getById(id) {
   const user = await User.findById(id)
     .populate("role")
     .populate("animals")
+    .populate("requests.animal")
     .exec();
+  
   if (!user) return;
   return {
     ...user.toDictionary(),
@@ -373,6 +378,9 @@ dformat = [d.getDay().padLeft(),
 
   await User.findOneAndUpdate({email: req.email}, {requests: _user.requests});
 
+  let _notification = {'title' : 'Request sucessfuly made', 'message' : 'Pending consideration'};
+  await newNotification(_user._id, _notification);
+
   return {
     success: true
   }
@@ -394,13 +402,14 @@ async function deleteRequest(userId, requestId){
       success: false,
       message: "Invalid Request"
     }
-    console.log(_request);
+    
     let _newRequests = _user.requests;
-    console.log(_newRequests);
-    console.log(_user.requests.indexOf(_request));
     _newRequests.splice(_user.requests.indexOf(_request), 1);
-    console.log(_newRequests);
     await User.findOneAndUpdate({_id: userId}, {requests: _newRequests});
+    await Chat.deleteMany({user : _user._id, requestId : _request._id});
+
+    let _notification = {'title' : 'Request removed', 'message' : 'A request has been removed'};
+    await newNotification(user._id, _notification);
 
   return {
     success: true
@@ -431,6 +440,9 @@ async function returnAnimal(userId, animalId){
     console.log(_newAnimals);
     await User.findOneAndUpdate({_id: userId}, {animals: _newAnimals});
     await removeOwnership(_animal);
+
+    let _notification = {'title' : 'Request removed', 'message' : 'A request has been removed from the system'};
+    await newNotification(_user._id, _notification);
 
   return {
     success: true
