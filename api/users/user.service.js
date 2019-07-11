@@ -82,7 +82,7 @@ async function acceptRequest(userId, requestId){
 
   await _user.save();
 
-  let _notification = {'title' : 'Request state change', 'message' : 'Your Request has been accepted'};
+  let _notification = {'title' : 'Request state change', 'message' : 'Your Request has been accepted', 'route' : 'Profile'};
   await newNotification(userId, _notification);// Enviar notificação a avisar o utilizador
 
   return {
@@ -102,7 +102,7 @@ async function refuseRequest(userId, requestId){
   await _user.save();
 
   // Enviar notficação para o utilizador
-  let _notification = {'title' : 'Request state change', 'message' : 'Your Request has been denied'};
+  let _notification = {'title' : 'Request state change', 'message' : 'Your Request has been denied', 'route' : 'Profile'};
   await newNotification(userId, _notification);
 
   return {
@@ -166,25 +166,29 @@ async function deleteNotification(userId, notificationId){
 }
 
 async function update(id, user){
+  console.log(user);
   let _user = await User.findOne({ _id: id});
 
-  if(user.password != null)
-    _user.password = _user.generateHash(user.password);
+  if(user.userData.password != null)
+    _user.password = _user.generateHash(user.userData.password);
   
-  if(user.name != null)
-    _user.name = user.name;
+  if(user.userData.name != null)
+    _user.name = user.userData.name;
 
-  if(user.birthdate != null)
-    _user.birthdate = user.birthdate;
+  if(user.userData.birthdate != null)
+    _user.birthdate = user.userData.birthdate;
 
-  if(user.phonenumber != null)
-    _user.phonenumber = user.phonenumber;
+  if(user.userData.phonenumber != null)
+    _user.phonenumber = user.userData.phonenumber;
 
-  if(user.role != null){
-    let _role = await Role.findOne({ title: user.role});
+    if(user.userData.image != null)
+    _user.image = user.userData.image;
+
+  if(user.userData.role != null){
+    let _role = await Role.findOne({ title: user.userData.role});
     _user.role = new ObjectId(_role._id);
   }
-
+  console.log(_user);
   await User.findOneAndUpdate({ _id: id}, _user);
   
   return {
@@ -259,6 +263,10 @@ async function authenticate({
   if (!user.validPassword(password)) return {
     success: false,
     message: "Email or password is incorrect"
+  };
+  if (user.banned) return {
+    success: false,
+    message: "User banned"
   };
   const token = jwt.sign({
     sub: user.id,
@@ -378,7 +386,7 @@ dformat = [d.getDay().padLeft(),
 
   await User.findOneAndUpdate({email: req.email}, {requests: _user.requests});
 
-  let _notification = {'title' : 'Request sucessfuly made', 'message' : 'Pending consideration'};
+  let _notification = {'title' : 'Request sucessfuly made', 'message' : 'Pending consideration', 'route' : 'Profile'};
   await newNotification(_user._id, _notification);
 
   return {
@@ -408,7 +416,7 @@ async function deleteRequest(userId, requestId){
     await User.findOneAndUpdate({_id: userId}, {requests: _newRequests});
     await Chat.deleteMany({user : _user._id, requestId : _request._id});
 
-    let _notification = {'title' : 'Request removed', 'message' : 'A request has been removed'};
+    let _notification = {'title' : 'Request removed', 'message' : 'A request has been removed', 'route' : 'Profile'};
     await newNotification(user._id, _notification);
 
   return {
@@ -441,7 +449,7 @@ async function returnAnimal(userId, animalId){
     await User.findOneAndUpdate({_id: userId}, {animals: _newAnimals});
     await removeOwnership(_animal);
 
-    let _notification = {'title' : 'Request removed', 'message' : 'A request has been removed from the system'};
+    let _notification = {'title' : 'Request removed', 'message' : 'A request has been removed from the system', 'route' : 'Profile'};
     await newNotification(_user._id, _notification);
 
   return {

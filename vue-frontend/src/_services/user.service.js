@@ -5,7 +5,8 @@ export const userService = {
     getAll,
     getById,
     updateRole,
-    checkUserAnimalRequest
+    checkUserAnimalRequest,
+    updateUser
 };
 
 function getAll() {
@@ -26,6 +27,12 @@ function getById(id) {
 
 function updateRole(role, id) {
     return fetch(`${config.apiUrl}/users/${id}`, requestOptions.post({role:role}))
+        .then(handleResponse)
+        .then(request => { return request;});
+}
+
+function updateUser(userId, userData) {
+    return fetch(`${config.apiUrl}/users/${userId}`, requestOptions.post({userData:userData}))
         .then(handleResponse)
         .then(request => { return request;});
 }

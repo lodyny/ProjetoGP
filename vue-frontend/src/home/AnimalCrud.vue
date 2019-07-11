@@ -1,5 +1,16 @@
 <template>
   <div class="animal-crud-component">
+    <v-snackbar
+      v-model="snackbar"
+      color="success"
+      :timeout="timeout"
+      style="margin-top:50px; z-index:1"
+      top
+      right
+    >
+      {{message}} Success
+      <v-btn flat @click="snackbar = false">Close</v-btn>
+    </v-snackbar>
     <v-container grid-list-sm>
       <v-layout row wrap>
         <v-flex d-flex xs12 sm6 style="padding-right:6px;">
@@ -199,6 +210,9 @@ export default {
       animalDetails : "",
       animalSpecie : "",
       animalBreed : "",
+      message: "",
+      timeout: 2000,
+      snackbar: false,
       animalWeight : "",
       animalHeight : "",
       menu: null,
@@ -217,6 +231,10 @@ export default {
   },
 
   methods: {
+    deploySnackbar(message) {
+      this.message = message;
+      this.snackbar = true;
+    },
     backClick(){
       this.$router.push({name: 'Home'});
     },
@@ -239,6 +257,7 @@ export default {
             image: this.animalImage
           };
       console.log(animalData.image);
+      let vm = this;
 			xhr.onload = function () {
           if (this.status == 200 && this.responseText){ 
             const responseObj = JSON.parse(this.responseText);
@@ -247,8 +266,10 @@ export default {
           console.log(animalData.image);
           if(animal){
               animalService.updateAnimal(animal._id, animalData);
+              vm.deploySnackbar("Animal update");
           } else {
               animalService.createAnimal(animalData);
+              vm.deploySnackbar("Animal creation");
           }
 			};
 			xhr.send(formdata);		

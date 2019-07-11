@@ -26,9 +26,7 @@
         </v-card-actions>
 
       <v-card class="scroll" max-height="300px" >
-        <span v-for="(item, i) in myNotifications"
-         v-bind:item="item"
-          v-bind:key="item.id">
+        <span v-for="(item, i) in myNotifications" :key="i">
           <v-card
             :class="!item.read ? 'specialCursor applyZoom' : ''"
             :style="item.read ? 'background-color:white' : 'background-color:#dcdcdc'"
@@ -98,6 +96,13 @@ export default {
       });
       item.read = true;
       this.refreshNotifications(this.currentUser.notifications);
+      let route = item.title == 'New Conversation' ? 'Myconversations' : 'Profile';
+      console.log(route);
+      console.log(item.title);
+
+      this.$router.push({
+        name: route,
+        });
     },
     readAllNotifications() {
       console.log('readall');

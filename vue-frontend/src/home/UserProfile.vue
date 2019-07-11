@@ -1,5 +1,16 @@
 <template>
   <div class="UserProfile">
+    <v-snackbar
+      v-model="snackbar"
+      color="success"
+      :timeout="timeout"
+      style="margin-top:50px; z-index:1"
+      top
+      right
+    >
+      {{message}} Success
+      <v-btn flat @click="snackbar = false">Close</v-btn>
+    </v-snackbar>
     <v-container  >
       <v-layout row wrap>
       <v-flex xs8 v-if="currentUser.requests.length > 0">
@@ -46,8 +57,12 @@
     <v-layout justify-center  >
       <v-form @submit.prevent="submit">
         <h2>My info</h2>
-        <img v-if="currentUser.image" :src="currentUser.image">
-        <img v-else src="https://via.placeholder.com/150">
+        <img v-if="initialImage" :src="initialImage" style="max-width:300px">
+        <img v-if="!initialImage" src="https://via.placeholder.com/150">
+        <input type="file" ref="file" style="display: none" @change="onFileChange">
+        <v-btn v-if="initialImage" @click="removeImage" block color="#FC6600" class="white--text">Change picture</v-btn>
+        <v-btn v-if="!initialImage" @click="$refs.file.click()" block color="#FC6600" class="white--text">Attach picture</v-btn>
+
         <v-text-field
           class="ma-0"
           label="Nome"
@@ -118,7 +133,7 @@
             @change="save"
           ></v-date-picker>
         </v-menu>
-        <v-btn block type="submit" color="#FC6600" class="white--text">Save</v-btn>
+        <v-btn block @click="saveClick()" color="#FC6600" class="white--text">Save</v-btn>
       </v-form>
     </v-layout>
     </v-layout>
@@ -133,6 +148,7 @@
 <script>
 import { authenticationService, userService } from "@/_services";
 import { router, Role } from "@/_helpers";
+import { constants } from 'crypto';
 
 export default {
   name: "UserProfile",
@@ -147,6 +163,11 @@ export default {
       existsuser: false,
       dialog : false,
       dialog2 : false,
+      message: "",
+      timeout: 2000,
+      snackbar: false,
+      file: [],
+      initialImage: "",
       onzoom: false,
       ondate: false,
       name: "",
@@ -174,17 +195,19 @@ export default {
       }
     };
   },
-  mounted() {},
+  mounted() {
+  },
   computed: {
-    // getAllConfirmations() {
-    // let allConfirmations = [
-    //   this.validemail,
-    //   this.existsmail,
-    //   this.existspassword
-    // ];
-    // let checker = arr => arr.every(v => v === true);
-    // return !checker(allConfirmations);
-    // },
+    getAllConfirmations() {
+    let allConfirmations = [
+      this.valideuser,
+      this.existsuser,
+      this.validephone,
+      this.existsphone
+    ];
+    let checker = arr => arr.every(v => v === true);
+    return checker(allConfirmations);
+    },
     initialDate: {
       get() {
         var date = new Date();
@@ -197,13 +220,16 @@ export default {
   },
   created() {
     authenticationService.currentUser.subscribe(x => (this.currentUser = x));
-
+    
     userService.getById(this.currentUser.id).then(x => {
+      this.initialImage = x.image;
       this.user = x;
       this.name = x.name;
       this.phonenumber = x.phonenumber;
       this.currentUser = x;
-    });
+    });    
+
+    
   },
   watch: {
     menu(val) {
@@ -211,6 +237,37 @@ export default {
     }
   },
   methods: {
+    deploySnackbar(message) {
+      this.message = message;
+      this.snackbar = true;
+    },
+    saveClick(){
+      if(this.getAllConfirmations){
+			var formdata = new FormData();
+			formdata.append('file', this.file);
+			formdata.append('cloud_name', 'adotaqui');
+			formdata.append('upload_preset', 'ormfeeku');
+			
+			var xhr = new XMLHttpRequest();
+			xhr.open('POST', "https://api.cloudinary.com/v1_1/adotaqui/image/upload",true);
+
+      const userData = { 
+            name: this.name,
+            phonenumber: this.phonenumber,
+            birthdate: this.date
+          };
+      let vm = this;
+			xhr.onload = function () {
+      if (this.status == 200 && this.responseText){ 
+        const responseObj = JSON.parse(this.responseText);
+            userData.image = responseObj.url;
+          }
+      userService.updateUser(vm.currentUser.id, userData);
+      vm.deploySnackbar("User update");
+      }
+		xhr.send(formdata);		
+      }
+    },
     deltaDate(input, days, months, years) {
       var date = new Date(input);
       date.setDate(date.getDate() + days);
@@ -226,6 +283,25 @@ export default {
               name: "Myconversations",
               params: { 'animalId': animalId }
             });
+    },
+    onFileChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      this.file = files[0];
+      if (!files.length) return;
+      this.createImage(this.file);
+    },
+    createImage(file) {
+      var image = new Image();
+      var reader = new FileReader();
+      var vm = this;
+
+      reader.onload = e => {
+        vm.initialImage = e.target.result;
+      };
+      reader.readAsDataURL(file);
+  },
+  removeImage: function(e) {
+      this.initialImage = "";
     }
   }
 };

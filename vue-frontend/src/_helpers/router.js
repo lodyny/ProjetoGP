@@ -61,10 +61,12 @@ export const router = new Router({
         },
         { 
             path: '/profile', 
+            name: 'Profile', 
             component: UserProfile,
         },
         { 
             path: '/requests', 
+            name: 'Requests', 
             component: AnimalRequests,
         },
         { 

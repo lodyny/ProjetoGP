@@ -77,11 +77,11 @@ export default {
   },
   methods: {
     updateRole(newRole, selectedUser){
-      this.snackbar = true;
-      if (!(newRole == selectedUser.role)){
+      // if (!(newRole == selectedUser.role)){
       this.disable = true;
       userService.updateRole(newRole, selectedUser.id).then(this.disable = false);
-      }
+      this.snackbar = true;
+      // }
     },
       isDisabled(id){
       return this.disable || id == this.currentUser.id;

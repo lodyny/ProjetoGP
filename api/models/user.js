@@ -27,6 +27,7 @@ var userSchema = mongoose.Schema({
     date: String,
     title: String,
     message: String,
+    route: String,
     read: Boolean
   }]
 });
