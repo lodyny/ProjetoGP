@@ -1,0 +1,11 @@
+$grid-breakpoints: (
+  xs: 0,
+  sm: 600px,
+  md: 1200px,
+  lg: 1250px,
+  xl: 1280px
+);
+
+.v-item-group.v-bottom-nav .v-btn {
+  max-width: none;
+}
